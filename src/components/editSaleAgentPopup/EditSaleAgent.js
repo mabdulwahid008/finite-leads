@@ -4,28 +4,39 @@ import { RxCross1 } from 'react-icons/rx'
 import { toast } from 'react-toastify'
 
 function EditSaleAgent({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents }) {
-    console.log(agentToBeEdited);
-    const [agentData, setAgentData] = useState({id: agentToBeEdited.id, name: agentToBeEdited.name, phone: agentToBeEdited.phone, email: agentToBeEdited.email, address: agentToBeEdited.address})
+    const [agentData, setAgentData] = useState(agentToBeEdited)
     
     const onChange = (e) => {
         setAgentData({...agentData, [e.target.name]: e.target.value})
     }
 
-    const editAgent = ( e ) => {
+    const editAgent = (e) => {
         e.preventDefault();
-        if(agentData.phone.length !== 11){
-            toast.error("Agents phone number is incorrect")
-            return;
+        if (agentData.phone.length !== 11) {
+          toast.error("Agents phone number is incorrect");
+          return;
         }
-
-        let findAgentToBeUpdated = saleAgents.filter((agent)=> agent.id === agentToBeEdited.id)
-
-        findAgentToBeUpdated = agentData
-        console.log(findAgentToBeUpdated);
-
-        setEditAgent(false)
-        
-    }
+      
+        const agentIndex = saleAgents.findIndex((agent) => agent.id === agentToBeEdited.id);
+        if (agentIndex === -1) {
+          toast.error("Agent not found");
+          return;
+        }
+      
+        const updatedAgent = {
+          ...saleAgents[agentIndex],
+          name: agentData.name,
+          email: agentData.email,
+          address: agentData.address,
+          phone: agentData.phone,
+        };
+      
+        const updatedAgents = [...saleAgents.slice(0, agentIndex), updatedAgent, ...saleAgents.slice(agentIndex + 1)];
+      
+        setSaleAgents(updatedAgents);
+        setEditAgent(false);
+      };
+      
   return (
     <div className='popup'>
         <div className='overlay'></div>

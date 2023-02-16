@@ -30,8 +30,6 @@ function SalesAgents() {
     }
 
     useEffect(() => {
-
-        console.log(saleAgents);
       
     }, [saleAgents, editAgent])
     
