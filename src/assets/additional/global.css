@@ -1,4 +1,47 @@
+:root{
+    --blackColor: #252422;
+    --primaryColor: #51cbce;
+    --dangerColor: #f1926e;
+    --successColor: #7ed6a5;
+    --warningColor: #fccf71
+}
+
 .card-header{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* for cross icon */
+.card-header > svg{
+    color: var(--blackColor);
+    padding: 5px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: .25s ease;
+}
+.card-header > svg:hover{
+    color: var(--dangerColor);
+}
+
+.actions{
+    padding: 8px 20px;
+    display: flex;
+    gap:10px;
+    justify-content: flex-end;
+    align-items: center;
+}
+.actions > svg{
+    padding: 5px;
+    font-size: 24px;
+    color: var(--blackColor);
+    transition: .25s ease;
+    cursor: pointer;
+}
+.actions > svg:nth-child(1):hover{
+    color: var(--primaryColor);
+}
+.actions > svg:nth-child(2):hover{
+    color: var(--dangerColor);
 }

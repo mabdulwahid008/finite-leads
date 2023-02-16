@@ -1,0 +1,23 @@
+.popup, .overlay{
+    height: calc(100vh + 50px);
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 99999;
+}
+.overlay{
+    background-color: rgba(0, 0, 0, 0.272);
+}
+.popup{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 0 0 250px ;
+}
+.card-popup{
+    z-index: 99999;
+    width: 40%;
+}

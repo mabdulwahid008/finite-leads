@@ -37,7 +37,7 @@ var routes = [
   {
     path: "/sales-agents",
     name: "Sales Agents",
-    icon: "nc-icon nc-bank",
+    icon: "nc-icon nc-single-02",
     component: SalesAgents,
     layout: "/admin"
   },
