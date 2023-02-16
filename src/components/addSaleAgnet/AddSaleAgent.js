@@ -11,6 +11,10 @@ function AddSaleAgent({ setAddNewAgent, saleAgents, setSaleAgents }) {
 
     const addNewAgent = ( e ) => {
         e.preventDefault();
+        if(agentData.phone.length !== 11){
+            toast.error('Agents phone number is incorrect')
+            return;
+        }
         agentData.id = Math.floor(Math.random() * 9999);
 
         saleAgents.push(agentData)

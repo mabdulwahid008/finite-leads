@@ -2,18 +2,21 @@ import React, { useState, useEffect }  from 'react'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, Row, Table, Toast } from 'reactstrap'
 import { SALES_AGENTS } from '../variables/SalesAgents'
 import { FaRegEdit, FaTrash } from "react-icons/fa";
-import DeletePopup from 'components/deletePopup/DeletePopup';
+import DeletePopup from 'components/deleteAgentPopup/DeletePopup';
 import { toast } from 'react-toastify';
 import AddSaleAgent from 'components/addSaleAgnet/AddSaleAgent';
+import EditSaleAgent from 'components/editSaleAgentPopup/EditSaleAgent';
 
 function SalesAgents() {
     const [saleAgents, setSaleAgents] = useState(SALES_AGENTS)
+
     const [deletePopup, setDeletePopup] = useState(false)
     const [agentToBeDeleted, setAgentToBeDeleted] = useState(null)
 
     const [addNewAgent, setAddNewAgent] = useState(false)
 
- 
+    const [editAgent, setEditAgent] = useState(false)
+    const [agentToBeEdited, setAgentToBeEdited] = useState(null)
 
     const onSubmitDeleteAgent = () => {
         const filteredAgents = saleAgents.filter((agent) => agent.id !== agentToBeDeleted.id)
@@ -27,8 +30,10 @@ function SalesAgents() {
     }
 
     useEffect(() => {
+
+        console.log(saleAgents);
       
-    }, [saleAgents])
+    }, [saleAgents, editAgent])
     
   return (
     <div className='content'>
@@ -58,7 +63,7 @@ function SalesAgents() {
                                         <td>{agent.email}</td>
                                         <td>{agent.address}</td>
                                         <div className='actions'>
-                                            <FaRegEdit />
+                                            <FaRegEdit onClick={()=> {setEditAgent(true); setAgentToBeEdited(agent)}}/>
                                             <FaTrash onClick={()=> {setDeletePopup(true); setAgentToBeDeleted(agent)}}/>
                                         </div>
                                     </tr>
@@ -70,6 +75,7 @@ function SalesAgents() {
             </Col>
         </Row>
         {addNewAgent && <AddSaleAgent setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents}/>}
+        {editAgent && <EditSaleAgent setEditAgent={setEditAgent} agentToBeEdited={agentToBeEdited} saleAgents={saleAgents} setSaleAgents={setSaleAgents}/> }
         {deletePopup && <DeletePopup setDeletePopup={setDeletePopup} agentToBeDeleted={agentToBeDeleted} setAgentToBeDeleted={setAgentToBeDeleted} onSubmitDeleteAgent={onSubmitDeleteAgent}/>}
     </div>
   )
