@@ -24,6 +24,7 @@ import TableList from "views/Tables.js";
 import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
+import SalesAgents from "views/SalesAgents";
 
 var routes = [
   {
@@ -31,6 +32,13 @@ var routes = [
     name: "Dashboard",
     icon: "nc-icon nc-bank",
     component: Dashboard,
+    layout: "/admin"
+  },
+  {
+    path: "/sales-agents",
+    name: "Sales Agents",
+    icon: "nc-icon nc-bank",
+    component: SalesAgents,
     layout: "/admin"
   },
   {

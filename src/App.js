@@ -5,16 +5,14 @@ import Login from 'views/Login';
 
 function App() {
     const token = localStorage.getItem('token')
-    
     if(!token)
         return (
             <Login />
         )
-    else
         return (
             <Switch>
-                <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-                <Redirect to="/admin/dashboard" />
+            <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
+            <Redirect to="/admin/dashboard" />
             </Switch>
         )
 }
