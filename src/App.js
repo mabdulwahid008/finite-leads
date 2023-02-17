@@ -9,7 +9,10 @@ function App() {
     const token = localStorage.getItem('token')
     if(!token)
         return (
-            <Login />
+            <>
+                <Login />
+                <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} transition={Slide} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss theme="light" />
+            </>
         )
         return (
             <>

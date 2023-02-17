@@ -8,7 +8,7 @@
     --warningColor: #fccf71
 }
 
-.btn-secondary{
+button{
     background-color: var(--logoColor) !important;
 }
 button:hover,
@@ -21,7 +21,7 @@ button:active{
 }
 
 .btn-primary{
-    background-color: var(--blackColor) !important;
+    /* background-color: var(--blackColor) !important; */
     font-size: 10px !important;
 }
 

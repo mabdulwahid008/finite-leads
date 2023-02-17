@@ -1,22 +1,37 @@
 import  React, { useState } from 'react'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row } from 'reactstrap'
+import { toast } from 'react-toastify'
 
 function Login() {
     const [loading, setloading] = useState(false)
     const [logins, setLogins] = useState({email: '', password: ''})
 
+
     const onChange = ( e ) => {
         setLogins({...logins, [e.target.name]: e.target.value})
-        console.log(logins);
     }
 
-    const  onSubmit = ( e ) => {
+    const  onSubmit = async( e ) => {
         e.preventDefault();
         setloading(true)
 
-        localStorage.setItem('token', "true")
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user/login`,{
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'Application/json'
+            },
+            body: JSON.stringify(logins)
+        })
 
-        window.location.reload(true)
+        const res = await response.json()
+        if(response.status === 200){
+            localStorage.setItem('token', res.token)
+            window.location.reload(true)
+        }
+        else{
+            toast.error(res.message)
+        }
+
         setloading(false)
     }
   return (
