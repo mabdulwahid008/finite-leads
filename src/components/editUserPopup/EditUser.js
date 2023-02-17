@@ -3,7 +3,7 @@ import { Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input }
 import { RxCross1 } from 'react-icons/rx'
 import { toast } from 'react-toastify'
 
-function EditSaleAgent({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents }) {
+function EditUser({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents }) {
     const [agentData, setAgentData] = useState(agentToBeEdited)
     
     const onChange = (e) => {
@@ -33,6 +33,7 @@ function EditSaleAgent({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents
       
         const updatedAgents = [...saleAgents.slice(0, agentIndex), updatedAgent, ...saleAgents.slice(agentIndex + 1)];
       
+        toast.success('Updated agents data')
         setSaleAgents(updatedAgents);
         setEditAgent(false);
       };
@@ -71,4 +72,4 @@ function EditSaleAgent({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents
   )
 }
 
-export default EditSaleAgent
+export default EditUser

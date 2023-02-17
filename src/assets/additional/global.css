@@ -1,9 +1,32 @@
 :root{
     --blackColor: #252422;
+    --logoColor: #deb843;
+    --logoDarkColor: #cda93e;
     --primaryColor: #51cbce;
     --dangerColor: #f1926e;
     --successColor: #7ed6a5;
     --warningColor: #fccf71
+}
+
+.btn-secondary{
+    background-color: var(--logoColor) !important;
+}
+button:hover,
+button:active{
+    background-color: var(--logoDarkColor) !important;
+}
+.active,
+.active > a > i{
+    color: var(--logoColor) !important
+}
+
+.btn-primary{
+    font-size: 10px !important;
+    margin: 0px !important;
+}
+
+thead{
+    color: var(--logoColor) !important
 }
 
 .card-header{
@@ -45,3 +68,6 @@
 .actions > svg:nth-child(2):hover{
     color: var(--dangerColor);
 }
+
+
+

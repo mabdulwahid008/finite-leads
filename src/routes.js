@@ -24,7 +24,8 @@ import TableList from "views/Tables.js";
 import Maps from "views/Map.js";
 import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
-import SalesAgents from "views/SalesAgents";
+import Users from "views/Users";
+import Sales from "views/Sales";
 
 var routes = [
   {
@@ -35,61 +36,68 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/sales-agents",
-    name: "Sales Agents",
+    path: "/users",
+    name: "Users",
     icon: "nc-icon nc-single-02",
-    component: SalesAgents,
+    component: Users,
     layout: "/admin"
   },
   {
-    path: "/icons",
-    name: "Icons",
-    icon: "nc-icon nc-diamond",
-    component: Icons,
-    layout: "/admin"
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "nc-icon nc-pin-3",
-    component: Maps,
-    layout: "/admin"
-  },
-  {
-    path: "/notifications",
-    name: "Notifications",
-    icon: "nc-icon nc-bell-55",
-    component: Notifications,
-    layout: "/admin"
-  },
-  {
-    path: "/user-page",
-    name: "User Profile",
+    path: "/sales",
+    name: "Sales",
     icon: "nc-icon nc-single-02",
-    component: UserPage,
+    component: Sales,
     layout: "/admin"
   },
-  {
-    path: "/tables",
-    name: "Table List",
-    icon: "nc-icon nc-tile-56",
-    component: TableList,
-    layout: "/admin"
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "nc-icon nc-caps-small",
-    component: Typography,
-    layout: "/admin"
-  },
-  {
-    pro: true,
-    path: "/upgrade",
-    name: "Upgrade to PRO",
-    icon: "nc-icon nc-spaceship",
-    component: UpgradeToPro,
-    layout: "/admin"
-  }
+//   {
+//     path: "/icons",
+//     name: "Icons",
+//     icon: "nc-icon nc-diamond",
+//     component: Icons,
+//     layout: "/admin"
+//   },
+//   {
+//     path: "/maps",
+//     name: "Maps",
+//     icon: "nc-icon nc-pin-3",
+//     component: Maps,
+//     layout: "/admin"
+//   },
+//   {
+//     path: "/notifications",
+//     name: "Notifications",
+//     icon: "nc-icon nc-bell-55",
+//     component: Notifications,
+//     layout: "/admin"
+//   },
+//   {
+//     path: "/user-page",
+//     name: "User Profile",
+//     icon: "nc-icon nc-single-02",
+//     component: UserPage,
+//     layout: "/admin"
+//   },
+//   {
+//     path: "/tables",
+//     name: "Table List",
+//     icon: "nc-icon nc-tile-56",
+//     component: TableList,
+//     layout: "/admin"
+//   },
+//   {
+//     path: "/typography",
+//     name: "Typography",
+//     icon: "nc-icon nc-caps-small",
+//     component: Typography,
+//     layout: "/admin"
+//   },
+//   {
+//     pro: true,
+//     path: "/upgrade",
+//     name: "Upgrade to PRO",
+//     icon: "nc-icon nc-spaceship",
+//     component: UpgradeToPro,
+//     layout: "/admin"
+//   }
 ];
 export default routes;

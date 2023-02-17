@@ -3,7 +3,7 @@ import { Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input }
 import { RxCross1 } from 'react-icons/rx'
 import { toast } from 'react-toastify'
 
-function AddSaleAgent({ setAddNewAgent, saleAgents, setSaleAgents }) {
+function AddUser({ setAddNewAgent, saleAgents, setSaleAgents }) {
     const [agentData, setAgentData] = useState({name: '', phone: '', email: '', address: ''})
     const onChange = (e) => {
         setAgentData({...agentData, [e.target.name]: e.target.value})
@@ -60,4 +60,4 @@ function AddSaleAgent({ setAddNewAgent, saleAgents, setSaleAgents }) {
   )
 }
 
-export default AddSaleAgent
+export default AddUser

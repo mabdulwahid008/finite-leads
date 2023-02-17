@@ -2,12 +2,12 @@ import React, { useState, useEffect }  from 'react'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, Row, Table, Toast } from 'reactstrap'
 import { SALES_AGENTS } from '../variables/SalesAgents'
 import { FaRegEdit, FaTrash } from "react-icons/fa";
-import DeletePopup from 'components/deleteAgentPopup/DeletePopup';
+import DeletePopup from 'components/deleteUserPopup/DeletePopup';
 import { toast } from 'react-toastify';
-import AddSaleAgent from 'components/addSaleAgnet/AddSaleAgent';
-import EditSaleAgent from 'components/editSaleAgentPopup/EditSaleAgent';
+import AddUser from 'components/addUser/AddUser';
+import EditUser from 'components/editUserPopup/EditUser';
 
-function SalesAgents() {
+function Users() {
     const [saleAgents, setSaleAgents] = useState(SALES_AGENTS)
 
     const [deletePopup, setDeletePopup] = useState(false)
@@ -39,8 +39,8 @@ function SalesAgents() {
             <Col md="12">
                 <Card>
                     <CardHeader>
-                        <CardTitle tag="h4">Sales Agents</CardTitle>
-                        <Button color='primary'onClick={()=> setAddNewAgent(true)}>Add New</Button>
+                        <CardTitle tag="h4">Users</CardTitle>
+                        <Button onClick={()=> setAddNewAgent(true)}>Add New</Button>
                     </CardHeader>
                     <CardBody>
                         <Table>
@@ -72,11 +72,11 @@ function SalesAgents() {
                 </Card>
             </Col>
         </Row>
-        {addNewAgent && <AddSaleAgent setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents}/>}
-        {editAgent && <EditSaleAgent setEditAgent={setEditAgent} agentToBeEdited={agentToBeEdited} saleAgents={saleAgents} setSaleAgents={setSaleAgents}/> }
+        {addNewAgent && <AddUser setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents}/>}
+        {editAgent && <EditUser setEditAgent={setEditAgent} agentToBeEdited={agentToBeEdited} saleAgents={saleAgents} setSaleAgents={setSaleAgents}/> }
         {deletePopup && <DeletePopup setDeletePopup={setDeletePopup} agentToBeDeleted={agentToBeDeleted} setAgentToBeDeleted={setAgentToBeDeleted} onSubmitDeleteAgent={onSubmitDeleteAgent}/>}
     </div>
   )
 }
 
-export default SalesAgents
+export default Users
