@@ -21,8 +21,8 @@ button:active{
 }
 
 .btn-primary{
+    background-color: var(--blackColor) !important;
     font-size: 10px !important;
-    margin: 0px !important;
 }
 
 thead{

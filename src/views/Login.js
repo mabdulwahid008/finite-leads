@@ -12,10 +12,12 @@ function Login() {
 
     const  onSubmit = ( e ) => {
         e.preventDefault();
+        setloading(true)
 
         localStorage.setItem('token', "true")
 
         window.location.reload(true)
+        setloading(false)
     }
   return (
     <div>

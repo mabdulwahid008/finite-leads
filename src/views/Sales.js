@@ -1,10 +1,28 @@
 import React, { useState } from 'react'
-import { Button, Card, CardBody, CardHeader, CardTitle, Col, Input, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row, Table } from 'reactstrap'
 import { SALES } from '../variables/Sales'
+import ReactSelect from 'react-select'
 import { FaRegEdit, FaTrash } from "react-icons/fa";
 
 function Sales() {
     const [sales, setsSles] = useState(SALES)
+    const [filterSales, setFilterSales] = useState({fromDate: from, toDate: to, type:''})
+
+    
+    const from = `${new Date().getFullYear()}-${new Date().getMonth()+1}-1`
+    const to =`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
+
+    const onChange = ( e ) => {
+        if(e.target.value !== '')
+            setFilterSales({...filterSales, [e.target.name]: e.target.value})
+        if(e.target.name === 'fromDate' && e.target.value === ''){
+            filterSales.fromDate = from
+        }
+        if(e.target.name ==+ 'toDate' && e.target.value === '')
+            filterSales.toDate = to
+    } 
+
+    const options =[{id: 1, label: "hello"},{id: 2, label: "hello"}]
   return (
     <div className='content'>    
         <Row>
@@ -15,10 +33,28 @@ function Sales() {
                             <CardTitle tag="h4">Sales</CardTitle>
                             <Button>Add New</Button>
                         </div>
-                        <div style={{display:"flex", alignItems:"flex-end", gap:10, width:'20%'}}>
-                            <Input type='date' name="from"/>
-                            <Input type='date' name="to"/>
-                            <Button className='btn-primary'>Filter</Button>
+
+                        <div style={{display:"flex", alignItems:"flex-end", gap:10, width:"50%",}}>
+                            <Form>
+                                <Row style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-start', width:"120%"}}>
+                                    <Col md="4">    
+                                        <FormGroup>
+                                            <label>From</label>
+                                            <Input type='date' name="fromDate" onChange={onChange}/>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md="4" style={{paddingLeft:0, paddingRight:15}}>    
+                                        <FormGroup>
+                                            <label>To</label>
+                                            <Input type='date' name="toDate" onChange={onChange}/>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md="4" style={{paddingLeft: 0}}>
+                                        <label>User</label>
+                                        <ReactSelect options={options}/>
+                                    </Col>
+                                </Row>
+                            </Form>
                         </div>
                     </CardHeader>
                     <CardBody>
