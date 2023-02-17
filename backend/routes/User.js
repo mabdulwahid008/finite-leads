@@ -11,8 +11,7 @@ const authorization = require('../middleware/authorization')
 router.post('/', authorization, async(req,res) => {
     const { name, phone, email, address, password, role } = req.body
     try {
-        console.log(req.user_role);
-        if(req.user_role !== 5)
+        if(req.user_role !== 5 && req.user_role !== 3)
             return res.status(401).json({message: "Unauthorized Attempt"})
 
         const user = await User.findOne({email: email})
