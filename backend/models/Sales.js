@@ -16,7 +16,8 @@ const SaleSchema = new Schema({
         type: String
     },
     multiplier: {
-        type: Number
+        type: Number,
+        default: 1,
     },
     create_at: {
         type: Date,

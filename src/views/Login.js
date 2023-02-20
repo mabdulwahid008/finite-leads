@@ -26,6 +26,7 @@ function Login() {
         const res = await response.json()
         if(response.status === 200){
             localStorage.setItem('token', res.token)
+            localStorage.setItem('userRole', res.role)
             window.location.reload(true)
         }
         else{

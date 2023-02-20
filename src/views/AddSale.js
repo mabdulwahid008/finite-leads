@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+import Loading from 'components/Loading/Loading'
+import React, { useEffect, useState } from 'react'
+import ReactSelect from 'react-select'
 import { toast } from 'react-toastify'
 import { Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row, Button } from 'reactstrap'
 
 function AddSale() {
     const [sale, setSale] = useState({client_name: '',client_phone: '',client_address: '' })
     const [loading, setLoading] = useState(false)
+    const [saleAgents, setSaleAgents] = useState(null)
+    const [user_id, setUser_id] = useState(null)
+
+    const userRole = localStorage.getItem('userRole')
 
     const onChange = (e) => {
         setSale({...sale, [e.target.name]: e.target.value})
@@ -17,6 +23,8 @@ function AddSale() {
             setLoading(false)
             return;
         }
+        sale.user_id = user_id
+        
         const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale`,{
             method: 'POST',
             headers: {
@@ -34,6 +42,34 @@ function AddSale() {
         }
         setLoading(false)
     }
+
+    const getAgents = async() => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json();
+        if(response.status === 200){
+            console.log(res);
+            let options = []
+            for(let i = 0; i < res.length; i++){
+                const option = {
+                    value: res[i]._id,
+                    label: res[i].name
+                }
+                options.push(option)
+            }
+            setSaleAgents(options)
+        }
+        else
+            toast.error(res.message)
+    }
+    useEffect(()=>{
+        getAgents()
+    },[])
   return (
     <div className='content'>
         <Row>
@@ -43,7 +79,8 @@ function AddSale() {
                         <CardTitle tag="h4">Add New Sale</CardTitle>
                     </CardHeader>
                     <CardBody>
-                        <Form onSubmit={onSubmit}>
+                        {!saleAgents && <Loading />}
+                       {saleAgents && <Form onSubmit={onSubmit}>
                             <Row>
                                 <Col md="6">
                                     <FormGroup>
@@ -58,12 +95,23 @@ function AddSale() {
                                     </FormGroup>
                                 </Col>
                             </Row>
-                            <FormGroup>
-                                <label>Client Address </label>
-                                <Input type="text" name='client_address' onChange={onChange}/>
-                            </FormGroup>
+                            <Row>
+                                <Col md="6">
+                                    <FormGroup>
+                                        <label>Client Address </label>
+                                        <Input type="text" name='client_address' onChange={onChange}/>
+                                    </FormGroup>
+                                </Col>
+                                {(userRole == 3 || userRole == 5) && <Col md="6">
+                                    <FormGroup>
+                                        <label>Select Sale Agent *</label>
+                                        <ReactSelect options={saleAgents} placeholder="Select Agent" required onChange={(option)=>{setUser_id(option.value)}}/>
+                                    </FormGroup>
+                                </Col>}
+                            </Row>
+                            
                             <Button disabled={loading? true : false}>{`${loading? 'Please Wait' : 'Add Sale'}`}</Button>
-                        </Form>
+                        </Form>}
                     </CardBody>
                 </Card>
             </Col>

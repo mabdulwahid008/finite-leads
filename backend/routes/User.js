@@ -116,5 +116,16 @@ router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)
     }
 })
 
+//for admin and master to add sale for sale agents
+router.get('/', authorization, async(req, res)=>{
+    try {
+        const salesAgent = await User.find({role: 0}, {created_at:0, role: 0, password: 0, email:0, phone: 0, address: 0})
+        return res.status(200).json(salesAgent)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
 
 module.exports = router
