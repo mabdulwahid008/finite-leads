@@ -70,4 +70,8 @@ thead{
 }
 
 
+.card label{
+    color: var(--blackColor) !important;
+}
+
 

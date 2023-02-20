@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row } from 'reactstrap'
 import { RxCross1 } from 'react-icons/rx'
 import { toast } from 'react-toastify'
 import ReactSelect from 'react-select'
@@ -66,7 +66,7 @@ function AddUser({ setAddNewAgent, saleAgents, setSaleAgents }) {
   return (
     <div className='popup'>
         <div className='overlay'></div>
-        <Card className='card-popup'>
+        <Card className='card-popup add-user-popup'>
             <CardHeader>
                 <CardTitle tag="h5">Add New User</CardTitle>
                 <RxCross1 onClick={()=> setAddNewAgent(false)}/>
@@ -77,14 +77,22 @@ function AddUser({ setAddNewAgent, saleAgents, setSaleAgents }) {
                         <label>Name</label>
                         <Input type='text' name='name' required onChange={onChange}/>
                     </FormGroup>
-                    <FormGroup>
-                        <label>Email</label>
-                        <Input type='email' name='email' required onChange={onChange}/>
-                    </FormGroup>
-                    <FormGroup>
-                        <label>Phone</label>
-                        <Input type='number' name='phone' required onChange={onChange}/>
-                    </FormGroup>
+                    <Row>
+                        <Col md="6">
+                            <FormGroup>
+                                <label>Email</label>
+                                <Input type='email' name='email' required onChange={onChange}/>
+                            </FormGroup>
+                        </Col>
+                        <Col md="6">
+                            <FormGroup>
+                                <label>Phone</label>
+                                <Input type='number' name='phone' required onChange={onChange}/>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                   
+                    
                     <FormGroup>
                         <label>Password</label>
                         <Input type='password' name='password' required onChange={onChange}/>

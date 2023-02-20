@@ -4,38 +4,8 @@ const bcrypt = require('bcrypt')
 const router = express.Router()
 const jwt = require("jsonwebtoken")
 const authorization = require('../middleware/authorization')
+const masterOrAdminAuthorization = require("../middleware/masterOrAdminAuthorization")
 
-
-// create user 
-// have to pass authorization
-router.post('/', authorization, async(req,res) => {
-    const { name, phone, email, address, password, role } = req.body
-    try {
-        if(req.user_role !== 5 && req.user_role !== 3)
-            return res.status(401).json({message: "Unauthorized Attempt"})
-
-        const user = await User.findOne({email: email})
-        if(user)
-            return res.status(422).json({message: "User with this email already registered"})
-        
-        const salt = bcrypt.genSaltSync(10)
-        const encryptedPass = bcrypt.hashSync(password, salt)
-
-        User.create({
-            name: name,
-            phone: phone,
-            email: email,
-            address: address,
-            password: encryptedPass,
-            role: role
-        })
-
-        return res.status(200).json({message: "User Created"})
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({message: "Server Error"})
-    }
-})
 
 // login
 router.post('/login', async(req, res) => {
@@ -64,9 +34,77 @@ router.post('/login', async(req, res) => {
     }
 })
 
-//edit user
-router.patch('/', async(req, res)=>{
+// create user 
+router.post('/', authorization, masterOrAdminAuthorization, async(req,res) => {
+    const { name, phone, email, address, password, role } = req.body
+    try {
+        const user = await User.findOne({email: email})
+        if(user)
+            return res.status(422).json({message: "User with this email already registered"})
+        
+        const salt = bcrypt.genSaltSync(10)
+        const encryptedPass = bcrypt.hashSync(password, salt)
 
+        User.create({
+            name: name,
+            phone: phone,
+            email: email,
+            address: address,
+            password: encryptedPass,
+            role: role
+        })
+
+        return res.status(200).json({message: "User Created"})
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Server Error"})
+    }
+})
+
+// edit user
+router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
+    const { id, name, phone, email, address, role } = req.body;
+    try {
+        const user = await User.findOne({id: id})
+        if(!user)
+            return res.status(401).json({message: 'User Not Fount'})
+        
+        user.name = name;
+        user.email = email;
+        user.phone = phone;
+        user.address = address;
+        user.role = role;
+
+        await user.save();
+
+        return res.status(200).json({message: 'Successfully Updated  user\'s data'})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message: "Server Error"})
+    }
+})
+
+// get all users
+router.get('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
+    try {
+        const users = await User.find({}, {password: 0});
+        return res.status(200).json(users)
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message: "Server Error"})
+
+    }
+})
+
+// deleteUser
+router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)=> {
+    try {
+        await User.deleteOne({_id: req.params.id})
+        return res.status(200).json({message: 'User deleted successfully'})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message: "Server Error"})
+    }
 })
 
 module.exports = router

@@ -164,8 +164,8 @@ function Header(props) {
               </DropdownMenu>
             </Dropdown>
             <NavItem>
-              <Link to="#pablo" className="nav-link btn-rotate">
-                <i className="nc-icon nc-settings-gear-65" />
+              <Link to="/" className="nav-link btn-rotate">
+                <i className="nc-icon nc-button-power" onClick={()=>{localStorage.removeItem('token'); window.location.reload(true)}}/>
                 <p>
                   <span className="d-lg-none d-md-block">Account</span>
                 </p>
