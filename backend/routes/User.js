@@ -85,9 +85,15 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
 })
 
 // get all users
-router.get('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
+router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res)=> {
     try {
-        const users = await User.find({}, {password: 0});
+        let users = []
+        console.log(req.params.role);
+        if(req.params.role != 99)
+            users = await User.find({role: req.params.role}, {password: 0});
+        else    
+            users = await User.find({}, {password: 0});
+
         return res.status(200).json(users)
     } catch (error) {
         console.error(error);
@@ -106,5 +112,6 @@ router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)
         res.status(500).json({message: "Server Error"})
     }
 })
+
 
 module.exports = router

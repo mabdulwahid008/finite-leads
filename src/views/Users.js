@@ -9,8 +9,8 @@ import Loading from '../components/Loading/Loading'
 import ReactSelect from 'react-select'
 
 function Users() {
-    const [allUsers, setAllUsers] = useState(null)
-    const [saleAgents, setSaleAgents] = useState(allUsers)
+    const [saleAgents, setSaleAgents] = useState(null)
+    let userRole = 99
 
     const [deletePopup, setDeletePopup] = useState(false)
     const [agentToBeDeleted, setAgentToBeDeleted] = useState(null)
@@ -21,7 +21,7 @@ function Users() {
     const [agentToBeEdited, setAgentToBeEdited] = useState(null)
 
     const userRoles = [
-        {value: 10, label: 'All Users'},
+        {value: 99, label: 'All Users'},
         {value: 0, label: 'Sales Agent'},
         {value: 1, label: 'Markeing Agent'},
         {value: 2, label: 'Real Estate Agent'},
@@ -29,22 +29,17 @@ function Users() {
     ]
 
     const filterUsers = (role) => {
-        let filteredUsers = [];
-        if(role.value === 10)
-            filteredUsers = allUsers.filter((user)=> user.role !== role.value)
-        if(role.value === 0)
-            filteredUsers = allUsers.filter((user)=> user.role !== role.value)
-        if(role.value === 1)
-            filteredUsers = allUsers.filter((user)=> user.role === role.value)
-        if(role.value === 2)
-            filteredUsers = allUsers.filter((user)=> user.role === role.value)
-        if(role.value === 3)
-            filteredUsers = allUsers.filter((user)=> user.role === role.value)
-        
-        setSaleAgents(filteredUsers)
+        if(role.value === 99){
+            userRole = 99
+            setSaleAgents(null)
+            fetchUsers()
+        }
+        else{
+            userRole = role.value
+            setSaleAgents(null)
+            fetchUsers()
+        }
     }
-
-
     const onSubmitDeleteAgent = async() => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user/${agentToBeDeleted._id}`,{
             method: 'DELETE',
@@ -68,7 +63,7 @@ function Users() {
     }
 
     const fetchUsers = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user`,{
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user/${userRole}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -77,7 +72,7 @@ function Users() {
         })
         const res = await response.json()
         if(response.status === 200){
-            setAllUsers(res)
+            console.log(res);
             setSaleAgents(res)
         }
         else{
@@ -86,9 +81,13 @@ function Users() {
         
     }
 
+    useEffect(()=>{
+        
+    }, [saleAgents])
+
     useEffect(() => {
         fetchUsers()
-    }, [saleAgents, editAgent])
+    }, [editAgent])
     
   return (
     <div className='content'>
@@ -101,7 +100,7 @@ function Users() {
                             <Button onClick={()=> setAddNewAgent(true)}>Add New</Button>
                         </div>
                         <div style={{width:'20%'}}>
-                            <ReactSelect options={userRoles} placeholder="Filter by role" onChange={(role)=>filterUsers(role)}/>
+                            <ReactSelect options={userRoles} placeholder="Filter by role" onChange={(role)=>{filterUsers(role)}}/>
                         </div>
                     </CardHeader>
                     <CardBody>
