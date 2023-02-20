@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import ReactSelect from 'react-select'
 import Loading from '../Loading/Loading'
 
-function EditUser({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents }) {
+function EditUser({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents, fetchUsers }) {
     const [agentData, setAgentData] = useState(agentToBeEdited)
     const [agentRole, setAgentRole] = useState(null)
 
@@ -54,6 +54,7 @@ function EditUser({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents }) {
             const updatedAgent = { ...saleAgents[agentIndex], name: agentData.name, email: agentData.email, phone: agentData.phone};        
             const updatedAgents = [...saleAgents.slice(0, agentIndex), updatedAgent, ...saleAgents.slice(agentIndex + 1)];
             
+            fetchUsers()
             toast.success(res.message)
             setSaleAgents(updatedAgents);
             setEditAgent(false);

@@ -3,9 +3,11 @@ import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, In
 import { SALES } from '../variables/Sales'
 import ReactSelect from 'react-select'
 import { FaRegEdit, FaTrash } from "react-icons/fa";
+import MultiplierPopup from 'components/multiplierPopup/MultiplierPopup';
 
 function Sales() {
     const [sales, setsSles] = useState(SALES)
+    const [multiplierPopup, setMultiplierPopup] = useState(false)
     const [filterSales, setFilterSales] = useState({fromDate: from, toDate: to, type:''})
 
     
@@ -31,7 +33,7 @@ function Sales() {
                     <CardHeader style={{flexDirection:'column', alignItems:'flex-start'}}>
                         <div style={{display:"flex", justifyContent:'space-between', width:'100%'}}>
                             <CardTitle tag="h4">Sales</CardTitle>
-                            <Button>Add New</Button>
+                            <Button onClick={()=>setMultiplierPopup(true)}>Update Multiplier</Button>
                         </div>
 
                         <div style={{display:"flex", alignItems:"flex-end", gap:10, width:"50%",}}>
@@ -89,6 +91,7 @@ function Sales() {
                 </Card>
             </Col>
         </Row>
+        {multiplierPopup && <MultiplierPopup setMultiplierPopup={setMultiplierPopup}/>}
     </div>
   )
 }

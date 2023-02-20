@@ -51,11 +51,9 @@ function Users() {
         const res = await response.json()
         if(response.status === 200){
             toast.success(res.message)
-            // for frontend
-            const filteredAgents = saleAgents.filter((agent) => agent.id !== agentToBeDeleted._id)
-            setSaleAgents(filteredAgents)
+            setSaleAgents(null)
+            fetchUsers()
             setDeletePopup(false)
-            setAgentToBeDeleted(null)
         }
         else{
             toast.error(res.message)
@@ -72,7 +70,6 @@ function Users() {
         })
         const res = await response.json()
         if(response.status === 200){
-            console.log(res);
             setSaleAgents(res)
         }
         else{
@@ -120,7 +117,7 @@ function Users() {
                                     return <tr key={index}>
                                         <td>{index+1}</td>
                                         <td>{agent.name}</td>
-                                        <td>0{agent.phone}</td>
+                                        <td>{agent.phone}</td>
                                         <td>{agent.email}</td>
                                         <td>{agent.address}</td>
                                         <div className='actions'>
@@ -136,7 +133,7 @@ function Users() {
             </Col>
         </Row>
         {addNewAgent && <AddUser setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents}/>}
-        {editAgent && <EditUser setEditAgent={setEditAgent} agentToBeEdited={agentToBeEdited} saleAgents={saleAgents} setSaleAgents={setSaleAgents}/> }
+        {editAgent && <EditUser setEditAgent={setEditAgent} agentToBeEdited={agentToBeEdited} saleAgents={saleAgents} setSaleAgents={setSaleAgents} fetchUsers={fetchUsers}/> }
         {deletePopup && <DeletePopup setDeletePopup={setDeletePopup} agentToBeDeleted={agentToBeDeleted} setAgentToBeDeleted={setAgentToBeDeleted} onSubmitDeleteAgent={onSubmitDeleteAgent}/>}
     </div>
   )

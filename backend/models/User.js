@@ -11,7 +11,7 @@ const UserSchema = new Schema({
         require: true,
     },
     phone: {
-        type: Number,
+        type: String,
         require: true,
     },
     address: {
@@ -25,7 +25,7 @@ const UserSchema = new Schema({
         type: Number,
         default: 0
     },
-    date: {
+    created_at: {
         type: Date,
         default: Date.now
     }

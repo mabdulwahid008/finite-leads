@@ -45,7 +45,7 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req,res) => {
         const salt = bcrypt.genSaltSync(10)
         const encryptedPass = bcrypt.hashSync(password, salt)
 
-        User.create({
+        await User.create({
             name: name,
             phone: phone,
             email: email,
@@ -65,9 +65,12 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req,res) => {
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
     const { id, name, phone, email, address, role } = req.body;
     try {
+        if(req.user_role === 3)
+            return res.status(401).json({message: 'You don\'t have authorization for changing admin\'s data'})
+
         const user = await User.findOne({id: id})
         if(!user)
-            return res.status(401).json({message: 'User Not Fount'})
+            return res.status(404).json({message: 'User Not Fount'})
         
         user.name = name;
         user.email = email;
@@ -79,7 +82,7 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
 
         return res.status(200).json({message: 'Successfully Updated  user\'s data'})
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({message: "Server Error"})
     }
 })
@@ -96,7 +99,7 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res)=
 
         return res.status(200).json(users)
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({message: "Server Error"})
 
     }
@@ -108,7 +111,7 @@ router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)
         await User.deleteOne({_id: req.params.id})
         return res.status(200).json({message: 'User deleted successfully'})
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).json({message: "Server Error"})
     }
 })

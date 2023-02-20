@@ -26,6 +26,7 @@ import UserPage from "views/User.js";
 import UpgradeToPro from "views/Upgrade.js";
 import Users from "views/Users";
 import Sales from "views/Sales";
+import AddSale from "views/AddSale";
 
 var routes = [
   {
@@ -47,6 +48,13 @@ var routes = [
     name: "Sales",
     icon: "nc-icon nc-single-02",
     component: Sales,
+    layout: "/admin"
+  },
+  {
+    path: "/add-sale",
+    name: "Add Sale",
+    icon: "nc-icon nc-single-02",
+    component: AddSale,
     layout: "/admin"
   },
   {
