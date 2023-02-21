@@ -36,6 +36,7 @@ function AddSale() {
         const res = await response.json()
         if(response.status === 200){
             toast.success(res.message)
+            setSale({client_name: '',client_phone: '',client_address: '' })
         }
         else{
             toast.error(res.message)
@@ -69,7 +70,7 @@ function AddSale() {
     }
     useEffect(()=>{
         getAgents()
-    },[])
+    },[sale])
   return (
     <div className='content'>
         <Row>
@@ -85,13 +86,13 @@ function AddSale() {
                                 <Col md="6">
                                     <FormGroup>
                                         <label>Client Name *</label>
-                                        <Input type="text" name='client_name' required onChange={onChange}/>
+                                        <Input type="text" value={sale.client_name} name='client_name' required onChange={onChange}/>
                                     </FormGroup>
                                 </Col>
                                 <Col md="6">
                                     <FormGroup>
                                         <label>Client Phone *</label>
-                                        <Input type="number" name='client_phone' required onChange={onChange}/>
+                                        <Input type="number" value={sale.client_phone} name='client_phone' required onChange={onChange}/>
                                     </FormGroup>
                                 </Col>
                             </Row>
@@ -99,7 +100,7 @@ function AddSale() {
                                 <Col md="6">
                                     <FormGroup>
                                         <label>Client Address </label>
-                                        <Input type="text" name='client_address' onChange={onChange}/>
+                                        <Input type="text" value={sale.client_address} name='client_address' onChange={onChange}/>
                                     </FormGroup>
                                 </Col>
                                 {(userRole == 3 || userRole == 5) && <Col md="6">
