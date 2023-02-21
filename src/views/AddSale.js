@@ -54,7 +54,6 @@ function AddSale() {
         })
         const res = await response.json();
         if(response.status === 200){
-            console.log(res);
             let options = []
             for(let i = 0; i < res.length; i++){
                 const option = {

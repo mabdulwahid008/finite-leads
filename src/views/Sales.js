@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row, Table } from 'reactstrap'
 import { SALES } from '../variables/Sales'
 import ReactSelect from 'react-select'
 import { FaRegEdit, FaTrash } from "react-icons/fa";
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Loading from 'components/Loading/Loading';
 
 function Sales() {
-    const [sales, setsSles] = useState(SALES)
+    const [sales, setSales] = useState(null)
     const [filterSales, setFilterSales] = useState({fromDate: from, toDate: to, type:''})
 
     
@@ -22,7 +25,27 @@ function Sales() {
             filterSales.toDate = to
     } 
 
+    const fetchSales = async() => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale`,{
+            method: 'GET',
+            headers: {
+                'Content-Type' : 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            setSales(res)
+        }
+        else
+            toast.error(res.message)
+    }
+
     const options =[{id: 1, label: "hello"},{id: 2, label: "hello"}]
+
+    useEffect(()=>{
+        fetchSales()
+    }, [])
   return (
     <div className='content'>    
         <Row>
@@ -31,10 +54,10 @@ function Sales() {
                     <CardHeader style={{flexDirection:'column', alignItems:'flex-start'}}>
                         <div style={{display:"flex", justifyContent:'space-between', width:'100%'}}>
                             <CardTitle tag="h4">Sales</CardTitle>
-                            <Button onClick={()=>{}}>Add Sale</Button>
+                            <Link to='add-sale'><Button>Add Sale</Button></Link>
                         </div>
 
-                        <div style={{display:"flex", alignItems:"flex-end", gap:10, width:"50%",}}>
+                        {sales && <div style={{display:"flex", alignItems:"flex-end", gap:10, width:"50%",}}>
                             <Form>
                                 <Row style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-start', width:"120%"}}>
                                     <Col md="4">    
@@ -55,18 +78,21 @@ function Sales() {
                                     </Col>
                                 </Row>
                             </Form>
-                        </div>
+                        </div>}
                     </CardHeader>
                     <CardBody>
-                        <Table>
+                        {!sales && <Loading />}
+                        {sales && sales.length === 0 && <p>No sales yet</p>}
+                       {sales && sales.length !== 0 && <Table>
                             <thead>
-                                <th style={{width: '5%'}}>#</th>
-                                <th style={{width: '20%'}}>Client Name</th>
-                                <th style={{width: '15%'}}>Client Phone</th>
+                                <th style={{width: '3%'}}>#</th>
+                                <th style={{width: '10%'}}>Client Name</th>
+                                <th style={{width: '10%'}}>Client Phone</th>
                                 <th style={{width: '20%'}}>Client Address</th>
-                                <th style={{width: '15%'}}>Added On</th>
-                                <th style={{width: '20%'}}>Sale Agent</th>
-                                <th style={{width: '10%'}} className="text-right">Actions</th>
+                                <th style={{width: '12%'}}>Created On</th>
+                                <th style={{width: '10%'}}>Sale Agent</th>
+                                <th style={{width: '5%'}}>Bonus</th>
+                                <th style={{width: '8%'}} className="text-right">Actions</th>
                             </thead>
                             <tbody>
                                 {sales.map((sale, index)=>{
@@ -75,8 +101,9 @@ function Sales() {
                                         <td>{sale.client_name}</td>
                                         <td>{sale.client_phone}</td>
                                         <td>{sale.client_address}</td>
-                                        <td>{sale.date}</td>
-                                        <td>{sale.sale_agent_name}</td>
+                                        <td>{sale.create_at}</td>
+                                        <td>{sale.user_id.name}</td>
+                                        <td>{sale.multiplier * 1000}Rs</td>
                                         <div className='actions'>
                                             <FaRegEdit />
                                             <FaTrash />
@@ -84,7 +111,7 @@ function Sales() {
                                     </tr>
                                 })}
                             </tbody>
-                        </Table>
+                        </Table>}
                     </CardBody>
                 </Card>
             </Col>
