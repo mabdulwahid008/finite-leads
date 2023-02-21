@@ -65,8 +65,8 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req,res) => {
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
     const { id, name, phone, email, address, role } = req.body;
     try {
-        if(req.user_role === 3)
-            return res.status(401).json({message: 'You don\'t have authorization for changing admin\'s data'})
+        // if(req.user_role === 3)
+        //     return res.status(401).json({message: 'You don\'t have authorization for changing admin\'s data'})
 
         const user = await User.findOne({id: id})
         if(!user)

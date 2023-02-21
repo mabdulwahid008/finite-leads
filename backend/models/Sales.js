@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const moment = require("moment-timezone")
+
+const date = moment.tz(Date.now(), "America/Los_Angeles");
+const losAngelesTZ =  `${date.year()}-${date.month()+1}-${date.date()}/${date.hour()}:${date.minute()}`
+
 
 const SaleSchema = new Schema({
     user_id:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
+        ref: 'User'
     },
     client_name: {
         type: String,
@@ -20,12 +25,12 @@ const SaleSchema = new Schema({
         default: 1,
     },
     create_at: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: losAngelesTZ
     },
     updated_at: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: losAngelesTZ
     }
 })
 

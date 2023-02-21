@@ -27,6 +27,7 @@ import UpgradeToPro from "views/Upgrade.js";
 import Users from "views/Users";
 import Sales from "views/Sales";
 import AddSale from "views/AddSale";
+import AgentSalesListing from "views/AgentSalesListing";
 
 var routes = [
   {
@@ -62,6 +63,13 @@ var routes = [
     name: "Icons",
     icon: "nc-icon nc-diamond",
     component: Icons,
+    layout: "/admin"
+  },
+  {
+    path: "/my-sales",
+    name: "My Sales",
+    icon: "nc-icon nc-diamond",
+    component: AgentSalesListing,
     layout: "/admin"
   },
 //   {

@@ -3,6 +3,7 @@ const router = express.Router();
 const authorization = require("../middleware/authorization");
 const Sales = require("../models/Sales");
 const masterOrAdminAuthorization = require("../middleware/masterOrAdminAuthorization");
+const moment = require("moment-timezone")
 
 // create sale
 router.post('/', authorization, async(req, res)=>{
@@ -20,6 +21,7 @@ router.post('/', authorization, async(req, res)=>{
                 client_address : client_address,
                 client_phone : client_phone,
             })
+        // for admin to add sale for user
         else
             await Sales.create({
                 user_id : user_id,
@@ -34,8 +36,28 @@ router.post('/', authorization, async(req, res)=>{
     }
 })
 
+// edit sale
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
+})
 
+router.get('/mysales', authorization, async(req, res)=> {
+    try {
+        const date = moment.tz(Date.now(), "America/Los_Angeles");
+        const startDate =  `${date.year()}-${date.month()+1}-1}/0}:0}`
+        const endDate =  `${date.year()}-${date.month()+1}-31}/0}:0}`
+
+        const sales = await Sales.find({
+            user_id: req.user_id,
+            create_at: {
+                $gte: startDate,
+                $lt: endDate,
+              }
+        }).populate("user_id", "name")
+        return res.status(200).json(sales)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server Error'})
+    }
 })
 
 
