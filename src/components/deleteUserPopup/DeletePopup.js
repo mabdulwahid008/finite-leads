@@ -14,7 +14,7 @@ function DeletePopup({ setDeletePopup, agentToBeDeleted, setAgentToBeDeleted, on
             </CardHeader>
             <CardBody>
                 <p>Deleting {agentToBeDeleted.name}</p>
-                <Button color='danger' style={{width:'100%'}} onClick={onSubmitDeleteAgent}>Delete</Button>
+                <Button className='btn-danger' style={{width:'100%'}} onClick={onSubmitDeleteAgent}>Delete</Button>
             </CardBody>
         </Card>
     </div>

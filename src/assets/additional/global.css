@@ -15,6 +15,10 @@ button:hover,
 button:active{
     background-color: var(--logoDarkColor) !important;
 }
+.btn-danger{
+    background-color: var(--dangerColor) !important;
+}
+
 .active,
 .active > a > i{
     color: var(--logoColor) !important

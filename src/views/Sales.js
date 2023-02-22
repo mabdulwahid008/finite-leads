@@ -6,10 +6,18 @@ import { FaRegEdit, FaTrash } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Loading from 'components/Loading/Loading';
+import EditSalePopup from 'components/editSalePopup/EditSalePopup';
+import DeleteSalePopup from 'components/deleteSalePopup/DeleteSalePopup';
 
 function Sales() {
     const [sales, setSales] = useState(null)
     const [filterSales, setFilterSales] = useState({fromDate: from, toDate: to, type:''})
+
+    const [editSalePopup, setEditSalePopup] = useState(false)
+    const [saleToBeEdited, setSaleToBeEdited] = useState(null)
+
+    const [deleteSalePopup, setDeleteSalePopup] = useState(false)
+    const [saleToBeDeleted, setSaleToBeDeleted] = useState(null)
 
     
     const from = `${new Date().getFullYear()}-${new Date().getMonth()+1}-1`
@@ -45,7 +53,7 @@ function Sales() {
 
     useEffect(()=>{
         fetchSales()
-    }, [])
+    }, [editSalePopup, deleteSalePopup])
   return (
     <div className='content'>    
         <Row>
@@ -105,8 +113,8 @@ function Sales() {
                                         <td>{sale.user_id.name}</td>
                                         <td>{sale.multiplier * 1000}Rs</td>
                                         <div className='actions'>
-                                            <FaRegEdit />
-                                            <FaTrash />
+                                            <FaRegEdit onClick={()=> {setSaleToBeEdited(sale); setEditSalePopup(true)}}/>
+                                            <FaTrash onClick={()=>{setDeleteSalePopup(true); setSaleToBeDeleted(sale)}}/>
                                         </div>
                                     </tr>
                                 })}
@@ -116,6 +124,8 @@ function Sales() {
                 </Card>
             </Col>
         </Row>
+        {editSalePopup && <EditSalePopup saleToBeEdited={saleToBeEdited} setSaleToBeEdited={setSaleToBeEdited} setEditSalePopup={setEditSalePopup}/>}
+        {deleteSalePopup && <DeleteSalePopup saleToBeDeleted={saleToBeDeleted} setSaleToBeDeleted={setSaleToBeDeleted} setDeleteSalePopup={setDeleteSalePopup}/>}
     </div>
   )
 }

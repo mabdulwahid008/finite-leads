@@ -10,8 +10,8 @@ const moment = require("moment-timezone")
 router.get('/mysales', authorization, async(req, res)=> {
     try {
         const date = moment.tz(Date.now(), "America/Los_Angeles");
-        const startDate =  `${date.year()}-${date.month()+1}-1/0:0}`
-        const endDate =  `${date.year()}-${date.month()+1}-31/0:0}`
+        const startDate =  `${date.year()}-${date.month()+1}-1`
+        const endDate =  `${date.year()}-${date.month()+1}-31`
         
         const sales = await Sales.find({
             user_id: req.user_id,
@@ -28,6 +28,7 @@ router.get('/mysales', authorization, async(req, res)=> {
     }
 })
 
+// admin or master get all sales
 router.get('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
     try {
         const sales = await Sales.find({}).populate("user_id", "name")
@@ -40,9 +41,36 @@ router.get('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
 
 // edit sale
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
+    const {_id, client_name, client_phone, client_address, multiplier} = req.body;
+    try {
+        const sale = await Sales.findOne({_id: _id})
+
+        sale.client_name = client_name;
+        sale.client_phone = client_phone;
+        sale.client_address = client_address;
+        sale.multiplier = multiplier;
+
+        await sale.save();
+
+        return res.status(200).json({message: 'Sale updated'})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server Error'})
+    }
 })
 
-// edit sale
+// delete sale
+router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)=>{
+    try {
+        await Sales.deleteOne({_id: req.params.id})
+        return res.status(200).json({message: 'Sale deleted successfully'})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+// Adding sale
 router.post('/', authorization, async(req, res)=>{
     const { client_name, client_phone, client_address, user_id } = req.body;
     try {
