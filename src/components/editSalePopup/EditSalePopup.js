@@ -3,7 +3,7 @@ import { Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input }
 import { RxCross1 } from 'react-icons/rx'
 import { toast } from 'react-toastify'
 
-function EditSalePopup({ saleToBeEdited, setSaleToBeEdited, setEditSalePopup }) {
+function EditSalePopup({ saleToBeEdited, setSaleToBeEdited, setEditSalePopup, setRefresh }) {
     const [sale, setSale] = useState(saleToBeEdited)
     const [loading, setLoading] = useState(false)
 
@@ -33,6 +33,7 @@ function EditSalePopup({ saleToBeEdited, setSaleToBeEdited, setEditSalePopup }) 
         if(response.status === 200){
             toast.success(res.message);
             setEditSalePopup(false)
+            setRefresh(true)
         }
         else
             toast.error(res.message)

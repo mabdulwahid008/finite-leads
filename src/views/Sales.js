@@ -11,7 +11,9 @@ import DeleteSalePopup from 'components/deleteSalePopup/DeleteSalePopup';
 
 function Sales() {
     const [sales, setSales] = useState(null)
+
     const [filterSale, setFilterSale] = useState({fromDate: 0, toDate: 0, agentId: 0})
+    const [defaultfilterSale, setDefaultFilterSale] = useState({fromDate: 0, toDate: 0, agentId: {value: 0, label: 'Select'}})
 
     const [editSalePopup, setEditSalePopup] = useState(false)
     const [saleToBeEdited, setSaleToBeEdited] = useState(null)
@@ -21,16 +23,31 @@ function Sales() {
 
     const [saleAgents, setSaleAgents] = useState(null)
 
+    const [totalBonus, setTotalBonus] = useState(0)
+
+    const [refresh, setRefresh] = useState(false)
+
    const filterSales = () => {
        if((filterSale.fromDate === 0 && filterSale.toDate !== 0) || (filterSale.fromDate !== 0 && filterSale.toDate === 0)){
             toast.error('Please select correct date filter')
             return;
         }
-        // if(filterSale.toDate[0])
-        // console.log(filterSale);
+
         setSales(null)
         fetchSales()
-   } 
+        setFilterSale({fromDate: 0, toDate: 0, agentId: 0})
+   }
+
+   const culateBonus = () => {
+       let _totalBonus = 0;
+
+       if(sales){
+            for (let i = 0; i < sales.length; i++) {
+                _totalBonus += sales[i].multiplier * 1000
+            }
+            setTotalBonus(_totalBonus)
+    }
+   }
    
     const fetchSalesAgnets = async() => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user`,{
@@ -83,9 +100,14 @@ function Sales() {
     }
 
     useEffect(()=>{
+        culateBonus();
+    },[sales])
+    useEffect(()=>{
+        setRefresh(false)
+
         fetchSales();
         fetchSalesAgnets()
-    }, [editSalePopup, deleteSalePopup])
+    }, [refresh])
   return (
     <div className='content'>    
         <Row>
@@ -99,10 +121,10 @@ function Sales() {
 
                         {sales && <div style={{display:"flex", alignItems:"flex-end", gap:10, width:"50%",}}>
                             <Form>
-                                <Row style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-start', width:"150%"}}>
-                                    <Col md="4">
+                                <Row style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-end', width:"150%"}}>
+                                    <Col md="4" style={{marginBottom: 10}}>
                                         <label>Sale Agent</label>
-                                        <ReactSelect options={saleAgents} onChange={(option) => filterSale.agentId = option.value}/>
+                                        <ReactSelect options={saleAgents} defaultValue={defaultfilterSale.agentId} onChange={(option) => {filterSale.agentId = option.value; defaultfilterSale.agentId = option}}/>
                                     </Col>
                                     <Col md="3" style={{paddingLeft:0, paddingRight:15}}>    
                                         <FormGroup>
@@ -159,8 +181,25 @@ function Sales() {
                 </Card>
             </Col>
         </Row>
-        {editSalePopup && <EditSalePopup saleToBeEdited={saleToBeEdited} setSaleToBeEdited={setSaleToBeEdited} setEditSalePopup={setEditSalePopup}/>}
-        {deleteSalePopup && <DeleteSalePopup saleToBeDeleted={saleToBeDeleted} setSaleToBeDeleted={setSaleToBeDeleted} setDeleteSalePopup={setDeleteSalePopup}/>}
+        <Row>
+            <Col md="8">
+            </Col>
+            <Col md="4">
+                <Card>
+                    <CardHeader>
+                        <CardTitle tag="h5">Bonus</CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                        <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center', marginBottom:-10}}>
+                            <p>Total bonus: </p>
+                            <p>{totalBonus} Rs</p>
+                        </div>
+                    </CardBody>
+                </Card>
+            </Col>
+        </Row>
+        {editSalePopup && <EditSalePopup saleToBeEdited={saleToBeEdited} setSaleToBeEdited={setSaleToBeEdited} setEditSalePopup={setEditSalePopup} setRefresh={setRefresh}/>}
+        {deleteSalePopup && <DeleteSalePopup saleToBeDeleted={saleToBeDeleted} setSaleToBeDeleted={setSaleToBeDeleted} setDeleteSalePopup={setDeleteSalePopup} setRefresh={setRefresh}/>}
     </div>
   )
 }

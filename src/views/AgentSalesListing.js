@@ -16,7 +16,21 @@ function AgentSalesListing() {
             let _monthlyBonus = 0;
 
             const date = moment.tz(Date.now(), "America/Los_Angeles");
-            const dateToday =  `${date.year()}-${date.month()+1}-${date.date()}`
+            let dateToday =  `${date.year()}-${date.month()+1}-${date.date()}`
+
+            if((date.month()+1) <= 9){
+                if(date.date() <= 9)
+                    dateToday = `${date.year()}-0${date.month()+1}-0${date.date()}`
+                else
+                    dateToday = `${date.year()}-0${date.month()+1}-${date.date()}`
+            }
+            
+            if(date.date() <= 9){
+                if((date.month()+1) <= 9)
+                    dateToday = `${date.year()}-0${date.month()+1}-0${date.date()}`
+                else
+                    dateToday = `${date.year()}-${date.month()+1}-0${date.date()}`
+            }
             
             const todaySales = mySales.filter((sale)=> sale.create_at.includes(dateToday))
 

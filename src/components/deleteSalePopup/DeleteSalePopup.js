@@ -3,7 +3,7 @@ import { RxCross1 } from 'react-icons/rx'
 import { toast } from 'react-toastify'
 import { Button, Card, CardBody, CardHeader, CardTitle } from 'reactstrap'
 
-function DeleteSalePopup({ saleToBeDeleted, setSaleToBeDeleted, setDeleteSalePopup}) {
+function DeleteSalePopup({ saleToBeDeleted, setSaleToBeDeleted, setDeleteSalePopup, setRefresh}) {
 
   const [loading, setLoading] = useState(false)
 
@@ -20,6 +20,7 @@ function DeleteSalePopup({ saleToBeDeleted, setSaleToBeDeleted, setDeleteSalePop
     if(response.status === 200){
       toast.success(res.message)
       setDeleteSalePopup(false)
+      setRefresh(true)
     }
     else
       toast.error(res.message)

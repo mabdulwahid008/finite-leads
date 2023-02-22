@@ -10,8 +10,13 @@ const moment = require("moment-timezone")
 router.get('/mysales', authorization, async(req, res)=> {
     try {
         const date = moment.tz(Date.now(), "America/Los_Angeles");
-        const startDate =  `${date.year()}-${date.month()+1}-1`
-        const endDate =  `${date.year()}-${date.month()+1}-31`
+        let startDate =  `${date.year()}-${date.month()+1}-1`
+        let endDate =  `${date.year()}-${date.month()+1}-31`
+
+        if((date.month()+1) <= 9){
+            startDate =  `${date.year()}-0${date.month()+1}-1`
+            endDate =  `${date.year()}-0${date.month()+1}-31`
+        }
         
         const sales = await Sales.find({
             user_id: req.user_id,
@@ -40,15 +45,15 @@ router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorizat
             sales = await Sales.find({user_id: req.params.agentId}).populate("user_id", "name")
         }
         // // within time period sales of specific agent
-        // else if(req.params.agentId !== 0 && req.params.fromDate !== 0 && req.params.toDate !== 0){
-        //     sales = await Sales.find({
-        //         user_id : req.params.agentId,
-        //         create_at: {
-        //             $gte : req.params.fromDate,
-        //             $lt : req.params.toDate
-        //         }
-        //     })
-        // }
+        else if(req.params.agentId != 0 && req.params.fromDate != 0 && req.params.toDate != 0){
+            sales = await Sales.find({
+                user_id : req.params.agentId,
+                create_at: {
+                    $gte : req.params.fromDate,
+                    $lt : req.params.toDate
+                }
+            }).populate("user_id", "name")
+        }
         // all sales within time perios
         else if(req.params.agentId == 0 && req.params.fromDate != 0 && req.params.toDate != 0){
             sales = await Sales.find({
@@ -56,9 +61,10 @@ router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorizat
                     $gte : req.params.fromDate,
                     $lt : req.params.toDate
                 }
-            })
+            }).populate("user_id", "name")
         }
         else {}
+        // console.log(req.params.fromDate, " ", req.params.toDate);
         return res.status(200).json(sales)
     } catch (error) {
         console.log(error);

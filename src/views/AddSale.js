@@ -15,6 +15,7 @@ function AddSale() {
     const onChange = (e) => {
         setSale({...sale, [e.target.name]: e.target.value})
     }
+    
     const onSubmit = async(e) => {
         e.preventDefault()
         setLoading(true)
@@ -23,6 +24,13 @@ function AddSale() {
             setLoading(false)
             return;
         }
+        const adminOrMaster = localStorage.getItem('userRole')
+        if((adminOrMaster == 3 || adminOrMaster == 5) && user_id === null){
+            toast.error('Select sales agent')
+            setLoading(false)
+            return;
+        }
+
         sale.user_id = user_id
         
         const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale`,{
