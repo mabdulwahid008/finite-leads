@@ -106,12 +106,12 @@ function AgentSalesListing() {
                         <CardTitle tag="h5">Bonus</CardTitle>
                     </CardHeader>
                     <CardBody>
-                        <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center', marginBottom:-20}}>
+                        <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center', marginTop: -10, marginBottom:-20}}>
                             <p>Today's bonus: </p>
                             <p>{dailyBonus} Rs</p>
                         </div>
                         <hr />
-                        <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center'}}>
+                        <div style={{display: 'flex', justifyContent:'space-between', alignItems: 'center', marginBottom:-10}}>
                             <p>Monthly bonus: </p>
                             <p>{monthlyBonus} Rs</p>
                         </div>

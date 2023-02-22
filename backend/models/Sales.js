@@ -3,7 +3,21 @@ const { Schema } = mongoose;
 const moment = require("moment-timezone")
 
 const date = moment.tz(Date.now(), "America/Los_Angeles");
-const losAngelesTZ =  `${date.year()}-${date.month()+1}-${date.date()}/${date.hour()}:${date.minute()}`
+let losAngelesTZ = ''
+
+if((date.month()+1) <= 9){
+    if(date.date() <= 9)
+        losAngelesTZ = `${date.year()}-0${date.month()+1}-0${date.date()}/${date.hour()}:${date.minute()}`
+    else
+        losAngelesTZ = `${date.year()}-0${date.month()+1}-${date.date()}/${date.hour()}:${date.minute()}`
+}
+
+if(date.date() <= 9){
+    if((date.month()+1) <= 9)
+        losAngelesTZ = `${date.year()}-0${date.month()+1}-0${date.date()}/${date.hour()}:${date.minute()}`
+    else
+        losAngelesTZ = `${date.year()}-${date.month()+1}-0${date.date()}/${date.hour()}:${date.minute()}`
+}
 
 
 const SaleSchema = new Schema({

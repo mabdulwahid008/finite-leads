@@ -29,9 +29,36 @@ router.get('/mysales', authorization, async(req, res)=> {
 })
 
 // admin or master get all sales
-router.get('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
+router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorization, async(req, res)=>{
     try {
-        const sales = await Sales.find({}).populate("user_id", "name")
+        let sales = [];
+        // default call
+        if(req.params.agentId == 0 && req.params.fromDate == 0 && req.params.toDate == 0)
+            sales = await Sales.find({}).populate("user_id", "name")
+        // all sales of specific agent
+        else if(req.params.agentId != 0 && req.params.fromDate == 0 && req.params.toDate == 0){
+            sales = await Sales.find({user_id: req.params.agentId}).populate("user_id", "name")
+        }
+        // // within time period sales of specific agent
+        // else if(req.params.agentId !== 0 && req.params.fromDate !== 0 && req.params.toDate !== 0){
+        //     sales = await Sales.find({
+        //         user_id : req.params.agentId,
+        //         create_at: {
+        //             $gte : req.params.fromDate,
+        //             $lt : req.params.toDate
+        //         }
+        //     })
+        // }
+        // all sales within time perios
+        else if(req.params.agentId == 0 && req.params.fromDate != 0 && req.params.toDate != 0){
+            sales = await Sales.find({
+                create_at: {
+                    $gte : req.params.fromDate,
+                    $lt : req.params.toDate
+                }
+            })
+        }
+        else {}
         return res.status(200).json(sales)
     } catch (error) {
         console.log(error);

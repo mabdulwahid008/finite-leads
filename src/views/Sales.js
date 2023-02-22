@@ -11,7 +11,7 @@ import DeleteSalePopup from 'components/deleteSalePopup/DeleteSalePopup';
 
 function Sales() {
     const [sales, setSales] = useState(null)
-    const [filterSales, setFilterSales] = useState({fromDate: from, toDate: to, type:''})
+    const [filterSale, setFilterSale] = useState({fromDate: 0, toDate: 0, agentId: 0})
 
     const [editSalePopup, setEditSalePopup] = useState(false)
     const [saleToBeEdited, setSaleToBeEdited] = useState(null)
@@ -19,22 +19,55 @@ function Sales() {
     const [deleteSalePopup, setDeleteSalePopup] = useState(false)
     const [saleToBeDeleted, setSaleToBeDeleted] = useState(null)
 
-    
-    const from = `${new Date().getFullYear()}-${new Date().getMonth()+1}-1`
-    const to =`${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
+    const [saleAgents, setSaleAgents] = useState(null)
+
+   const filterSales = () => {
+       if((filterSale.fromDate === 0 && filterSale.toDate !== 0) || (filterSale.fromDate !== 0 && filterSale.toDate === 0)){
+            toast.error('Please select correct date filter')
+            return;
+        }
+        // if(filterSale.toDate[0])
+        // console.log(filterSale);
+        setSales(null)
+        fetchSales()
+   } 
+   
+    const fetchSalesAgnets = async() => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json();
+        if(response.status === 200){
+            let options = [{value:0, label: 'All Agents'}]
+            for(let i = 0; i < res.length; i++){
+                const option = {
+                    value: res[i]._id,
+                    label: res[i].name
+                }
+                options.push(option)
+            }
+            setSaleAgents(options)
+        }
+        else
+            toast.error(res.message)
+    }
 
     const onChange = ( e ) => {
         if(e.target.value !== '')
-            setFilterSales({...filterSales, [e.target.name]: e.target.value})
+            setFilterSale({...filterSale, [e.target.name]: e.target.value})
         if(e.target.name === 'fromDate' && e.target.value === ''){
-            filterSales.fromDate = from
+            filterSale.fromDate = 0
         }
-        if(e.target.name ==+ 'toDate' && e.target.value === '')
-            filterSales.toDate = to
+        if(e.target.name === 'toDate' && e.target.value === '')
+            filterSale.toDate = 0
     } 
 
     const fetchSales = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale`,{
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale/${filterSale.fromDate}/${filterSale.toDate}/${filterSale.agentId}`,{
             method: 'GET',
             headers: {
                 'Content-Type' : 'Application/json',
@@ -49,10 +82,9 @@ function Sales() {
             toast.error(res.message)
     }
 
-    const options =[{id: 1, label: "hello"},{id: 2, label: "hello"}]
-
     useEffect(()=>{
-        fetchSales()
+        fetchSales();
+        fetchSalesAgnets()
     }, [editSalePopup, deleteSalePopup])
   return (
     <div className='content'>    
@@ -67,22 +99,25 @@ function Sales() {
 
                         {sales && <div style={{display:"flex", alignItems:"flex-end", gap:10, width:"50%",}}>
                             <Form>
-                                <Row style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-start', width:"120%"}}>
-                                    <Col md="4">    
+                                <Row style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-start', width:"150%"}}>
+                                    <Col md="4">
+                                        <label>Sale Agent</label>
+                                        <ReactSelect options={saleAgents} onChange={(option) => filterSale.agentId = option.value}/>
+                                    </Col>
+                                    <Col md="3" style={{paddingLeft:0, paddingRight:15}}>    
                                         <FormGroup>
                                             <label>From</label>
                                             <Input type='date' name="fromDate" onChange={onChange}/>
                                         </FormGroup>
                                     </Col>
-                                    <Col md="4" style={{paddingLeft:0, paddingRight:15}}>    
+                                    <Col md="3" style={{paddingLeft: 0}}>    
                                         <FormGroup>
                                             <label>To</label>
                                             <Input type='date' name="toDate" onChange={onChange}/>
                                         </FormGroup>
                                     </Col>
-                                    <Col md="4" style={{paddingLeft: 0}}>
-                                        <label>User</label>
-                                        <ReactSelect options={options}/>
+                                    <Col md="2" style={{paddingLeft: 0}}>
+                                        <Button onClick={filterSales}>Filter</Button>
                                     </Col>
                                 </Row>
                             </Form>
