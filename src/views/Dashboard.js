@@ -16,7 +16,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 // react plugin used to create charts
 import { Line, Pie } from "react-chartjs-2";
 // reactstrap components
@@ -51,6 +51,26 @@ function Dashboard() {
   const [dailySales, setDailySales] = useState(0)
   const [monthlySales, setMonthlySales] = useState(0)
 
+  const [refresh, setRefresh] = useState(false)
+
+  const stats = useCallback(() => {
+   return {  
+       labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
+      datasets: [
+        {
+          data: [0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          fill: false,
+          borderColor: "#fbc658",
+          backgroundColor: "transparent",
+          pointBorderColor: "#fbc658",
+          pointRadius: 4,
+          pointHoverRadius: 4,
+          pointBorderWidth: 8,
+          tension: 0.4
+        }]
+    }  
+  }, [refresh])
+
 
   // for admin or master 
   const calculateStats = () => {
@@ -81,15 +101,21 @@ function Dashboard() {
           const todaySales = sales.filter((sale)=> sale.create_at.includes(dateToday))
 
           for (let i = 0; i < todaySales.length; i++) {
+            if(todaySales[i].updated_multiplier)
+              _dailyBonus += todaySales[i].updated_multiplier * 1000
+            else
               _dailyBonus += todaySales[i].multiplier * 1000
-              _dailySales += 1
+            _dailySales += 1
           }
           setDailyBonus(_dailyBonus)
           setDailySales(_dailySales)
 
           for (let i = 0; i < sales.length; i++) {
+            if(sales[i].updated_multiplier)
+              _totalBonus += sales[i].updated_multiplier * 1000;
+            else
               _totalBonus += sales[i].multiplier * 1000;
-              _monthlySales +=1
+            _monthlySales +=1
 
           }
           setMonthlyBonus(_totalBonus)
@@ -162,15 +188,21 @@ function Dashboard() {
           const todaySales = mySales.filter((sale)=> sale.create_at.includes(dateToday))
 
           for (let i = 0; i < todaySales.length; i++) {
+            if(todaySales[i].updated_multiplier)
+              _dailyBonus += todaySales[i].updated_multiplier * 1000
+            else
               _dailyBonus += todaySales[i].multiplier * 1000
-              _dailySales += 1
+            _dailySales += 1
           }
           setDailyBonus(_dailyBonus)
           setDailySales(_dailySales)
 
           for (let i = 0; i < mySales.length; i++) {
+            if(mySales[i].updated_multiplier)
+              _monthlyBonus += mySales[i].updated_multiplier * 1000
+            else
               _monthlyBonus += mySales[i].multiplier * 1000
-              _monthlySales += 1
+            _monthlySales += 1
           }
           setMonthlyBonus(_monthlyBonus)
           setMonthlySales(_monthlySales)
@@ -207,8 +239,9 @@ function Dashboard() {
     })
     const res = await response.json();
     if(response.status === 200){
-      console.log(res);
-    }
+      // stats(res.data)
+      setRefresh(true)
+     }
     else{
       toast.error(res.message)
     }
@@ -230,6 +263,12 @@ function Dashboard() {
     }
     fetchStats()
   },[])
+
+  useEffect(()=>{
+    // console.log(stats);
+    // console.log();
+    // console.log(dashboardNASDAQChart.data);
+  }, [stats])
 
   return (
     <>
@@ -411,8 +450,7 @@ function Dashboard() {
               </CardBody>
               <CardFooter>
                 <div className="chart-legend">
-                  <i className="fa fa-circle text-info" /> Tesla Model S{" "}
-                  <i className="fa fa-circle text-warning" /> BMW 5 Series
+                  <i className="fa fa-circle text-warning" /> Sales
                 </div>
                 <hr />
                 <div className="card-stats">

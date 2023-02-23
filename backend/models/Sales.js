@@ -38,6 +38,10 @@ const SaleSchema = new Schema({
         type: Number,
         default: 1,
     },
+    updated_multiplier: {
+        type: Number,
+        default: null,
+    },
     create_at: {
         type: String,
         default: losAngelesTZ

@@ -149,25 +149,12 @@ const dashboardEmailStatisticsChart = {
 };
 
 const dashboardNASDAQChart = {
-  data: (canvas) => {
+  data: () => {
     return {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ],
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
       datasets: [
         {
-          data: [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200],
+          data: [0, 6],
           fill: false,
           borderColor: "#fbc658",
           backgroundColor: "transparent",

@@ -77,12 +77,16 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
     const {_id, client_name, client_phone, client_address, multiplier} = req.body;
     try {
         const sale = await Sales.findOne({_id: _id})
-
+        
         sale.client_name = client_name;
         sale.client_phone = client_phone;
         sale.client_address = client_address;
-        sale.multiplier = multiplier;
 
+        if(sale.multiplier !== multiplier)
+            sale.updated_multiplier = multiplier
+        else
+            sale.multiplier = multiplier;
+        
         await sale.save();
 
         return res.status(200).json({message: 'Sale updated'})
@@ -112,7 +116,7 @@ router.post('/', authorization, async(req, res)=>{
             return res.status(422).json({message: 'Duplicate Sale'})
 
         const date = moment.tz(Date.now(), "America/Los_Angeles");
-        const todayDate =  `${date.year()}-${date.month()+1}-${date.date()}`
+        const todayDate =  `${date.year()}-${date.month()+1 <= 9? `0${date.month()+1}`: `${date.month()+1}`}-${date.date()}`
         
         // getting user sales
         const userSales = await Sales.find({user_id : user_id ? user_id : req.user_id})

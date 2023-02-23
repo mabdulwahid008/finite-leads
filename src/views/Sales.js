@@ -42,7 +42,10 @@ function Sales() {
 
        if(sales){
             for (let i = 0; i < sales.length; i++) {
-                _totalBonus += sales[i].multiplier * 1000
+                if(sales[i].updated_multiplier)
+                    _totalBonus += sales[i].updated_multiplier * 1000
+                else
+                    _totalBonus += sales[i].multiplier * 1000
             }
             setTotalBonus(_totalBonus)
     }
@@ -167,7 +170,7 @@ function Sales() {
                                         <td>{sale.client_address}</td>
                                         <td>{sale.create_at}</td>
                                         <td>{sale.user_id.name}</td>
-                                        <td>{sale.multiplier * 1000}Rs</td>
+                                        <td>{sale.updated_multiplier? sale.updated_multiplier * 1000 : sale.multiplier * 1000}Rs</td>
                                         <div className='actions'>
                                             <FaRegEdit onClick={()=> {setSaleToBeEdited(sale); setEditSalePopup(true)}}/>
                                             <FaTrash onClick={()=>{setDeleteSalePopup(true); setSaleToBeDeleted(sale)}}/>

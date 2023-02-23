@@ -35,12 +35,18 @@ function AgentSalesListing() {
             const todaySales = mySales.filter((sale)=> sale.create_at.includes(dateToday))
 
             for (let i = 0; i < todaySales.length; i++) {
-                _dailyBonus += todaySales[i].multiplier * 1000
+                if(todaySales[i].updated_multiplier)
+                    _dailyBonus += todaySales[i].updated_multiplier * 1000
+                else
+                    _dailyBonus += todaySales[i].multiplier * 1000
             }
             setDailyBonus(_dailyBonus)
 
             for (let i = 0; i < mySales.length; i++) {
-                _monthlyBonus += mySales[i].multiplier * 1000
+                if(mySales[i].updated_multiplier)
+                    _monthlyBonus += mySales[i].updated_multiplier * 1000
+                else
+                    _monthlyBonus += mySales[i].multiplier * 1000
             }
             setMonthlyBonus(_monthlyBonus)
             
@@ -102,7 +108,7 @@ function AgentSalesListing() {
                                         <td>{sale.client_phone}</td>
                                         <td>{sale.client_address}</td>
                                         <td>{sale.create_at}</td>
-                                        <td className="text-right">{sale.multiplier * 1000} Rs</td>
+                                        <td className="text-right">{sale.updated_multiplier? sale.updated_multiplier * 1000 : sale.multiplier * 1000} Rs</td>
                                     </tr>
                                 })}
                             </tbody>
