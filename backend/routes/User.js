@@ -105,6 +105,32 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res)=
     }
 })
 
+// Get user details
+router.post('/getdetails', async(req, res)=>{
+    try {
+        const user = await User.findOne({email: req.body.email})
+        if(user)
+            return res.status(422).json({message: 'User with this email exisis'})
+
+        const salt = bcrypt.genSaltSync(10)
+        const encryptedPass = bcrypt.hashSync(req.body.password, salt)
+        
+        await User.create({
+            name: req.body.name,
+            phone: req.body.phone,
+            email: req.body.email,
+            address: req.body.address,
+            password: encryptedPass,
+            role: req.body.role
+        })
+
+        return res.status(200).json({message: 'Success'})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: "Server Error"})
+    }
+})
+
 // deleteUser
 router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)=> {
     try {
@@ -126,6 +152,7 @@ router.get('/', authorization, async(req, res)=>{
         return res.status(500).json({message: 'Server Error'})
     }
 })
+
 
 
 module.exports = router

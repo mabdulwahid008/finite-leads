@@ -434,7 +434,7 @@ function Dashboard() {
             <Card className="card-chart">
               <CardHeader>
                 <CardTitle tag="h5">Statistics</CardTitle>
-                <p className="card-category">Line Chart with Points</p>
+                <p className="card-category">Monthly Sales Stats</p>
               </CardHeader>
               <CardBody>
                <Line
