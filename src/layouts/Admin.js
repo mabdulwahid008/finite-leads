@@ -44,9 +44,11 @@ function Dashboard(props) {
         <DemoNavbar {...props} />
         <Switch>
           {routes.map((prop, key) => {
+            if(prop.role.some((role)=> role == localStorage.getItem('userRole')))
             return (
               <Route
-                path={prop.layout + prop.path}
+                path={prop.path}
+                // path={prop.layout + prop.path}
                 component={prop.component}
                 key={key}
               />

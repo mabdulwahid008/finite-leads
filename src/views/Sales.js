@@ -35,7 +35,6 @@ function Sales() {
 
         setSales(null)
         fetchSales()
-        setFilterSale({fromDate: 0, toDate: 0, agentId: 0})
    }
 
    const culateBonus = () => {
@@ -129,13 +128,13 @@ function Sales() {
                                     <Col md="3" style={{paddingLeft:0, paddingRight:15}}>    
                                         <FormGroup>
                                             <label>From</label>
-                                            <Input type='date' name="fromDate" onChange={onChange}/>
+                                            <Input type='date' defaultValue={filterSale.fromDate} name="fromDate" onChange={onChange}/>
                                         </FormGroup>
                                     </Col>
                                     <Col md="3" style={{paddingLeft: 0}}>    
                                         <FormGroup>
                                             <label>To</label>
-                                            <Input type='date' name="toDate" onChange={onChange}/>
+                                            <Input type='date' defaultValue={filterSale.toDate} name="toDate" onChange={onChange}/>
                                         </FormGroup>
                                     </Col>
                                     <Col md="2" style={{paddingLeft: 0}}>

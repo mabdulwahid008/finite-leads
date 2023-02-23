@@ -30,48 +30,53 @@ import AddSale from "views/AddSale";
 import AgentSalesListing from "views/AgentSalesListing";
 
 var routes = [
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: "nc-icon nc-bank",
-    component: Dashboard,
-    layout: "/admin"
-  },
+  // {
+  //   path: "/dashboard",
+  //   name: "Dashboard",
+  //   icon: "nc-icon nc-bank",
+  //   component: Dashboard,
+  //   layout: "/admin"
+  // },
   {
     path: "/users",
     name: "Users",
     icon: "nc-icon nc-single-02",
     component: Users,
-    layout: "/admin"
+    layout: "/admin",
+    role: [3,5]
   },
   {
     path: "/sales",
     name: "Sales",
-    icon: "nc-icon nc-single-02",
+    icon: "nc-icon nc-chart-bar-32",
     component: Sales,
-    layout: "/admin"
-  },
-  {
-    path: "/add-sale",
-    name: "Add Sale",
-    icon: "nc-icon nc-single-02",
-    component: AddSale,
-    layout: "/admin"
-  },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "nc-icon nc-diamond",
-    component: Icons,
-    layout: "/admin"
+    layout: "/admin",
+    role: [3,5]
   },
   {
     path: "/my-sales",
     name: "My Sales",
-    icon: "nc-icon nc-diamond",
+    icon: "nc-icon nc-chart-bar-32",
     component: AgentSalesListing,
-    layout: "/admin"
+    layout: "/admin",
+    role: [0]
   },
+  {
+    path: "/add-sale",
+    name: "Add Sale",
+    icon: "nc-icon nc-simple-add",
+    component: AddSale,
+    layout: "/admin",
+    role: [0,3,5],
+  },
+  // {
+  //   path: "/icons",
+  //   name: "Icons",
+  //   icon: "nc-icon nc-diamond",
+  //   component: Icons,
+  //   layout: "/admin",
+  //   role : [0]
+  // },
 //   {
 //     path: "/maps",
 //     name: "Maps",

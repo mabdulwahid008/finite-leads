@@ -17,8 +17,8 @@ function App() {
         return (
             <>
                 <Switch>
-                    <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-                    <Redirect to="/admin/dashboard" />
+                    <Route path="/" render={(props) => <AdminLayout {...props} />} />
+                    <Redirect to="/dashboard" />
                 </Switch>
                 <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} transition={Slide} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss theme="light" />
             </>

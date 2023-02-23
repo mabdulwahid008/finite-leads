@@ -65,6 +65,7 @@ function Sidebar(props) {
       <div className="sidebar-wrapper" ref={sidebar}>
         <Nav>
           {props.routes.map((prop, key) => {
+            if(prop.role.some((role)=> role == localStorage.getItem('userRole')))
             return (
               <li
                 className={
@@ -73,7 +74,8 @@ function Sidebar(props) {
                 key={key}
               >
                 <NavLink
-                  to={prop.layout + prop.path}
+                  to={prop.path}
+                  // to={prop.layout + prop.path}
                   className="nav-link"
                   activeClassName="active"
                 >
