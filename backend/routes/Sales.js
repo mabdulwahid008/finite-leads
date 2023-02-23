@@ -163,7 +163,7 @@ router.post('/', authorization, async(req, res)=>{
     }
 })
 
-// for graph 
+// for dashboard graph 
 router.get('/stats', authorization, async(req, res)=>{
     const date = moment.tz(Date.now(), "America/Los_Angeles");
     let startOfMonth = ''
@@ -186,6 +186,23 @@ router.get('/stats', authorization, async(req, res)=>{
                 
             }
         }
+        if(req.user_role === 0){
+            for (let i = 1; i <= date.month()+1; i++) {
+                startOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-1`
+                endOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-31`
+
+                const sales = await Sales.find({
+                    user_id : req.user_id,
+                    create_at: {
+                        $gte : startOfMonth,
+                        $lt : endOfMonth
+                    }
+                })
+                data.push(sales.length)
+                
+            }
+        }
+
         return res.status(200).json({data})
     } catch (error) {
         console.log(error);

@@ -51,25 +51,27 @@ function Dashboard() {
   const [dailySales, setDailySales] = useState(0)
   const [monthlySales, setMonthlySales] = useState(0)
 
-  const [refresh, setRefresh] = useState(false)
+  //for stats data comming form api
+  const [arr, setArr] = useState([0,0,0])
 
   const stats = useCallback(() => {
-   return {  
-       labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
-      datasets: [
-        {
-          data: [0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          fill: false,
-          borderColor: "#fbc658",
-          backgroundColor: "transparent",
-          pointBorderColor: "#fbc658",
-          pointRadius: 4,
-          pointHoverRadius: 4,
-          pointBorderWidth: 8,
-          tension: 0.4
-        }]
-    }  
-  }, [refresh])
+    const obj = {  
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
+     datasets: [
+       {
+         data: arr,
+         fill: false,
+         borderColor: "#fbc658",
+         backgroundColor: "transparent",
+         pointBorderColor: "#fbc658",
+         pointRadius: 4,
+         pointHoverRadius: 4,
+         pointBorderWidth: 8,
+         tension: 0.4
+       }]
+   }
+   return obj
+  },[arr])
 
 
   // for admin or master 
@@ -239,8 +241,7 @@ function Dashboard() {
     })
     const res = await response.json();
     if(response.status === 200){
-      // stats(res.data)
-      setRefresh(true)
+      setArr(res.data)
      }
     else{
       toast.error(res.message)
@@ -264,11 +265,6 @@ function Dashboard() {
     fetchStats()
   },[])
 
-  useEffect(()=>{
-    // console.log(stats);
-    // console.log();
-    // console.log(dashboardNASDAQChart.data);
-  }, [stats])
 
   return (
     <>
@@ -441,8 +437,8 @@ function Dashboard() {
                 <p className="card-category">Line Chart with Points</p>
               </CardHeader>
               <CardBody>
-                <Line
-                  data={dashboardNASDAQChart.data}
+               <Line
+                  data={stats}
                   options={dashboardNASDAQChart.options}
                   width={400}
                   height={100}

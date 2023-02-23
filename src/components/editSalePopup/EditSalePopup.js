@@ -63,7 +63,7 @@ function EditSalePopup({ saleToBeEdited, setSaleToBeEdited, setEditSalePopup, se
                     </FormGroup>
                     <FormGroup>
                         <label>Multiplier</label>
-                        <Input type="number" value={sale.multiplier} name="multiplier" onChange={onChange}/>
+                        <Input type="number" defaultValue={sale.updated_multiplier? sale.updated_multiplier : sale.multiplier} name="multiplier" onChange={onChange}/>
                     </FormGroup>
                     <Button disabled={loading? true : false}>{`${loading? 'Please Wait' : 'Update'}`}</Button>
                 </Form>
