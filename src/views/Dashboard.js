@@ -197,19 +197,38 @@ function Dashboard() {
       }
   }
 
+  const fetchStats = async() => {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale/stats`,{
+      method : 'GET',
+      headers: {
+        'Content-Type': 'Application/json',
+        token: localStorage.getItem('token')
+      }
+    })
+    const res = await response.json();
+    if(response.status === 200){
+      console.log(res);
+    }
+    else{
+      toast.error(res.message)
+    }
+
+  }
+
   useEffect(()=>{
-    if(localStorage.getItem('useRole') == 0)
+    if(localStorage.getItem('userRole') == 0)
         calculateUserStats()
     if(localStorage.getItem('userRole') == 3 || localStorage.getItem('userRole') == 5)
         calculateStats()
   },[mySales, sales])
 
   useEffect(()=>{
-    if(localStorage.getItem('useRole') == 0)
+    if(localStorage.getItem('userRole') == 0)
         fectchMySales(); 
     if(localStorage.getItem('userRole') == 3 || localStorage.getItem('userRole') == 5){
       fetchSales()
     }
+    fetchStats()
   },[])
 
   return (
@@ -228,7 +247,7 @@ function Dashboard() {
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Sales</p>
+                      <p className="card-category">Today</p>
                       <CardTitle tag="p">{dailySales}</CardTitle>
                       <p />
                     </div>
@@ -238,7 +257,7 @@ function Dashboard() {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                 Today
+                 Sales
                 </div>
               </CardFooter>
             </Card>
@@ -255,7 +274,7 @@ function Dashboard() {
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Bonus</p>
+                      <p className="card-category">Today</p>
                       <CardTitle tag="p">{dailyBonus} Rs</CardTitle>
                       <p />
                     </div>
@@ -265,7 +284,7 @@ function Dashboard() {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                  Today
+                  Bonus
                 </div>
               </CardFooter>
             </Card>
@@ -282,7 +301,7 @@ function Dashboard() {
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Sales</p>
+                      <p className="card-category">This Month</p>
                       <CardTitle tag="p">{monthlySales}</CardTitle>
                       <p />
                     </div>
@@ -292,7 +311,7 @@ function Dashboard() {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                  This Month
+                  Sales
                 </div>
               </CardFooter>
             </Card>
@@ -309,7 +328,7 @@ function Dashboard() {
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Bonus</p>
+                      <p className="card-category">This Month</p>
                       <CardTitle tag="p">{monthlyBonus} Rs</CardTitle>
                       <p />
                     </div>
@@ -319,7 +338,7 @@ function Dashboard() {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                  This Month
+                  Bonus
                 </div>
               </CardFooter>
             </Card>
@@ -379,7 +398,7 @@ function Dashboard() {
           <Col md="12">
             <Card className="card-chart">
               <CardHeader>
-                <CardTitle tag="h5">NASDAQ: AAPL</CardTitle>
+                <CardTitle tag="h5">Statistics</CardTitle>
                 <p className="card-category">Line Chart with Points</p>
               </CardHeader>
               <CardBody>
@@ -397,7 +416,7 @@ function Dashboard() {
                 </div>
                 <hr />
                 <div className="card-stats">
-                  <i className="fa fa-check" /> Data information certified
+                  Sales Stats
                 </div>
               </CardFooter>
             </Card>

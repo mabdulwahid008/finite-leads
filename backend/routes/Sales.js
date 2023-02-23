@@ -65,7 +65,7 @@ router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorizat
         }
         else {}
         // console.log(req.params.fromDate, " ", req.params.toDate);
-        return res.status(200).json(sales)
+        return res.status(200).json(sales.reverse())
     } catch (error) {
         console.log(error);
         return res.status(500).json({message: 'Server Error'})
@@ -153,6 +153,36 @@ router.post('/', authorization, async(req, res)=>{
                 multiplier : multiplier, 
             })
         return res.status(200).json({message: 'Sale added successfully'})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+// for graph 
+router.get('/stats', authorization, async(req, res)=>{
+    const date = moment.tz(Date.now(), "America/Los_Angeles");
+    let startOfMonth = ''
+    let endOfMonth = ''
+    const data = []
+
+    try {
+        if(req.user_role === 5 || req.user_role === 3){
+            for (let i = 1; i <= date.month()+1; i++) {
+                startOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-1`
+                endOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-31`
+
+                const sales = await Sales.find({
+                    create_at: {
+                        $gte : startOfMonth,
+                        $lt : endOfMonth
+                    }
+                })
+                data.push(sales.length)
+                
+            }
+        }
+        return res.status(200).json({data})
     } catch (error) {
         console.log(error);
         return res.status(500).json({message: 'Server Error'})
