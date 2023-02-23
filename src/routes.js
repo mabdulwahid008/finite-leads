@@ -30,13 +30,14 @@ import AddSale from "views/AddSale";
 import AgentSalesListing from "views/AgentSalesListing";
 
 var routes = [
-  // {
-  //   path: "/dashboard",
-  //   name: "Dashboard",
-  //   icon: "nc-icon nc-bank",
-  //   component: Dashboard,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: "nc-icon nc-bank",
+    component: Dashboard,
+    layout: "/admin",
+    role: [0,3,5]
+  },
   {
     path: "/users",
     name: "Users",
@@ -69,14 +70,14 @@ var routes = [
     layout: "/admin",
     role: [0,3,5],
   },
-  // {
-  //   path: "/icons",
-  //   name: "Icons",
-  //   icon: "nc-icon nc-diamond",
-  //   component: Icons,
-  //   layout: "/admin",
-  //   role : [0]
-  // },
+  {
+    path: "/icons",
+    name: "Icons",
+    icon: "nc-icon nc-diamond",
+    component: Icons,
+    layout: "/admin",
+    role : [0,3,5]
+  },
 //   {
 //     path: "/maps",
 //     name: "Maps",

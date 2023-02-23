@@ -16,7 +16,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useEffect, useState } from "react";
 // react plugin used to create charts
 import { Line, Pie } from "react-chartjs-2";
 // reactstrap components
@@ -35,8 +35,183 @@ import {
   dashboardEmailStatisticsChart,
   dashboardNASDAQChart
 } from "variables/charts.js";
+import moment from 'moment-timezone'
+import { toast } from 'react-toastify'
+import { GiSwapBag } from 'react-icons/gi';
+import { BsGraphUp } from 'react-icons/bs';
 
 function Dashboard() {
+  // for user 
+  const [mySales, setMySales] = useState(null)
+  // for admin or master
+  const [sales, setSales] = useState(null)
+
+  const [dailyBonus, setDailyBonus] = useState(0)
+  const [monthlyBonus, setMonthlyBonus] = useState(0)
+  const [dailySales, setDailySales] = useState(0)
+  const [monthlySales, setMonthlySales] = useState(0)
+
+
+  // for admin or master 
+  const calculateStats = () => {
+      let _dailyBonus = 0;
+      let _totalBonus = 0;
+      let _dailySales = 0;
+      let _monthlySales = 0
+
+      if(sales){
+
+        const date = moment.tz(Date.now(), "America/Los_Angeles");
+          let dateToday =  `${date.year()}-${date.month()+1}-${date.date()}`
+
+          if((date.month()+1) <= 9){
+              if(date.date() <= 9)
+                  dateToday = `${date.year()}-0${date.month()+1}-0${date.date()}`
+              else
+                  dateToday = `${date.year()}-0${date.month()+1}-${date.date()}`
+          }
+          
+          if(date.date() <= 9){
+              if((date.month()+1) <= 9)
+                  dateToday = `${date.year()}-0${date.month()+1}-0${date.date()}`
+              else
+                  dateToday = `${date.year()}-${date.month()+1}-0${date.date()}`
+          }
+          
+          const todaySales = sales.filter((sale)=> sale.create_at.includes(dateToday))
+
+          for (let i = 0; i < todaySales.length; i++) {
+              _dailyBonus += todaySales[i].multiplier * 1000
+              _dailySales += 1
+          }
+          setDailyBonus(_dailyBonus)
+          setDailySales(_dailySales)
+
+          for (let i = 0; i < sales.length; i++) {
+              _totalBonus += sales[i].multiplier * 1000;
+              _monthlySales +=1
+
+          }
+          setMonthlyBonus(_totalBonus)
+          setMonthlySales(_monthlySales)
+    }
+  }
+
+  // for admin or master 
+  const fetchSales = async() => {
+
+    const date = moment.tz(Date.now(), "America/Los_Angeles");
+    let monthStart = ''
+    let monthEnd = ''
+
+    if((date.month()+1) <= 9){
+        if(date.date() <= 9)
+            monthStart = `${date.year()}-0${date.month()+1}-01`
+        else
+            monthStart = `${date.year()}-0${date.month()+1}-01`
+    }
+    if((date.month()+1) <= 9){
+        if(date.date() <= 9)
+            monthEnd = `${date.year()}-0${date.month()+1}-31`
+        else
+            monthEnd = `${date.year()}-0${date.month()+1}-31`
+    }
+    
+    
+
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale/${monthStart}/${monthEnd}/0`,{
+        method: 'GET',
+        headers: {
+            'Content-Type' : 'Application/json',
+            token: localStorage.getItem('token')
+        }
+    })
+    const res = await response.json()
+    if(response.status === 200){
+        setSales(res)
+    }
+    else
+        toast.error(res.message)
+  }
+
+  // for user stats
+  const calculateUserStats = () => {
+      if(mySales){
+          let _dailyBonus = 0;
+          let _monthlyBonus = 0;
+          let _dailySales = 0;
+          let _monthlySales = 0;
+
+          const date = moment.tz(Date.now(), "America/Los_Angeles");
+          let dateToday =  `${date.year()}-${date.month()+1}-${date.date()}`
+
+          if((date.month()+1) <= 9){
+              if(date.date() <= 9)
+                  dateToday = `${date.year()}-0${date.month()+1}-0${date.date()}`
+              else
+                  dateToday = `${date.year()}-0${date.month()+1}-${date.date()}`
+          }
+          
+          if(date.date() <= 9){
+              if((date.month()+1) <= 9)
+                  dateToday = `${date.year()}-0${date.month()+1}-0${date.date()}`
+              else
+                  dateToday = `${date.year()}-${date.month()+1}-0${date.date()}`
+          }
+          
+          const todaySales = mySales.filter((sale)=> sale.create_at.includes(dateToday))
+
+          for (let i = 0; i < todaySales.length; i++) {
+              _dailyBonus += todaySales[i].multiplier * 1000
+              _dailySales += 1
+          }
+          setDailyBonus(_dailyBonus)
+          setDailySales(_dailySales)
+
+          for (let i = 0; i < mySales.length; i++) {
+              _monthlyBonus += mySales[i].multiplier * 1000
+              _monthlySales += 1
+          }
+          setMonthlyBonus(_monthlyBonus)
+          setMonthlySales(_monthlySales)
+          
+
+      }
+  }
+
+  // for user
+  const fectchMySales = async() => {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale/mysales`, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'Application/json',
+              token: localStorage.getItem('token')
+          }
+      })
+      const res = await response.json()
+      if(response.status === 200){
+          setMySales(res)
+      }
+      else{
+          toast.error(res.message)
+      }
+  }
+
+  useEffect(()=>{
+    if(localStorage.getItem('useRole') == 0)
+        calculateUserStats()
+    if(localStorage.getItem('userRole') == 3 || localStorage.getItem('userRole') == 5)
+        calculateStats()
+  },[mySales, sales])
+
+  useEffect(()=>{
+    if(localStorage.getItem('useRole') == 0)
+        fectchMySales(); 
+    if(localStorage.getItem('userRole') == 3 || localStorage.getItem('userRole') == 5){
+      fetchSales()
+    }
+  },[])
+
   return (
     <>
       <div className="content">
@@ -47,13 +222,14 @@ function Dashboard() {
                 <Row>
                   <Col md="4" xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-globe text-warning" />
+                      {/* <i className="nc-icon nc-chart-bar-32 text-warning" /> */}
+                      <BsGraphUp className="text-warning"/>
                     </div>
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Capacity</p>
-                      <CardTitle tag="p">150GB</CardTitle>
+                      <p className="card-category">Sales</p>
+                      <CardTitle tag="p">{dailySales}</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -62,7 +238,7 @@ function Dashboard() {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                  <i className="fas fa-sync-alt" /> Update Now
+                 Today
                 </div>
               </CardFooter>
             </Card>
@@ -73,13 +249,14 @@ function Dashboard() {
                 <Row>
                   <Col md="4" xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-money-coins text-success" />
+                      {/* <i className="nc-icon nc-money-coins text-success" /> */}
+                      <GiSwapBag className="text-success"/>
                     </div>
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Revenue</p>
-                      <CardTitle tag="p">$ 1,345</CardTitle>
+                      <p className="card-category">Bonus</p>
+                      <CardTitle tag="p">{dailyBonus} Rs</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -88,7 +265,7 @@ function Dashboard() {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                  <i className="far fa-calendar" /> Last day
+                  Today
                 </div>
               </CardFooter>
             </Card>
@@ -99,13 +276,14 @@ function Dashboard() {
                 <Row>
                   <Col md="4" xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-vector text-danger" />
+                      {/* <i className="nc-icon nc-chart-bar-32 text-warning" /> */}
+                      <BsGraphUp className="text-warning"/>
                     </div>
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Errors</p>
-                      <CardTitle tag="p">23</CardTitle>
+                      <p className="card-category">Sales</p>
+                      <CardTitle tag="p">{monthlySales}</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -114,7 +292,7 @@ function Dashboard() {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                  <i className="far fa-clock" /> In the last hour
+                  This Month
                 </div>
               </CardFooter>
             </Card>
@@ -125,13 +303,14 @@ function Dashboard() {
                 <Row>
                   <Col md="4" xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-favourite-28 text-primary" />
+                      {/* <i className="nc-icon nc-favourite-28 text-primary" /> */}
+                      <GiSwapBag className="text-success"/>
                     </div>
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Followers</p>
-                      <CardTitle tag="p">+45K</CardTitle>
+                      <p className="card-category">Bonus</p>
+                      <CardTitle tag="p">{monthlyBonus} Rs</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -140,13 +319,13 @@ function Dashboard() {
               <CardFooter>
                 <hr />
                 <div className="stats">
-                  <i className="fas fa-sync-alt" /> Update now
+                  This Month
                 </div>
               </CardFooter>
             </Card>
           </Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col md="12">
             <Card>
               <CardHeader>
@@ -169,9 +348,9 @@ function Dashboard() {
               </CardFooter>
             </Card>
           </Col>
-        </Row>
+        </Row> */}
         <Row>
-          <Col md="4">
+          {/* <Col md="4">
             <Card>
               <CardHeader>
                 <CardTitle tag="h5">Email Statistics</CardTitle>
@@ -196,8 +375,8 @@ function Dashboard() {
                 </div>
               </CardFooter>
             </Card>
-          </Col>
-          <Col md="8">
+          </Col> */}
+          <Col md="12">
             <Card className="card-chart">
               <CardHeader>
                 <CardTitle tag="h5">NASDAQ: AAPL</CardTitle>
