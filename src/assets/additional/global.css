@@ -8,11 +8,11 @@
     --warningColor: #fccf71
 }
 
-button{
+.btn{
     background-color: var(--logoColor) !important;
 }
-button:hover,
-button:active{
+.btn:hover,
+.btn:active{
     background-color: var(--logoDarkColor) !important;
 }
 .btn-danger{

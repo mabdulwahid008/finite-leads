@@ -127,7 +127,7 @@ function Header(props) {
           <span className="navbar-toggler-bar navbar-kebab" />
         </NavbarToggler>
         <Collapse isOpen={isOpen} navbar className="justify-content-end">
-          <form>
+          {/* <form>
             <InputGroup className="no-border">
               <Input placeholder="Search..." />
               <InputGroupAddon addonType="append">
@@ -136,9 +136,9 @@ function Header(props) {
                 </InputGroupText>
               </InputGroupAddon>
             </InputGroup>
-          </form>
+          </form> */}
           <Nav navbar>
-            <NavItem>
+            {/* <NavItem>
               <Link to="#pablo" className="nav-link btn-magnify">
                 <i className="nc-icon nc-layout-11" />
                 <p>
@@ -162,12 +162,12 @@ function Header(props) {
                 <DropdownItem tag="a">Another Action</DropdownItem>
                 <DropdownItem tag="a">Something else here</DropdownItem>
               </DropdownMenu>
-            </Dropdown>
+            </Dropdown> */}
             <NavItem>
               <Link to="#" className="nav-link btn-rotate">
                 <i className="nc-icon nc-button-power" onClick={()=>{localStorage.removeItem('token'); window.location.reload(true)}}/>
                 <p>
-                  <span className="d-lg-none d-md-block">Account</span>
+                  <span className="d-lg-none d-md-block">LogOut</span>
                 </p>
               </Link>
             </NavItem>

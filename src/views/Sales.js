@@ -27,6 +27,10 @@ function Sales() {
 
     const [refresh, setRefresh] = useState(false)
 
+    const { innerWidth: width } = window;
+
+    const onMobile = width < 762 ? true : false;
+
    const filterSales = () => {
        if((filterSale.fromDate === 0 && filterSale.toDate !== 0) || (filterSale.fromDate !== 0 && filterSale.toDate === 0)){
             toast.error('Please select correct date filter')
@@ -121,26 +125,26 @@ function Sales() {
                             <Link to='add-sale'><Button>Add Sale</Button></Link>
                         </div>
 
-                        {sales && <div style={{display:"flex", alignItems:"flex-end", gap:10, width:"50%",}}>
+                        {sales && <div style={{display:"flex", alignItems:"flex-end", gap:10, width:`${onMobile? '100%' : '50%'}`}}>
                             <Form>
-                                <Row style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-end', width:"150%"}}>
+                                <Row style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-end', width:`${onMobile? '108%' : '150%'}`}}>
                                     <Col md="4" style={{marginBottom: 10}}>
                                         <label>Sale Agent</label>
                                         <ReactSelect options={saleAgents} defaultValue={defaultfilterSale.agentId} onChange={(option) => {filterSale.agentId = option.value; defaultfilterSale.agentId = option}}/>
                                     </Col>
-                                    <Col md="3" style={{paddingLeft:0, paddingRight:15}}>    
+                                    <Col md="3" style={{paddingLeft:`${onMobile? '' : 0}`, paddingRight:`${onMobile? '' : 15}`}}>    
                                         <FormGroup>
                                             <label>From</label>
                                             <Input type='date' defaultValue={filterSale.fromDate} name="fromDate" onChange={onChange}/>
                                         </FormGroup>
                                     </Col>
-                                    <Col md="3" style={{paddingLeft: 0}}>    
+                                    <Col md="3" style={{paddingLeft: `${onMobile? '' : 0}`}}>    
                                         <FormGroup>
                                             <label>To</label>
                                             <Input type='date' defaultValue={filterSale.toDate} name="toDate" onChange={onChange}/>
                                         </FormGroup>
                                     </Col>
-                                    <Col md="2" style={{paddingLeft: 0}}>
+                                    <Col md="2" style={{paddingLeft: `${onMobile? '' : 0}`}}>
                                         <Button onClick={filterSales}>Filter</Button>
                                     </Col>
                                 </Row>
@@ -150,16 +154,18 @@ function Sales() {
                     <CardBody>
                         {!sales && <Loading />}
                         {sales && sales.length === 0 && <p>No sales yet</p>}
-                       {sales && sales.length !== 0 && <Table>
+                       {sales && sales.length !== 0 && <Table responsive={onMobile ? true : false }>
                             <thead>
-                                <th style={{width: '3%'}}>#</th>
-                                <th style={{width: '10%'}}>Client Name</th>
-                                <th style={{width: '10%'}}>Client Phone</th>
-                                <th style={{width: '20%'}}>Client Address</th>
-                                <th style={{width: '12%'}}>Created On</th>
-                                <th style={{width: '10%'}}>Sale Agent</th>
-                                <th style={{width: '5%'}}>Bonus</th>
-                                <th style={{width: '8%'}} className="text-right">Actions</th>
+                                <tr>
+                                    <th style={{width: '3%'}}>#</th>
+                                    <th style={{width: '10%'}}>Client Name</th>
+                                    <th style={{width: '10%'}}>Client Phone</th>
+                                    <th style={{width: '20%'}}>Client Address</th>
+                                    <th style={{width: '12%'}}>Created On</th>
+                                    <th style={{width: '10%'}}>Sale Agent</th>
+                                    <th style={{width: '5%'}}>Bonus</th>
+                                    <th style={{width: '8%'}} className="text-right">Actions</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 {sales.map((sale, index)=>{

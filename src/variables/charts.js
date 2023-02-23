@@ -163,18 +163,7 @@ const dashboardNASDAQChart = {
           pointHoverRadius: 4,
           pointBorderWidth: 8,
           tension: 0.4
-        },
-        // {
-        //   data: [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200],
-        //   fill: false,
-        //   borderColor: "#51CACF",
-        //   backgroundColor: "transparent",
-        //   pointBorderColor: "#51CACF",
-        //   pointRadius: 4,
-        //   pointHoverRadius: 4,
-        //   pointBorderWidth: 8,
-        //   tension: 0.4
-        // }
+        }
       ]
     };
   },
