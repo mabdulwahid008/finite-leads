@@ -1,10 +1,12 @@
 const express = require("express")
 const cors = require("cors")
 const connectToMongoDB = require("./db")
+require('dotenv').config()
 
 const app = express();
 
-const port = 5000
+const PORT = process.env.PORT || 5000
+
 
 connectToMongoDB()
 
@@ -13,7 +15,8 @@ app.use(express.json())
 
 app.use('/user', require('./routes/User'))
 app.use('/sale', require('./routes/Sales'))
+app.use('/chat', require('./routes/Messages'))
 
-app.listen(port, ()=>{
-    console.log(`App is listening on port ${port}`);
+app.listen(PORT, ()=>{
+    console.log(`App is listening on port ${PORT}`);
 })

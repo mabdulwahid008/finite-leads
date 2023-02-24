@@ -91,7 +91,7 @@ function Header(props) {
   }, [location]);
   return (
     // add or remove classes depending if we are on full-screen-maps page or not
-    <Navbar
+    <Navbar style={{zIndex:0}}
       color={
         props.location.pathname.indexOf("full-screen-maps") !== -1
           ? "dark"

@@ -1,5 +1,6 @@
 const express = require("express")
 const User = require("../models/User")
+const Sales = require("../models/Sales")
 const bcrypt = require('bcrypt')
 const router = express.Router()
 const jwt = require("jsonwebtoken")
@@ -91,7 +92,6 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
 router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res)=> {
     try {
         let users = []
-        console.log(req.params.role);
         if(req.params.role != 99)
             users = await User.find({role: req.params.role}, {password: 0});
         else    
@@ -135,6 +135,7 @@ router.post('/getdetails', async(req, res)=>{
 router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)=> {
     try {
         await User.deleteOne({_id: req.params.id})
+        await Sales.deleteMany({user_id: req.params.id})
         return res.status(200).json({message: 'User deleted successfully'})
     } catch (error) {
         console.log(error);
