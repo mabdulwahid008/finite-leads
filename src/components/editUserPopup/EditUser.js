@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import ReactSelect from 'react-select'
 import Loading from '../Loading/Loading'
 
-function EditUser({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents, fetchUsers }) {
+function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
     const [agentData, setAgentData] = useState(agentToBeEdited)
     const [agentRole, setAgentRole] = useState(null)
 
@@ -38,7 +38,6 @@ function EditUser({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents, fet
           toast.error("Agents phone number is incorrect");
           return;
         }
-
         const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user`,{
             method: 'PATCH',
             headers: {
@@ -49,15 +48,9 @@ function EditUser({setEditAgent, agentToBeEdited, saleAgents, setSaleAgents, fet
         })
         const res = await response.json();
         if(response.status === 200){
-            //for frontend
-            const agentIndex = saleAgents.findIndex((agent) => agent.id === agentToBeEdited.id);        
-            const updatedAgent = { ...saleAgents[agentIndex], name: agentData.name, email: agentData.email, phone: agentData.phone};        
-            const updatedAgents = [...saleAgents.slice(0, agentIndex), updatedAgent, ...saleAgents.slice(agentIndex + 1)];
-            
-            fetchUsers()
             toast.success(res.message)
-            setSaleAgents(updatedAgents);
             setEditAgent(false);
+            setRefresh(true)
         }
         else{
             toast.error(res.message)

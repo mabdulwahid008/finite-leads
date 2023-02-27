@@ -20,6 +20,10 @@ function Users() {
     const [editAgent, setEditAgent] = useState(false)
     const [agentToBeEdited, setAgentToBeEdited] = useState(null)
 
+    const [refresh, setRefresh] = useState(false)
+
+    const [defaultUserRole, setDefaultUserRole] = useState({value: 99, label: 'All Users'})
+
     const userRoles = [
         {value: 99, label: 'All Users'},
         {value: 0, label: 'Sales Agent'},
@@ -51,9 +55,8 @@ function Users() {
         const res = await response.json()
         if(response.status === 200){
             toast.success(res.message)
-            setSaleAgents(null)
-            fetchUsers()
             setDeletePopup(false)
+            setRefresh(true)
         }
         else{
             toast.error(res.message)
@@ -78,13 +81,13 @@ function Users() {
         
     }
 
-    useEffect(()=>{
-        
-    }, [saleAgents])
 
-    useEffect(() => {
+    useEffect(() => {   
+        setRefresh(false)
+
+        setSaleAgents(null)
         fetchUsers()
-    }, [editAgent])
+    }, [refresh])
     
   return (
     <div className='content'>
@@ -97,7 +100,7 @@ function Users() {
                             <Button onClick={()=> setAddNewAgent(true)}>Add New</Button>
                         </div>
                         <div style={{width:'20%'}}>
-                            <ReactSelect options={userRoles} placeholder="Filter by role" onChange={(role)=>{filterUsers(role)}}/>
+                            <ReactSelect options={userRoles} defaultValue={defaultUserRole} placeholder="Filter by role" onChange={(role)=>{filterUsers(role); setDefaultUserRole(role)}}/>
                         </div>
                     </CardHeader>
                     <CardBody>
@@ -132,8 +135,8 @@ function Users() {
                 </Card>
             </Col>
         </Row>
-        {addNewAgent && <AddUser setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents}/>}
-        {editAgent && <EditUser setEditAgent={setEditAgent} agentToBeEdited={agentToBeEdited} saleAgents={saleAgents} setSaleAgents={setSaleAgents} fetchUsers={fetchUsers}/> }
+        {addNewAgent && <AddUser setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents} setRefresh={setRefresh}/>}
+        {editAgent && <EditUser setEditAgent={setEditAgent} agentToBeEdited={agentToBeEdited} fetchUsers={fetchUsers} setRefresh={setRefresh}/> }
         {deletePopup && <DeletePopup setDeletePopup={setDeletePopup} agentToBeDeleted={agentToBeDeleted} setAgentToBeDeleted={setAgentToBeDeleted} onSubmitDeleteAgent={onSubmitDeleteAgent}/>}
     </div>
   )

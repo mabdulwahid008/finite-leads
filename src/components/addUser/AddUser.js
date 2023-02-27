@@ -4,7 +4,7 @@ import { RxCross1 } from 'react-icons/rx'
 import { toast } from 'react-toastify'
 import ReactSelect from 'react-select'
 
-function AddUser({ setAddNewAgent, saleAgents, setSaleAgents }) {
+function AddUser({ setAddNewAgent, setRefresh }) {
     const [loading, setLoading] = useState(false)
     const [agentData, setAgentData] = useState({name: '', phone: '', email: '', address: '', password: '', role: null})
 
@@ -52,11 +52,8 @@ function AddUser({ setAddNewAgent, saleAgents, setSaleAgents }) {
         if(response.status === 200){
             toast.success(res.message)
 
-            agentData.id = Math.floor(Math.random() * 9999);
-            saleAgents.push(agentData)
-            setSaleAgents(saleAgents)
-
             setAddNewAgent(false)
+            setRefresh(true)
         }
         else{
             toast.error(res.message)

@@ -3,29 +3,35 @@
     padding: 0px;
     height: 90vh;
     width: 100%;
-    background-color: white;
     display: flex;
     justify-content: flex-start;
     align-items: stretch;
 }
 .chatscreen-left{
-    border-right: 1px solid rgba(177, 177, 177, 0.285);;
+    background-color: rgba(255, 255, 255, 0.75);
+    color: black;
+    border-right: 1px solid rgba(127, 127, 127, 0.285);;
     width: 30%;
 }
 .chatscreen-right{
+    background-color:#212120db;
+    color: white;
     width: 70%;
-    background-color: rgb(233, 233, 233);
 }
-.chat-header{
+.chatscreen-right > .chat-header{
+    padding: 20px 30px 10px;
+    background-color: #212120;
+    border-bottom: 1px solid rgba(234, 234, 234, 0.285);;
+}
+.chatscreen-left > .chat-header{
     background-color: white;
     padding: 20px 30px 10px;
-    border-bottom: 1px solid rgba(177, 177, 177, 0.285);;
+    border-bottom: 1px solid rgba(83, 83, 83, 0.513);;
 }
 .chat-header > h4{
     margin: 0px !important;
 }
 .groups{
-    background-color: white;
     padding: 10px;
     overflow: auto;
     min-height: 90%;
@@ -36,10 +42,9 @@
     padding: 10px 10px 15px;
 }
 .group{
-    border: 1px solid rgba(177, 177, 177, 0.285);
-    border-radius: 10px;
-    padding: 5px 14px;
-    background-color:  rgb(233, 233, 233);
+    border: 1px solid rgba(177, 177, 177, 0.566);
+    border-radius: 5px;
+    padding: 2px 10px;
     transition: .25s ease;
 }
 .group:hover{
@@ -62,8 +67,8 @@
 
 .chatbox{
     overflow: auto;
-    min-height: 82%;
-    max-height: 82%;
+    min-height: 80%;
+    max-height: 80%;
     padding: 15px 20px 30px;
 }
 .send-box{
@@ -71,16 +76,19 @@
     justify-content: space-between;
     align-items: center;
     gap: 5px;
-    padding: 0px 20px;
+    padding: 0px 20px 10px;
 }
 .send-box > input{
     padding: 10px 10px;
     border-radius: 5px;
     background-color: white;
 }
-.send-box > i {
-    font-size: 25px;
-    color: var(--logoColor);
+.send-box > button {
+    padding: 3px 15px 5px;
+}
+.send-box > button > i {
+    font-size: 22px;
+    color: white;
     cursor: pointer;
     padding: 5px;
 }

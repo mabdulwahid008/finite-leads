@@ -64,14 +64,15 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req,res) => {
 
 // edit user
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=>{
-    const { id, name, phone, email, address, role } = req.body;
+    const { _id, name, phone, email, address, role } = req.body;
     try {
-        // if(req.user_role === 3)
-        //     return res.status(401).json({message: 'You don\'t have authorization for changing admin\'s data'})
-
-        const user = await User.findOne({id: id})
+        const user = await User.findOne({_id: _id})
         if(!user)
             return res.status(404).json({message: 'User Not Fount'})
+
+        if(req.user_role === 3 && user.role >= 3){
+            return res.status(401).json({message: 'You can\'t change data of users of this role'})
+        }
         
         user.name = name;
         user.email = email;
@@ -134,6 +135,14 @@ router.post('/getdetails', async(req, res)=>{
 // deleteUser
 router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)=> {
     try {
+        const user = await User.findOne({_id: req.params.id})
+
+        if(!user)
+            return res.status(404).json({message: 'User Not Fount'})
+
+        if(req.user_role === 3 && user.role >= 3)
+            return res.status(401).json({message: 'You can\'t delete users of this role'})
+
         await User.deleteOne({_id: req.params.id})
         await Sales.deleteMany({user_id: req.params.id})
         return res.status(200).json({message: 'User deleted successfully'})

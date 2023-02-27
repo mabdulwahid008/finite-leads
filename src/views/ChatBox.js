@@ -1,10 +1,10 @@
 import React from 'react'
-import { Card, CardHeader, CardTitle, Form, Input } from 'reactstrap'
+import { Button, Card, CardHeader, CardTitle, Form, Input } from 'reactstrap'
 import '../assets/additional/chatbox.css'
 
 function ChatBox() {
   return (
-    <div className='chatscreen'>
+    <div className=' chatscreen'>
         <div className='chatscreen-left'>
             <div className='chat-header'>
                 <h4>My Chats</h4>
@@ -46,7 +46,9 @@ function ChatBox() {
             <Form>
                 <div className='send-box'>
                     <Input type='text' placeholder='Write something ...'/>
-                    <i className='nc-icon nc-send' />
+                    <Button>
+                        <i className='nc-icon nc-send' />
+                    </Button>
                 </div>
             </Form>
         </div>
