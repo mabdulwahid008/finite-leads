@@ -1,44 +1,80 @@
-import React from 'react'
-import { Button, Card, CardHeader, CardTitle, Form, Input } from 'reactstrap'
+import CreateGroupPopup from 'components/createGroupPopup/CreateGroupPopup'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+import { Button, Form, Input } from 'reactstrap'
 import '../assets/additional/chatbox.css'
+import Loading from '../components/Loading/Loading'
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { FaTrash } from 'react-icons/fa';
+import { MdOutlineDriveFileRenameOutline } from 'react-icons/md';
+import { HiUserAdd, HiUserRemove } from 'react-icons/hi';
+import GroupDetails from 'components/groupDetails/GroupDetails'
 
 function ChatBox() {
+    const userRole = localStorage.getItem('userRole')
+
+    const [refreash, setRefreash] = useState(false)
+
+    const [createGroupPopup, setCreateGroupPopup] = useState(false)
+    const [groupDetails, setGroupDetails] = useState(false)
+
+    const [myGroups, setMyGroups] = useState(null)
+    const [selectedGroup, setSelectedGroup] = useState(null)
+
+    const fetchMyGroups = async() => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/my-groups`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            },
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            setMyGroups(res)
+            setSelectedGroup(res[0])
+        }
+        else
+            toast.error(res.message)
+    }
+
+    useEffect(()=> {
+        setRefreash(false)
+
+        fetchMyGroups()
+    }, [refreash])
+
   return (
-    <div className=' chatscreen'>
+    <div className='chatscreen'>
         <div className='chatscreen-left'>
             <div className='chat-header'>
                 <h4>My Chats</h4>
+                {(userRole == 3 || userRole === 5) && <i className='nc-icon nc-simple-add' onClick={()=>setCreateGroupPopup(true)}/>}
             </div>
             <div className='groups'>
-                <div className='group'>
-                    <h5>Group Name</h5>
-                    <p><span>Bilal</span>: Hello there</p>
-                </div>
-                <div className='group'>
-                    <h5>Group Name</h5>
-                    <p><span>Bilal</span>: Hello there Hello there Hello there</p>
-                </div>
-                <div className='group'>
-                    <h5>Group Name</h5>
-                    <p><span>Bilal</span>: Hello there</p>
-                </div>
-                <div className='group'>
-                    <h5>Group Name</h5>
-                    <p><span>Bilal</span>: Hello there</p>
-                </div>
-                <div className='group'>
-                    <h5>Group Name</h5>
-                    <p><span>Bilal</span>: Hello there</p>
-                </div>
-                <div className='group'>
-                    <h5>Group Name</h5>
-                    <p><span>Bilal</span>: Hello there</p>
-                </div>
+                {!myGroups && <Loading />}
+                {myGroups && myGroups.map((group, index) => {
+                    return  <div className='group' key={index} onClick={()=>setSelectedGroup(group)}>
+                                <h5>{group.groupName}</h5>
+                                <p><span>Bilal</span>: Hello there</p>
+                            </div>
+                })}
+               
             </div>
         </div>
         <div className='chatscreen-right'>
             <div className='chat-header'>
-                <h4>Chatgroup</h4>
+                {!selectedGroup && <h4>Group</h4>}
+                {selectedGroup && <h4>{selectedGroup.groupName}</h4>}
+                <div>
+                    {(userRole == 3 || userRole == 5) && <>
+                        <HiUserAdd />
+                        <HiUserRemove />
+                        <MdOutlineDriveFileRenameOutline />
+                        <FaTrash />
+                    </>}
+                    <BsThreeDotsVertical onClick={()=>setGroupDetails(true)}/>
+                </div>
             </div>
             <div className='chatbox'>
                 hhhhhhhhhhhhh
@@ -52,6 +88,8 @@ function ChatBox() {
                 </div>
             </Form>
         </div>
+        {groupDetails && <GroupDetails selectedGroup={selectedGroup} setGroupDetails={setGroupDetails}/>}
+        {createGroupPopup && <CreateGroupPopup setCreateGroupPopup={setCreateGroupPopup} setRefreash={setRefreash}/>}
     </div>
   )
 }

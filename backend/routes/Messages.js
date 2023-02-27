@@ -92,5 +92,28 @@ router.patch('/add-new-users', authorization, masterOrAdminAuthorization, async(
     }
 })
 
+// removing member 
+router.patch('/remove-member', authorization, masterOrAdminAuthorization, async(req, res) => {
+    const { _id, userId } = req.body;
+    try {
+        const group = await Chat.findById({_id: _id})
+        if(!group)
+            return res.status(404).json({message: "Group not found"});
+        
+        const userAlreadyExists = group.users.includes(userId)
+
+        if(!userAlreadyExists)
+            return res.status(422).json({message: "Member is not found"});
+        
+        group.users.pop(userId)
+        await group.save()
+
+        return res.status(200).json({message: "Member Removed"})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
 
 module.exports = router

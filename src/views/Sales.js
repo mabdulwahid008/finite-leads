@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row, Table } from 'reactstrap'
-import { SALES } from '../variables/Sales'
 import ReactSelect from 'react-select'
 import { FaRegEdit, FaTrash } from "react-icons/fa";
 import { Link } from 'react-router-dom';
