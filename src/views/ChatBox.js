@@ -11,6 +11,7 @@ import { HiUserAdd, HiUserRemove } from 'react-icons/hi';
 import GroupDetails from 'components/groupDetails/GroupDetails'
 import EditGroupName from 'components/editGroupName/EditGroupName'
 import RemoveUserFromGroup from 'components/removeUserFromGroup/RemoveUserFromGroup'
+import AddnewUserPopup from 'components/addnewUserGroupPopup/AddnewUserPopup'
 
 function ChatBox() {
     const userRole = localStorage.getItem('userRole')
@@ -22,6 +23,7 @@ function ChatBox() {
     const [groupDetails, setGroupDetails] = useState(false)
     const [editGroupNamePopup, setEditGroupNamePopup] = useState(false)
     const [removeUserPopup, setRemoveUserPopup] = useState(false)
+    const [addUserPopup, setAddUserPopup] = useState(false)
 
     const [myGroups, setMyGroups] = useState(null)
     const [selectedGroup, setSelectedGroup] = useState(null)
@@ -49,7 +51,6 @@ function ChatBox() {
         fetchMyGroups()
     }, [refreash])
     
-    fetchMyGroups()
   return (
     <div className='chatscreen'>
         <div className='chatscreen-left'>
@@ -74,7 +75,7 @@ function ChatBox() {
                 {selectedGroup && <h4>{selectedGroup.groupName}</h4>}
                 <div>
                     {(userRole == 3 || userRole == 5) && <>
-                        <HiUserAdd />
+                        <HiUserAdd onClick={()=>setAddUserPopup(true)}/>
                         <HiUserRemove onClick={()=> setRemoveUserPopup(true)}/>
                         <MdOutlineDriveFileRenameOutline onClick={()=>setEditGroupNamePopup(true)}/>
                         <FaTrash />
@@ -96,6 +97,7 @@ function ChatBox() {
         </div>
         {groupDetails && <GroupDetails selectedGroup={selectedGroup} setGroupDetails={setGroupDetails}/>}
         {removeUserPopup && <RemoveUserFromGroup  selectedGroup={selectedGroup} setRemoveUserPopup={setRemoveUserPopup} setRefreash={setRefreash}/>}
+        {addUserPopup && <AddnewUserPopup  selectedGroup={selectedGroup} setAddUserPopup={setAddUserPopup} setRefreash={setRefreash}/>}
         {editGroupNamePopup && <EditGroupName selectedGroup={selectedGroup} setEditGroupNamePopup={setEditGroupNamePopup} setRefreash={setRefreash}/>}
         {createGroupPopup && <CreateGroupPopup setCreateGroupPopup={setCreateGroupPopup} setRefreash={setRefreash}/>}
     </div>
