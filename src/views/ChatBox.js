@@ -9,14 +9,19 @@ import { FaTrash } from 'react-icons/fa';
 import { MdOutlineDriveFileRenameOutline } from 'react-icons/md';
 import { HiUserAdd, HiUserRemove } from 'react-icons/hi';
 import GroupDetails from 'components/groupDetails/GroupDetails'
+import EditGroupName from 'components/editGroupName/EditGroupName'
+import RemoveUserFromGroup from 'components/removeUserFromGroup/RemoveUserFromGroup'
 
 function ChatBox() {
     const userRole = localStorage.getItem('userRole')
 
     const [refreash, setRefreash] = useState(false)
 
+    //popups
     const [createGroupPopup, setCreateGroupPopup] = useState(false)
     const [groupDetails, setGroupDetails] = useState(false)
+    const [editGroupNamePopup, setEditGroupNamePopup] = useState(false)
+    const [removeUserPopup, setRemoveUserPopup] = useState(false)
 
     const [myGroups, setMyGroups] = useState(null)
     const [selectedGroup, setSelectedGroup] = useState(null)
@@ -69,8 +74,8 @@ function ChatBox() {
                 <div>
                     {(userRole == 3 || userRole == 5) && <>
                         <HiUserAdd />
-                        <HiUserRemove />
-                        <MdOutlineDriveFileRenameOutline />
+                        <HiUserRemove onClick={()=> setRemoveUserPopup(true)}/>
+                        <MdOutlineDriveFileRenameOutline onClick={()=>setEditGroupNamePopup(true)}/>
                         <FaTrash />
                     </>}
                     <BsThreeDotsVertical onClick={()=>setGroupDetails(true)}/>
@@ -89,6 +94,8 @@ function ChatBox() {
             </Form>
         </div>
         {groupDetails && <GroupDetails selectedGroup={selectedGroup} setGroupDetails={setGroupDetails}/>}
+        {removeUserPopup && <RemoveUserFromGroup  selectedGroup={selectedGroup} setRemoveUserPopup={setRemoveUserPopup}/>}
+        {editGroupNamePopup && <EditGroupName selectedGroup={selectedGroup} setEditGroupNamePopup={setEditGroupNamePopup} setRefreash={setRefreash}/>}
         {createGroupPopup && <CreateGroupPopup setCreateGroupPopup={setCreateGroupPopup} setRefreash={setRefreash}/>}
     </div>
   )
