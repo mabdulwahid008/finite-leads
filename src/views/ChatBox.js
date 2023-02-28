@@ -12,6 +12,7 @@ import GroupDetails from 'components/groupDetails/GroupDetails'
 import EditGroupName from 'components/editGroupName/EditGroupName'
 import RemoveUserFromGroup from 'components/removeUserFromGroup/RemoveUserFromGroup'
 import AddnewUserPopup from 'components/addnewUserGroupPopup/AddnewUserPopup'
+import DeleteGroup from 'components/deleteGroup/DeleteGroup'
 
 function ChatBox() {
     const userRole = localStorage.getItem('userRole')
@@ -24,6 +25,7 @@ function ChatBox() {
     const [editGroupNamePopup, setEditGroupNamePopup] = useState(false)
     const [removeUserPopup, setRemoveUserPopup] = useState(false)
     const [addUserPopup, setAddUserPopup] = useState(false)
+    const [deletGroupPopup, setDeletGroupPopup] = useState(false)
 
     const [myGroups, setMyGroups] = useState(null)
     const [selectedGroup, setSelectedGroup] = useState(null)
@@ -73,15 +75,15 @@ function ChatBox() {
             <div className='chat-header'>
                 {!selectedGroup && <h4>Group</h4>}
                 {selectedGroup && <h4>{selectedGroup.groupName}</h4>}
-                <div>
+               {myGroups && myGroups.length > 0 && <div>
                     {(userRole == 3 || userRole == 5) && <>
                         <HiUserAdd onClick={()=>setAddUserPopup(true)}/>
                         <HiUserRemove onClick={()=> setRemoveUserPopup(true)}/>
                         <MdOutlineDriveFileRenameOutline onClick={()=>setEditGroupNamePopup(true)}/>
-                        <FaTrash />
+                        <FaTrash onClick={()=>setDeletGroupPopup(true)}/>
                     </>}
                     <BsThreeDotsVertical onClick={()=>setGroupDetails(true)}/>
-                </div>
+                </div>}
             </div>
             <div className='chatbox'>
                 hhhhhhhhhhhhh
@@ -97,6 +99,7 @@ function ChatBox() {
         </div>
         {groupDetails && <GroupDetails selectedGroup={selectedGroup} setGroupDetails={setGroupDetails}/>}
         {removeUserPopup && <RemoveUserFromGroup  selectedGroup={selectedGroup} setRemoveUserPopup={setRemoveUserPopup} setRefreash={setRefreash}/>}
+        {deletGroupPopup && <DeleteGroup selectedGroup={selectedGroup} setDeletGroupPopup={setDeletGroupPopup} setRefreash={setRefreash}/>}
         {addUserPopup && <AddnewUserPopup  selectedGroup={selectedGroup} setAddUserPopup={setAddUserPopup} setRefreash={setRefreash}/>}
         {editGroupNamePopup && <EditGroupName selectedGroup={selectedGroup} setEditGroupNamePopup={setEditGroupNamePopup} setRefreash={setRefreash}/>}
         {createGroupPopup && <CreateGroupPopup setCreateGroupPopup={setCreateGroupPopup} setRefreash={setRefreash}/>}

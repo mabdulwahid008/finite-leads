@@ -121,5 +121,22 @@ router.patch('/remove-member', authorization, masterOrAdminAuthorization, async(
     }
 })
 
+// deleting group
+router.delete('/delete-group', authorization, masterOrAdminAuthorization, async(req, res)=> {
+    const { _id } = req.body
+    try {
+        const group = await Chat.findById({_id, _id}).populate("groupAdmin")
+
+        const isAdmin = group.groupAdmin._id == req.user_id ? true : false
+        if(!isAdmin)
+            return res.status(401).json({message: 'Only the admin of this group can delete '})
+        
+        await group.delete()
+        return res.status(200).json({message: 'Group deleted successfully'})
+        
+    } catch (error) {
+        
+    }
+})
 
 module.exports = router
