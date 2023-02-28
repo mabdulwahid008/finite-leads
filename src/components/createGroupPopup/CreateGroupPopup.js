@@ -15,6 +15,10 @@ function CreateGroupPopup({ setCreateGroupPopup, setRefreash }) {
     const createGroup = async(e) => {
         e.preventDefault();
         setLoading(true)
+        if(selectedUsers === null){
+            setLoading(false)
+            return toast.error("Users should me more than 2 to create a group")
+        }
         if(selectedUsers.length < 2){
             setLoading(false)
             return toast.error("Users should me more than 2 to create a group")

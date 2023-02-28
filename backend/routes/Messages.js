@@ -105,7 +105,13 @@ router.patch('/remove-member', authorization, masterOrAdminAuthorization, async(
         if(!userAlreadyExists)
             return res.status(422).json({message: "Member is not found"});
         
-        group.users.pop(userId)
+        const admin = await Chat.findById({_id : _id}).populate("groupAdmin")
+        if(admin.groupAdmin._id == userId)
+            return res.status(401).json({message: "You can't remove group admin"})
+        
+        const newUsers = group.users.filter((id) => id != userId)
+        console.log(newUsers);
+        group.users = newUsers
         await group.save()
 
         return res.status(200).json({message: "Member Removed"})

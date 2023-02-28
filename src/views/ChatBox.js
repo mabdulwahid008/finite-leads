@@ -48,7 +48,8 @@ function ChatBox() {
 
         fetchMyGroups()
     }, [refreash])
-
+    
+    fetchMyGroups()
   return (
     <div className='chatscreen'>
         <div className='chatscreen-left'>
@@ -94,7 +95,7 @@ function ChatBox() {
             </Form>
         </div>
         {groupDetails && <GroupDetails selectedGroup={selectedGroup} setGroupDetails={setGroupDetails}/>}
-        {removeUserPopup && <RemoveUserFromGroup  selectedGroup={selectedGroup} setRemoveUserPopup={setRemoveUserPopup}/>}
+        {removeUserPopup && <RemoveUserFromGroup  selectedGroup={selectedGroup} setRemoveUserPopup={setRemoveUserPopup} setRefreash={setRefreash}/>}
         {editGroupNamePopup && <EditGroupName selectedGroup={selectedGroup} setEditGroupNamePopup={setEditGroupNamePopup} setRefreash={setRefreash}/>}
         {createGroupPopup && <CreateGroupPopup setCreateGroupPopup={setCreateGroupPopup} setRefreash={setRefreash}/>}
     </div>
