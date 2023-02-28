@@ -98,7 +98,9 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res)=
         else    
             users = await User.find({}, {password: 0});
 
-        return res.status(200).json(users)
+        const filteredUsers = users.filter((user) => user._id != req.user_id)
+
+        return res.status(200).json(filteredUsers)
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Server Error"})

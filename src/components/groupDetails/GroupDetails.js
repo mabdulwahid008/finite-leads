@@ -20,7 +20,8 @@ function GroupDetails({ selectedGroup, setGroupDetails }) {
                     <h6>Members:</h6>
                     <div className='members'>
                         {selectedGroup.users.map((user)=>{
-                            return <p key={user._id}>{user.name}</p>
+                            if(user._id !== selectedGroup.groupAdmin._id)
+                                return <p key={user._id}>{user.name}</p>
                         })}
                     </div>
                 </div>
