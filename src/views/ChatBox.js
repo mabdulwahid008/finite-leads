@@ -13,6 +13,7 @@ import EditGroupName from 'components/editGroupName/EditGroupName'
 import RemoveUserFromGroup from 'components/removeUserFromGroup/RemoveUserFromGroup'
 import AddnewUserPopup from 'components/addnewUserGroupPopup/AddnewUserPopup'
 import DeleteGroup from 'components/deleteGroup/DeleteGroup'
+import ScrollableMessage from 'components/scrollableMessage/ScrollableMessage'
 
 function ChatBox() {
     const userRole = localStorage.getItem('userRole')
@@ -29,6 +30,52 @@ function ChatBox() {
 
     const [myGroups, setMyGroups] = useState(null)
     const [selectedGroup, setSelectedGroup] = useState(null)
+    const [messages, setMessages] = useState(null)
+    const [messageContent, setMessageContent] = useState("")
+
+    const sendMessage = async(e) => {
+        e.preventDefault()
+        if(messageContent.length === 0)
+            return;
+        
+        let data = {
+            chatId: selectedGroup._id,
+            content: messageContent
+        }
+        setMessageContent("")
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/send-msg`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            },
+            body: JSON.stringify(data)
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            setRefreash(true)
+        }
+        else{
+            toast.error(res.message)
+        }
+    }
+
+    const fetchMessages = async() => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/get-messages/${selectedGroup._id}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            },
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            setMessages(res)
+        }
+        else
+            toast.error(res.message)
+    
+    }
 
     const fetchMyGroups = async() => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/my-groups`,{
@@ -46,6 +93,11 @@ function ChatBox() {
         else
             toast.error(res.message)
     }
+
+    useEffect(()=>{
+        if(selectedGroup)
+            fetchMessages()
+    }, [selectedGroup])
 
     useEffect(()=> {
         setRefreash(false)
@@ -65,7 +117,8 @@ function ChatBox() {
                 {myGroups && myGroups.map((group, index) => {
                     return  <div className='group' key={index} onClick={()=>setSelectedGroup(group)}>
                                 <h5>{group.groupName}</h5>
-                                <p><span>Bilal</span>: Hello there</p>
+                                {group.latestMessage && <p><span>{group.latestMessage.sender.name}</span>: {group.latestMessage.content}</p>}
+                                {!group.latestMessage && <p>No mesages yet</p>}
                             </div>
                 })}
                
@@ -86,11 +139,12 @@ function ChatBox() {
                 </div>}
             </div>
             <div className='chatbox'>
-                hhhhhhhhhhhhh
+                {!messages && <Loading />}
+                {messages && <ScrollableMessage messages={messages}/>}
             </div>
-            <Form>
+            <Form onSubmit={sendMessage}>
                 <div className='send-box'>
-                    <Input type='text' placeholder='Write something ...'/>
+                    <Input type='text' value={messageContent} placeholder='Write something ...' required onChange={(e) => setMessageContent(e.target.value)}/>
                     <Button>
                         <i className='nc-icon nc-send' />
                     </Button>

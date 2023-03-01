@@ -2,8 +2,12 @@ const express = require('express')
 const authorization = require('../middleware/authorization')
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization')
 const Chat = require('../models/Chat')
+const Message = require('../models/Message')
 const User = require('../models/User')
 const router = express.Router()
+
+
+/* --------- group routes -------- */
 
 // create group
 router.post('/create-group', authorization, masterOrAdminAuthorization, async(req, res) => {
@@ -136,6 +140,53 @@ router.delete('/delete-group', authorization, masterOrAdminAuthorization, async(
         
     } catch (error) {
         
+    }
+})
+
+
+/* --------- messages routes -------- */
+
+// sending message
+router.post('/send-msg', authorization, async(req, res)=> {
+    const { chatId, content } = req.body;
+    try {
+        let message = await Message.create({
+            sender: req.user_id,
+            content: content,
+            chat: chatId,
+        })
+        message = await message.populate("sender", "name")
+        message = await message.populate("chat")
+        message = await User.populate(message, {
+            path: 'chat.users',
+            select: 'name'
+        })
+
+        await Chat.findByIdAndUpdate(chatId, {
+            latestMessage: message
+        })
+        return res.status(200).json(message)
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+//get messages
+router.get('/get-messages/:chatId', authorization, async(req, res)=> {
+    try {
+        const messages = await Message.find({chat: req.params.chatId})
+            .populate("sender", "name")
+            .populate("chat")
+        
+        let obj = {
+            requested_User: req.user_id
+        }
+        messages.push(obj)
+        return res.status(200).json(messages)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server Error'})
     }
 })
 
