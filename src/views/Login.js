@@ -27,6 +27,7 @@ function Login() {
         if(response.status === 200){
             localStorage.setItem('token', res.token)
             localStorage.setItem('userRole', res.role)
+            localStorage.setItem('user', res.userId)
             window.location.reload(true)
         }
         else{

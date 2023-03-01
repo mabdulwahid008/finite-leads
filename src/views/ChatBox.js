@@ -14,6 +14,11 @@ import RemoveUserFromGroup from 'components/removeUserFromGroup/RemoveUserFromGr
 import AddnewUserPopup from 'components/addnewUserGroupPopup/AddnewUserPopup'
 import DeleteGroup from 'components/deleteGroup/DeleteGroup'
 import ScrollableMessage from 'components/scrollableMessage/ScrollableMessage'
+import io from 'socket.io-client'
+
+
+const ENDPOINT = process.env.REACT_APP_BACKEND_HOST
+let socket, selectedChatCompare
 
 function ChatBox() {
     const userRole = localStorage.getItem('userRole')
@@ -32,6 +37,15 @@ function ChatBox() {
     const [selectedGroup, setSelectedGroup] = useState(null)
     const [messages, setMessages] = useState(null)
     const [messageContent, setMessageContent] = useState("")
+
+    const [socketConnected, setSocketConnected] = useState(false)
+
+    
+    useEffect(()=>{
+        socket = io(ENDPOINT)
+        socket.emit('setup', localStorage.getItem('user'))
+        socket.on('connection', ()=> setSocketConnected(true))
+    }, [])
 
     const sendMessage = async(e) => {
         e.preventDefault()
@@ -53,6 +67,8 @@ function ChatBox() {
         })
         const res = await response.json()
         if(response.status === 200){
+            console.log(res);
+            socket.emit('new message', res)
             setRefreash(true)
         }
         else{
@@ -95,8 +111,11 @@ function ChatBox() {
     }
 
     useEffect(()=>{
-        if(selectedGroup)
+        if(selectedGroup){
             fetchMessages()
+            socket.emit('join chat', selectedGroup._id)
+            selectedChatCompare = selectedGroup
+        }
     }, [selectedGroup])
 
     useEffect(()=> {
@@ -104,6 +123,17 @@ function ChatBox() {
 
         fetchMyGroups()
     }, [refreash])
+
+    useEffect(()=>{
+        socket.on('message recieved', (newMessageReceived) => {
+            if(!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id){
+                // show notification
+            }
+            else{
+                setMessages([...messages, newMessageReceived])
+            }
+        })
+    })
     
   return (
     <div className='chatscreen'>
@@ -117,7 +147,7 @@ function ChatBox() {
                 {myGroups && myGroups.map((group, index) => {
                     return  <div className='group' key={index} onClick={()=>setSelectedGroup(group)}>
                                 <h5>{group.groupName}</h5>
-                                {group.latestMessage && <p><span>{group.latestMessage.sender.name}</span>: {group.latestMessage.content}</p>}
+                                {group.latestMessage && <p><span>{group.latestMessage.sender.name}</span>: {group.latestMessage.content.substr(0, 30)}</p>}
                                 {!group.latestMessage && <p>No mesages yet</p>}
                             </div>
                 })}
