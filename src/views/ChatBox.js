@@ -125,14 +125,18 @@ function ChatBox() {
     }, [refreash])
 
     useEffect(()=>{
-        socket.on('message recieved', (newMessageReceived) => {
-            if(!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id){
-                // show notification
-            }
-            else{
-                setMessages([...messages, newMessageReceived])
-            }
-        })
+        // setTimeout(()=>{
+            socket.on('message recieved', (newMessageReceived) => {
+                if(!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id){
+                    // show notification
+                }
+                else{
+                    setMessages([...messages, newMessageReceived])
+                    fetchMyGroups()
+                    fetchMessages()
+                }
+            })
+        // },100)
     })
     
   return (
