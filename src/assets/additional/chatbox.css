@@ -115,7 +115,7 @@
 .chatbox{
     display: flex;
     flex-direction: column;
-    overflow: auto;
+    /* overflow: auto; */
     min-height: 78%;
     max-height: 78%;
     padding: 15px 20px 30px;
@@ -140,6 +140,10 @@
     color: white;
     cursor: pointer;
     padding: 5px;
+}
+.styles_scrollable-div__prSCv{
+    display: flex;
+    flex-direction: column;
 }
 
 .message{

@@ -98,6 +98,8 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res)=
         else    
             users = await User.find({}, {password: 0});
 
+        users = users.filter((user)=> user.role !== 5)
+
         const filteredUsers = users.filter((user) => user._id != req.user_id)
 
         return res.status(200).json(filteredUsers)

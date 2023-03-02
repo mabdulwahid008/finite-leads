@@ -116,6 +116,8 @@ function ChatBox() {
             socket.emit('join chat', selectedGroup._id)
             selectedChatCompare = selectedGroup
         }
+        if(!selectedGroup)
+            setMessages(null)
     }, [selectedGroup])
 
     useEffect(()=> {
@@ -125,18 +127,22 @@ function ChatBox() {
     }, [refreash])
 
     useEffect(()=>{
-        // setTimeout(()=>{
+        setTimeout(()=>{
             socket.on('message recieved', (newMessageReceived) => {
                 if(!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id){
-                    // show notification
+                    let count = 0;
+                    count++
+                   document.title = `Finite Leade | ${count} new message`
                 }
                 else{
+                    console.log(newMessageReceived);
                     setMessages([...messages, newMessageReceived])
-                    fetchMyGroups()
-                    fetchMessages()
                 }
+                
+                fetchMyGroups()
+                fetchMessages()
             })
-        // },100)
+        },0)
     })
     
   return (
@@ -147,11 +153,12 @@ function ChatBox() {
                 {(userRole == 3 || userRole === 5) && <i className='nc-icon nc-simple-add' onClick={()=>setCreateGroupPopup(true)}/>}
             </div>
             <div className='groups'>
-                {!myGroups && <Loading />}
+                {!myGroups && <div>No groups yet</div>}
+                {myGroups && myGroups.length === 0 && <div style={{padding:10, color:'white'}}>No groups yet</div>}
                 {myGroups && myGroups.map((group, index) => {
                     return  <div className='group' key={index} onClick={()=>setSelectedGroup(group)}>
                                 <h5>{group.groupName}</h5>
-                                {group.latestMessage && <p><span>{group.latestMessage.sender.name}</span>: {group.latestMessage.content.substr(0, 30)}</p>}
+                                {group.latestMessage && <p><span>{localStorage.getItem('user') === group.latestMessage.sender._id ? 'You' : group.latestMessage.sender.name}</span>: {group.latestMessage.content.substr(0, 30)}</p>}
                                 {!group.latestMessage && <p>No mesages yet</p>}
                             </div>
                 })}
@@ -173,7 +180,7 @@ function ChatBox() {
                 </div>}
             </div>
             <div className='chatbox'>
-                {!messages && <Loading />}
+                {!messages && <div> No messages yet </div>}
                 {messages && <ScrollableMessage messages={messages}/>}
             </div>
             <Form onSubmit={sendMessage}>

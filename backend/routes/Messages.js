@@ -19,6 +19,9 @@ router.post('/create-group', authorization, masterOrAdminAuthorization, async(re
 
         users.push(req.user_id)
 
+        const master = await User.findOne({role: 5})
+        users.push(master._id)
+
         await Chat.create({
             groupName: groupName,
             isGroupChat : true,
@@ -136,6 +139,7 @@ router.delete('/delete-group', authorization, masterOrAdminAuthorization, async(
             return res.status(401).json({message: 'Only the admin of this group can delete '})
         
         await group.delete()
+        await Message.deleteMany({chat: _id})
         return res.status(200).json({message: 'Group deleted successfully'})
         
     } catch (error) {
