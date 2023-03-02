@@ -24,3 +24,7 @@ backend/node_modules
 .env
 backend/.env
 
+backend_sql/node_modules
+.env
+backend_sql/.env
+

@@ -1,0 +1,14 @@
+CREATE DATABASE Finite Lead
+
+-- TABLES
+
+CREATE TABLE Users(
+    _id SERIAL PRIMARY KEY,
+    name VARCHAR(500) NOT NULL,
+    email VARCHAR(500) NOT NULL UNIQUE,
+    phone VARCHAR(11) NOT NULL,
+    address VARCHAR(1000),
+    password VARCHAR(100) NOT NULL,
+    role INT DEFAULT 0 NOT NULL,
+    created_at VARCHAR(20) NOT NULL
+)

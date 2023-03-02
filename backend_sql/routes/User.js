@@ -1,0 +1,65 @@
+const express = require('express')
+const router = express.Router();
+const db = require('../db')
+const bcrypt = require('bcrypt')
+const date = require('../date')
+const jwt = require('jsonwebtoken')
+const authorization = require('../middleware/authorization')
+const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization')
+
+
+// login 
+router.post('/login', async(req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await db.query('SELECT * FROM users WHERE email = $1', [
+            email
+        ])
+
+        if(user.rows.length === 0)
+            return res.status(401).json({message: "Email is incorrect"})
+        
+        const comparePass = await bcrypt.compare(password, user.rows[0].password)
+
+        if(!comparePass)
+        return res.status(401).json({message: "Password is incorrect"})
+    
+        const payload = {
+            user : {
+                id: user.rows[0]._id,
+                role: user.rows[0].role
+            }
+        }
+
+        const token = jwt.sign(payload, process.env.SECERET_KEY)
+        return res.status(200).json({token: token, role: user.rows[0].role, userId: user.rows[0]._id})
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message: "Server Error"})
+    }
+})
+
+// create User
+router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
+    const { name, phone, email, address, password, role } = req.body
+    try {
+        const user = await db.query('SELECT * FROM users WHERE email = $1',[
+            email
+        ])
+        if(user.rows.length > 0)
+            return res.status(422).json({message: "User with this email already registered"})
+    
+        const salt = bcrypt.genSaltSync(10)
+        const encryptedPass = bcrypt.hashSync(password, salt)
+
+        const createUser = await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at) VALUES($1, $2, $3, $4, $5, $6, $7)',[
+            name, phone, email, address, encryptedPass, role, date
+        ])
+        return res.status(200).json({message: 'User Created'})
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message: "Server Error"})
+    }
+})
+
+module.exports = router
