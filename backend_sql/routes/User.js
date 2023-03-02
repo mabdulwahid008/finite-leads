@@ -62,4 +62,40 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
     }
 })
 
+
+// edit user
+router.patch('/', authorization, masterOrAdminAuthorization, async(req, res) => {
+    const { _id, name, phone, email, address, role } = req.body;
+    try {
+        let user = await db.query('SELECT * FROM users WHERE _id = $1',[
+            _id
+        ])
+        if(user.rows.length === 0)
+            return res.status(422).json({message: "User not found"})
+        
+        if(req.user_role === 3 && user.role >= 3){
+            return res.status(401).json({message: 'You can\'t change data of users of this role'})
+        }
+
+        
+        if(user.rows[0].email !== email){
+             user = await db.query('SELECT * FROM users WHERE email = $1',[
+                    email
+                ])
+            
+            if(user.rows.length > 0)
+                return res.status(422).json({message: "User with this email already registered"})
+        }
+
+        // await db.query('UPDATE users SET name = $1, phone = $2, email = $3, address = $4, role =$5',[
+        //     name, phone, email, address, role
+        // ])
+
+        return res.status(200).json({message: 'Successfully Updated  user\'s data'})
+    } catch (error) {
+        
+    }
+
+})
+
 module.exports = router
