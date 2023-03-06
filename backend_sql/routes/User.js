@@ -87,15 +87,37 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res) => 
                 return res.status(422).json({message: "User with this email already registered"})
         }
 
-        // await db.query('UPDATE users SET name = $1, phone = $2, email = $3, address = $4, role =$5',[
-        //     name, phone, email, address, role
-        // ])
-
-        return res.status(200).json({message: 'Successfully Updated  user\'s data'})
-    } catch (error) {
         
+        user = await db.query('UPDATE users SET name = $1, phone = $2, email = $3, address = $4, role = $5 WHERE _id = $6',[
+            name, phone, email, address, role, _id
+        ])
+
+        return res.status(200).json({message: 'Successfully Updated user\'s data'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
     }
 
 })
+
+// get all users 
+router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        let users = []
+        if(req.params.role != 99)
+            users = await db.query('SELECT _id, name, email, phone, address, created_at, role FROM users WHERE role != 5 AND role = $1',[
+                req.params.role
+            ])
+        else
+            users = await db.query('SELECT _id, name, email, phone, address, created_at, role FROM users WHERE role != 5')
+
+        return res.status(200).json(users.rows)    
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Server Error"})
+    }
+})
+
+
 
 module.exports = router
