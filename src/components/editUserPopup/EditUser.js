@@ -38,6 +38,7 @@ function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
           toast.error("Agents phone number is incorrect");
           return;
         }
+
         const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user`,{
             method: 'PATCH',
             headers: {
@@ -55,8 +56,6 @@ function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
         else{
             toast.error(res.message)
         }
-    
-      
         
     };
 
@@ -89,7 +88,7 @@ function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
                     </FormGroup>
                     <FormGroup>
                         <label>User Role</label>
-                        <ReactSelect options={userRoles} defaultValue={agentRole}/>
+                        <ReactSelect options={userRoles} defaultValue={agentRole} onChange={(option)=> agentData.role = option.value}/>
                     </FormGroup>
                     <FormGroup>
                         <label>Address</label>

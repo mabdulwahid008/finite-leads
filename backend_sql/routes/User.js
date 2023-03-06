@@ -62,11 +62,11 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
     }
 })
 
-
 // edit user
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res) => {
     const { _id, name, phone, email, address, role } = req.body;
     try {
+        console.log(role);
         let user = await db.query('SELECT * FROM users WHERE _id = $1',[
             _id
         ])
@@ -115,6 +115,28 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res) 
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Server Error"})
+    }
+})
+
+// get user details
+router.post('/getdetails', async(req, res)=> {
+    try {
+        let user = await db.query('SELECT * FROM users WHERE email = $1',[
+            req.body.email
+        ])
+        if(user.rows.length > 0)
+            return res.status(422).json({message: 'User with this email exisis'})
+
+        const salt = bcrypt.genSaltSync(10)
+        const encryptedPass = bcrypt.hashSync(req.body.password, salt)
+
+        await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at) VALUES($1, $2, $3, $4, $5, $6, $7)',[
+            req.body.name, req.body.phone, req.body.email, req.body.address, encryptedPass, req.body.role, date
+        ])
+        return res.status(200).json({message: 'Success'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: "Server Error"})
     }
 })
 
