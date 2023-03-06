@@ -12,3 +12,16 @@ CREATE TABLE Users(
     role INT DEFAULT 0 NOT NULL,
     created_at VARCHAR(20) NOT NULL
 )
+
+CREATE TABLE Sales(
+    _id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    client_name VARCHAR(500) NOT NULL,
+    client_phone VARCHAR(15) NOT NULL,
+    client_address VARCHAR(1000) NOT NULL,
+    multiplier INT DEFAULT 1 NOT NULL,
+    updated_multiplier INT,
+    create_at VARCHAR(20) NOT NULL,
+    updated_at VARCHAR(20),
+    FOREIGN KEY (user_id) REFERENCES Users(_id) ON DELETE CASCADE
+)
