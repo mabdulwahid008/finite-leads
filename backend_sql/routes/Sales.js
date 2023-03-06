@@ -10,13 +10,16 @@ const moment = require('moment-timezone')
 // user to get his own sales
 router.get('/mysales', authorization, async(req, res)=> {
     try {
-        const sales = await db.query('SELECT client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1 AND create_at >= $2 AND create_at <= $3',[
+        const sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1 AND create_at >= $2 AND create_at <= $3',[
             req.user_id, startDate, endDate
         ])
         
-        return res.status(200).json(sales.rows.reverse())
+        return res.status(200).json(sales.rows.sort(function(a, b) {
+            if (a._id !== b._id) {
+                return b._id - a._id 
+            }}))
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
     }
 })
@@ -27,25 +30,28 @@ router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorizat
         let sales = [];
         // default call
         if(req.params.agentId == 0 && req.params.fromDate == 0 && req.params.toDate == 0)
-            sales = await db.query('SELECT SALES._id, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id')
+            sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id')
         // all sales of specific agent
         else if(req.params.agentId != 0 && req.params.fromDate == 0 && req.params.toDate == 0)
-             sales = await db.query('SELECT SALES._id, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1',[
+             sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1',[
                  req.params.agentId
              ])
         // within time period sales of specific agent
         else if(req.params.agentId != 0 && req.params.fromDate != 0 && req.params.toDate != 0)
-            sales = await db.query('SELECT SALES._id, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1 AND create_at >= $2 AND create_at <= $3',[
+            sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1 AND create_at >= $2 AND create_at <= $3',[
                 req.params.agentId, req.params.fromDate, req.params.toDate
             ])
         // all sales within time perios
         else if(req.params.agentId == 0 && req.params.fromDate != 0 && req.params.toDate != 0)
-            sales = await db.query('SELECT SALES._id, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE create_at >= $1 AND create_at <= $2',[
+            sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE create_at >= $1 AND create_at <= $2',[
                 req.params.fromDate, req.params.toDate
             ])
         else{}    
         
-        return res.status(200).json(sales.rows.reverse())
+        return res.status(200).json(sales.rows.sort(function(a, b) {
+            if (a._id !== b._id) {
+                return b._id - a._id 
+            }}))
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
@@ -54,20 +60,24 @@ router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorizat
 
 // edit sale
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
-    const {_id, client_name, client_phone, client_address, multiplier} = req.body;
+    const {_id, client_name, client_phone, client_address, multiplier, extraBonus} = req.body;
     try {
         const sale = await db.query('SELECT * FROM sales WHERE _id = $1',[
             _id
         ])
+
+        await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4 WHERE _id = $5',[
+                    client_name, client_phone, client_address, extraBonus, _id
+        ])
         
-        if(sale.rows[0].multiplier !== multiplier)
-            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, updated_multiplier = $4 WHERE _id = $5',[
-                client_name, client_phone, client_address, multiplier, _id
-            ])
-        else
-            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, multiplier = $4 WHERE _id = $5',[
-                client_name, client_phone, client_address, multiplier, _id
-            ])
+        // if(sale.rows[0].multiplier !== multiplier)
+        //     await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, updated_multiplier = $4 WHERE _id = $5',[
+        //         client_name, client_phone, client_address, multiplier, _id
+        //     ])
+        // else
+        //     await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, multiplier = $4 WHERE _id = $5',[
+        //         client_name, client_phone, client_address, multiplier, _id
+        //     ])
         return res.status(200).json({message: 'Sale updated'})
     } catch (error) {
         console.log(error.message);

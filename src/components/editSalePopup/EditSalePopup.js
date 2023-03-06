@@ -62,9 +62,13 @@ function EditSalePopup({ saleToBeEdited, setSaleToBeEdited, setEditSalePopup, se
                         <Input type="text" value={sale.client_address} name="client_address" onChange={onChange}/>
                     </FormGroup>
                     <FormGroup>
+                        <label>Extra Bonus</label>
+                        <Input type="number" defaultValue={sale.extrabonus} name="extraBonus" onChange={onChange}/>
+                    </FormGroup>
+                    {/* <FormGroup>
                         <label>Multiplier</label>
                         <Input type="number" defaultValue={sale.updated_multiplier? sale.updated_multiplier : sale.multiplier} name="multiplier" onChange={onChange}/>
-                    </FormGroup>
+                    </FormGroup> */}
                     <Button disabled={loading? true : false}>{`${loading? 'Please Wait' : 'Update'}`}</Button>
                 </Form>
             </CardBody>

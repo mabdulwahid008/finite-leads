@@ -106,7 +106,7 @@ function Dashboard() {
             if(todaySales[i].updated_multiplier)
               _dailyBonus += todaySales[i].updated_multiplier * 1000
             else
-              _dailyBonus += todaySales[i].multiplier * 1000
+              _dailyBonus += (todaySales[i].multiplier * 1000) + todaySales[i].extrabonus
             _dailySales += 1
           }
           setDailyBonus(_dailyBonus)
@@ -116,7 +116,7 @@ function Dashboard() {
             if(sales[i].updated_multiplier)
               _totalBonus += sales[i].updated_multiplier * 1000;
             else
-              _totalBonus += sales[i].multiplier * 1000;
+              _totalBonus += (sales[i].multiplier * 1000) + sales[i].extrabonus;
             _monthlySales +=1
 
           }
@@ -193,7 +193,7 @@ function Dashboard() {
             if(todaySales[i].updated_multiplier)
               _dailyBonus += todaySales[i].updated_multiplier * 1000
             else
-              _dailyBonus += todaySales[i].multiplier * 1000
+              _dailyBonus += (todaySales[i].multiplier * 1000) + todaySales[i].extrabonus
             _dailySales += 1
           }
           setDailyBonus(_dailyBonus)
@@ -203,7 +203,7 @@ function Dashboard() {
             if(mySales[i].updated_multiplier)
               _monthlyBonus += mySales[i].updated_multiplier * 1000
             else
-              _monthlyBonus += mySales[i].multiplier * 1000
+              _monthlyBonus += (mySales[i].multiplier * 1000) + mySales[i].extrabonus
             _monthlySales += 1
           }
           setMonthlyBonus(_monthlyBonus)

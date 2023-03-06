@@ -38,7 +38,7 @@ function AgentSalesListing() {
                 if(todaySales[i].updated_multiplier)
                     _dailyBonus += todaySales[i].updated_multiplier * 1000
                 else
-                    _dailyBonus += todaySales[i].multiplier * 1000
+                    _dailyBonus += (todaySales[i].multiplier * 1000) + todaySales[i].extrabonus
             }
             setDailyBonus(_dailyBonus)
 
@@ -46,7 +46,7 @@ function AgentSalesListing() {
                 if(mySales[i].updated_multiplier)
                     _monthlyBonus += mySales[i].updated_multiplier * 1000
                 else
-                    _monthlyBonus += mySales[i].multiplier * 1000
+                    _monthlyBonus += (mySales[i].multiplier * 1000) + mySales[i].extrabonus
             }
             setMonthlyBonus(_monthlyBonus)
             
@@ -97,6 +97,7 @@ function AgentSalesListing() {
                                     <th style={{width:'20%'}}>Client Phone</th>
                                     <th style={{width:'25%'}}>Clinet Address</th>
                                     <th style={{width:'15%'}}>Created On</th>
+                                    <th style={{width:'15%'}}>Sale Bonus</th>
                                     <th style={{width:'15%'}} className="text-right">Bonus</th>
                                 </tr>
                              </thead>
@@ -108,7 +109,8 @@ function AgentSalesListing() {
                                         <td>{sale.client_phone}</td>
                                         <td>{sale.client_address}</td>
                                         <td>{sale.create_at}</td>
-                                        <td className="text-right">{sale.updated_multiplier? sale.updated_multiplier * 1000 : sale.multiplier * 1000} Rs</td>
+                                        <td>{sale.multiplier * 1000} Rs</td>
+                                        <td className="text-right">{sale.extrabonus} Rs</td>
                                     </tr>
                                 })}
                             </tbody>

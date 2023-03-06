@@ -48,7 +48,7 @@ function Sales() {
                 if(sales[i].updated_multiplier)
                     _totalBonus += sales[i].updated_multiplier * 1000
                 else
-                    _totalBonus += sales[i].multiplier * 1000
+                    _totalBonus += (sales[i].multiplier * 1000) + sales[i].extrabonus
             }
             setTotalBonus(_totalBonus)
     }
@@ -99,6 +99,7 @@ function Sales() {
         const res = await response.json()
         if(response.status === 200){
             setSales(res)
+            console.log(res);
         }
         else
             toast.error(res.message)
@@ -156,14 +157,15 @@ function Sales() {
                        {sales && sales.length !== 0 && <Table responsive={onMobile ? true : false }>
                             <thead>
                                 <tr>
-                                    <th style={{width: '3%'}}>#</th>
+                                    <th style={{width: '2%'}}>#</th>
                                     <th style={{width: '10%'}}>Client Name</th>
                                     <th style={{width: '10%'}}>Client Phone</th>
-                                    <th style={{width: '20%'}}>Client Address</th>
-                                    <th style={{width: '12%'}}>Created On</th>
+                                    <th style={{width: '10%'}}>Client Address</th>
+                                    <th style={{width: '10%'}}>Created On</th>
                                     <th style={{width: '10%'}}>Sale Agent</th>
-                                    <th style={{width: '5%'}}>Bonus</th>
-                                    <th style={{width: '8%'}} className="text-right">Actions</th>
+                                    <th style={{width: '8%'}}>Sale Bonus</th>
+                                    <th style={{width: '10%'}}>Extra Bonus</th>
+                                    <th style={{width: '5%'}} className="text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,7 +177,9 @@ function Sales() {
                                         <td>{sale.client_address}</td>
                                         <td>{sale.create_at}</td>
                                         <td>{sale.name}</td>
-                                        <td>{sale.updated_multiplier? sale.updated_multiplier * 1000 : sale.multiplier * 1000}Rs</td>
+                                        {/* <td>{sale.updated_multiplier? sale.updated_multiplier * 1000 : sale.multiplier * 1000}Rs</td> */}
+                                        <td>{sale.multiplier * 1000}Rs</td>
+                                        <td>{sale.extrabonus}Rs</td>
                                         <div className='actions'>
                                             <FaRegEdit onClick={()=> {setSaleToBeEdited(sale); setEditSalePopup(true)}}/>
                                             <FaTrash onClick={()=>{setDeleteSalePopup(true); setSaleToBeDeleted(sale)}}/>
