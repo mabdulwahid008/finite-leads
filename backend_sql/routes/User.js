@@ -118,6 +118,39 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res) 
     }
 })
 
+// delete user
+router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        let user = await db.query('SELECT * FROM users WHERE _id = $1',[
+            req.params.id
+        ])
+        if(user.rows.length === 0)
+            return res.status(404).json({message: 'User Not Fount'})
+
+        if(req.user_role === 3 && user.rows[0].role >= 3)
+            return res.status(401).json({message: 'You can\'t delete users of this role'})
+        
+        await db.query('DELETE FROM users WHERE _id = $1', [
+            req.params.id
+        ])
+
+        return res.status(200).json({message: 'User deleted successfully'})
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message: "Server Error"})
+    }
+})
+
+//for admin and master to add sale for sale agents
+router.get('/', authorization, async(req, res)=> {
+    try {
+        const salesAgent = await db.query('SELECT _id, name From users WHERE role = 0')
+        return res.status(200).json(salesAgent.rows)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
 
 
 module.exports = router
