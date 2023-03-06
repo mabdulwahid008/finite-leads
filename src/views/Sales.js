@@ -174,7 +174,7 @@ function Sales() {
                                         <td>{sale.client_phone}</td>
                                         <td>{sale.client_address}</td>
                                         <td>{sale.create_at}</td>
-                                        <td>{sale.user_id.name}</td>
+                                        <td>{sale.name}</td>
                                         <td>{sale.updated_multiplier? sale.updated_multiplier * 1000 : sale.multiplier * 1000}Rs</td>
                                         <div className='actions'>
                                             <FaRegEdit onClick={()=> {setSaleToBeEdited(sale); setEditSalePopup(true)}}/>

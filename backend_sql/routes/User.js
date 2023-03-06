@@ -66,7 +66,6 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res) => {
     const { _id, name, phone, email, address, role } = req.body;
     try {
-        console.log(role);
         let user = await db.query('SELECT * FROM users WHERE _id = $1',[
             _id
         ])
@@ -111,7 +110,7 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res) 
         else
             users = await db.query('SELECT _id, name, email, phone, address, created_at, role FROM users WHERE role != 5')
 
-        return res.status(200).json(users.rows)    
+        return res.status(200).json(users.rows.reverse())    
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Server Error"})
