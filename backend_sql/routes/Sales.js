@@ -4,6 +4,7 @@ const db = require('../db');
 const authorization = require('../middleware/authorization');
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization');
 const router = express.Router()
+const moment = require('moment-timezone')
 
 
 // user to get his own sales
@@ -131,6 +132,47 @@ router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)
             req.params.id
         ])
         return res.status(200).json({message: 'Sale deleted successfully'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+
+// for dashboard graph 
+router.get('/stats', authorization, async(req, res)=>{
+    const date = moment.tz(Date.now(), "America/Los_Angeles");
+    let startOfMonth = ''
+    let endOfMonth = ''
+    const data = []
+
+    try {
+        if(req.user_role === 5 || req.user_role === 3){
+            for (let i = 1; i <= date.month()+1; i++) {
+                startOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-01`
+                endOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-31`
+
+                const sales = await db.query('SELECT * FROM sales WHERE create_at >= $1 AND create_at <= $2',[
+                    startOfMonth, endOfMonth
+                ])
+
+                data.push(sales.rows.length)
+            }
+        }
+        if(req.user_role === 0){
+            for (let i = 1; i <= date.month()+1; i++) {
+                startOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-01`
+                endOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-31`
+
+                const sales = await db.query('SELECT * FROM sales WHERE create_at >= $1 AND create_at <= $2 AND user_id = $3',[
+                    startOfMonth, endOfMonth, req.user_id
+                ])
+
+                data.push(sales.rows.length)
+            }
+        }
+
+        return res.status(200).json({data})
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
