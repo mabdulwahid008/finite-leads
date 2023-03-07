@@ -26,3 +26,28 @@ CREATE TABLE Sales(
     updated_at VARCHAR(20),
     FOREIGN KEY (user_id) REFERENCES Users(_id) ON DELETE CASCADE
 )
+
+CREATE TABLE Chat(
+    _id SERIAL PRIMARY KEY,
+    groupName VARCHAR(200) NOT NULL,
+    latestMessage VARCHAR(2000),
+    groupAdmin INT NOT NULL,
+    FOREIGN KEY (groupAdmin) REFERENCES Users(_id),
+    create_at VARCHAR(20) NOT NULL
+)
+CREATE TABLE Groups(
+    _chatId INT NOT NULL,
+    _userId INT NOT NULL,
+    FOREIGN KEY (_chatId) REFERENCES Chat(_id),
+    FOREIGN KEY (_userId) REFERENCES Users(_id)
+)
+CREATE TABLE Messages(
+    _id SERIAL PRIMARY KEY,
+    content VARCHAR(2000),
+    _userId INT NOT NULL,
+    _chatId INT NOT NULL,
+    FOREIGN KEY (_chatId) REFERENCES Chat(_id),
+    FOREIGN KEY (_userId) REFERENCES Users(_id),
+    create_at VARCHAR(20) NOT NULL
+)
+

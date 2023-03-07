@@ -14,6 +14,7 @@ app.use(express.json())
 
 app.use('/user', require('./routes/User'))
 app.use('/sale', require('./routes/Sales'))
+app.use('/chat', require('./routes/Chat'))
 
 app.listen(PORT, ()=>{
     console.log(`App is listening on port ${PORT}`);
