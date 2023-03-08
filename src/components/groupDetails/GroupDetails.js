@@ -14,7 +14,7 @@ function GroupDetails({ selectedGroup, setGroupDetails }) {
             <CardBody>
                 <div className='group-details'>
                     <h6>Admin: </h6>
-                    <p>{selectedGroup.groupAdmin.name}</p>
+                    <p>{selectedGroup.groupadmin}</p>
                 </div>
                 <div className='group-details'>
                     <h6>Members:</h6>
@@ -27,7 +27,7 @@ function GroupDetails({ selectedGroup, setGroupDetails }) {
                 </div>
                 <div className='group-details'>
                     <h6>Created at:</h6>
-                    <p>{selectedGroup.createdAt}</p>
+                    <p>{selectedGroup.create_at}</p>
                 </div>
             </CardBody>
         </Card>

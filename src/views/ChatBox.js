@@ -38,63 +38,21 @@ function ChatBox() {
     const [messages, setMessages] = useState(null)
     const [messageContent, setMessageContent] = useState("")
 
-    const [socketConnected, setSocketConnected] = useState(false)
 
     
-    useEffect(()=>{
-        socket = io(ENDPOINT)
-        socket.emit('setup', localStorage.getItem('user'))
-        socket.on('connection', ()=> setSocketConnected(true))
-    }, [])
 
     const sendMessage = async(e) => {
         e.preventDefault()
-        if(messageContent.length === 0)
-            return;
-        
-        let data = {
-            chatId: selectedGroup._id,
-            content: messageContent
-        }
-        setMessageContent("")
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/send-msg`,{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'Application/json',
-                token: localStorage.getItem('token')
-            },
-            body: JSON.stringify(data)
-        })
-        const res = await response.json()
-        if(response.status === 200){
-            console.log(res);
-            socket.emit('new message', res)
-            setRefreash(true)
-        }
-        else{
-            toast.error(res.message)
-        }
+       
     }
 
     const fetchMessages = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/get-messages/${selectedGroup._id}`,{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'Application/json',
-                token: localStorage.getItem('token')
-            },
-        })
-        const res = await response.json()
-        if(response.status === 200){
-            setMessages(res)
-        }
-        else
-            toast.error(res.message)
+        
     
     }
 
     const fetchMyGroups = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/my-groups`,{
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/my-chats`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -113,8 +71,6 @@ function ChatBox() {
     useEffect(()=>{
         if(selectedGroup){
             fetchMessages()
-            socket.emit('join chat', selectedGroup._id)
-            selectedChatCompare = selectedGroup
         }
         if(!selectedGroup)
             setMessages(null)
@@ -127,22 +83,7 @@ function ChatBox() {
     }, [refreash])
 
     useEffect(()=>{
-        setTimeout(()=>{
-            socket.on('message recieved', (newMessageReceived) => {
-                if(!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id){
-                    let count = 0;
-                    count++
-                   document.title = `Finite Leade | ${count} new message`
-                }
-                else{
-                    console.log(newMessageReceived);
-                    setMessages([...messages, newMessageReceived])
-                }
-                
-                fetchMyGroups()
-                fetchMessages()
-            })
-        },0)
+       
     })
     
   return (
@@ -157,7 +98,7 @@ function ChatBox() {
                 {myGroups && myGroups.length === 0 && <div style={{padding:10, color:'white'}}>No groups yet</div>}
                 {myGroups && myGroups.map((group, index) => {
                     return  <div className='group' key={index} onClick={()=>setSelectedGroup(group)}>
-                                <h5>{group.groupName}</h5>
+                                <h5>{group.groupname}</h5>
                                 {group.latestMessage && <p><span>{localStorage.getItem('user') === group.latestMessage.sender._id ? 'You' : group.latestMessage.sender.name}</span>: {group.latestMessage.content.substr(0, 30)}</p>}
                                 {!group.latestMessage && <p>No mesages yet</p>}
                             </div>
