@@ -37,10 +37,30 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
         }
         
         return res.status(200).json({message: 'Group Created Successfully'})
-
     } catch (error) {
         console.log(error.message);
         return res.status(200).json({message: 'Server Error'})
+    }
+})
+
+// my groups
+router.get('/my-chats', authorization, async(req, res) => {
+    try {
+        const chats = await db.query('SELECT * FROM groups WHERE _userId = $1',[
+            req.user_id
+        ])
+        let myChats = []
+        for (let i = 0; i < chats.length; i++) {
+            const chat = await db.query('SELECT * FROM chat where _id = $1',[
+                chats.rows[i]._chatId
+            ])
+            myChats.push(chat.rows)
+        }
+
+        return res.status(200).json(chats.rows[0]._chatId)
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
     }
 })
 
