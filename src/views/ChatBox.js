@@ -119,6 +119,8 @@ function ChatBox() {
         }
         if(!selectedGroup)
             setMessages(null)
+        // if(selectedGroup.length === 0)
+        //     setMessages(null)
     }, [selectedGroup])
 
     useEffect(()=> {

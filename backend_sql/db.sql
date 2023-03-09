@@ -31,6 +31,8 @@ CREATE TABLE Chat(
     _id SERIAL PRIMARY KEY,
     groupName VARCHAR(200) NOT NULL,
     latestMessage VARCHAR(2000),
+    latestMessage_sender_id INT,
+    latestMessage_sender_name VARCHAR(500),
     groupAdmin INT NOT NULL,
     FOREIGN KEY (groupAdmin) REFERENCES Users(_id),
     create_at VARCHAR(20) NOT NULL
@@ -50,4 +52,13 @@ CREATE TABLE Messages(
     FOREIGN KEY (_userId) REFERENCES Users(_id),
     create_at VARCHAR(20) NOT NULL
 )
+
+-- CREATE TABLE latestMessage(
+--     _id SERIAL PRIMARY KEY,
+--     latest_message_content VARCHAR(2000),
+--     _userId INT NOT NULL,
+--     _chatId INT NOT NULL,
+--     FOREIGN KEY (_chatId) REFERENCES Chat(_id),
+--     FOREIGN KEY (_userId) REFERENCES Users(_id),
+-- )
 

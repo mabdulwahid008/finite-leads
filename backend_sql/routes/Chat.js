@@ -29,8 +29,8 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
         ])
 
         // getting _id of created chat
-        const chat = await db.query('SELECT * FROM chat WHERE create_at = $1', [
-            date
+        const chat = await db.query('SELECT * FROM chat WHERE groupname = $1', [
+            groupName
         ])
 
         // inserting to group table
@@ -139,6 +139,7 @@ router.delete('/delete-group', authorization, masterOrAdminAuthorization, async(
         if(!isAdmin)
             return res.status(401).json({message: 'You are not admin of this group'})
         
+        await db.query('DELETE FROM messages WHERE _chatId = $1', [_id])
         await db.query('DELETE FROM groups WHERE _chatId = $1', [_id])
         await db.query('DELETE FROM chat WHERE _id = $1', [_id])
 

@@ -72,21 +72,21 @@ var routes = [
     role: [0,3,5],
   },
   {
-    path: "/Chatbox",
-    name: "Chatbox",
-    icon: "nc-icon nc-simple-add",
+    path: "/Messages",
+    name: "Messages",
+    icon: "nc-icon nc-send",
     component: ChatBox,
     layout: "/admin",
     role: [0,3,5],
   },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "nc-icon nc-diamond",
-    component: Icons,
-    layout: "/admin",
-    role : [0,3,5]
-  },
+  // {
+  //   path: "/icons",
+  //   name: "Icons",
+  //   icon: "nc-icon nc-diamond",
+  //   component: Icons,
+  //   layout: "/admin",
+  //   role : [0,3,5]
+  // },
 //   {
 //     path: "/maps",
 //     name: "Maps",
