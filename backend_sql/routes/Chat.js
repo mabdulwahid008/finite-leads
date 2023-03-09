@@ -5,6 +5,10 @@ const authorization = require("../middleware/authorization")
 const masterOrAdminAuthorization = require("../middleware/masterOrAdminAuthorization")
 const router = express.Router()
 
+
+// -----  CHATS ------
+
+
 // create group
 router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
     const { groupName, users } = req.body;
@@ -53,7 +57,7 @@ router.get('/my-chats', authorization, async(req, res) => {
 
         for (let i = 0; i < chats.rows.length; i++) {
             // geting chat metadata
-            let chat = await db.query('SELECT chat._id, groupname, latestmessage, name as groupadmin, create_at FROM chat INNER JOIN users on chat.groupadmin = users._id where chat._id = $1',[
+            let chat = await db.query('SELECT chat._id, groupname, latestmessage, latestMessage_sender_id, latestMessage_sender_name, groupadmin as groupadmin_id, name as groupadmin_name, create_at FROM chat INNER JOIN users on chat.groupadmin = users._id where chat._id = $1',[
                 chats.rows[i]._chatid
             ])
             // geting users in that chat
@@ -61,11 +65,12 @@ router.get('/my-chats', authorization, async(req, res) => {
                 chats.rows[i]._chatid
             ])
 
-            chat.rows[i].users = users.rows
+            chat.rows[0].users = users.rows
+            myChats.push(chat.rows[0])
+            
 
-            myChats.push(chat.rows[i])
         }
-        return res.status(200).json(myChats)
+        return res.status(200).json(myChats.reverse())
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
@@ -73,7 +78,7 @@ router.get('/my-chats', authorization, async(req, res) => {
 })
 
 // updating group name
-router.get('/update-group-name', authorization, masterOrAdminAuthorization, async(req, res)=> {
+router.patch('/update-group-name', authorization, masterOrAdminAuthorization, async(req, res)=> {
     const { _id, updatedGroupName } = req.body
     try {
         await db.query('UPDATE chat SET groupname = $1 WHERE _id = $2',[
@@ -95,7 +100,7 @@ router.patch('/add-new-users', authorization, masterOrAdminAuthorization, async(
         ])
 
         if(chat.rows.length > 0)
-            return res.status(200).json({message: 'User is already a member'})
+            return res.status(422).json({message: 'User is already a member'})
         
         await db.query('INSERT INTO groups(_chatid, _userid) VALUES($1, $2)',[
             _id, userId
@@ -141,6 +146,46 @@ router.delete('/delete-group', authorization, masterOrAdminAuthorization, async(
     } catch (error) {
         console.log(error.message);
         return res.status(200).json({message: 'Server Error'})
+    }
+})
+
+
+
+// -----  MESSAGES ------
+
+// sending message
+router.post('/send-msg', authorization, async(req, res) => {
+    const { chatId, content } = req.body;
+    try {
+        await db.query('INSERT INTO messages(content, _userId, _chatId, create_at) VALUES($1, $2, $3, $4)',[
+            content, req.user_id, chatId, date
+        ])
+
+        const sender = await db.query('SELECT name FROM users WHERE _id = $1',[
+            req.user_id
+        ])
+
+        await db.query('UPDATE chat SET latestMessage = $1, latestMessage_sender_id = $2, latestMessage_sender_name = $3 WHERE _id = $4',[
+            content, req.user_id, sender.rows[0].name, chatId
+        ])
+        return res.status(200).json({message: 'Ok'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+//get messages
+router.get('/get-messages/:chatId', authorization, async(req, res)=> {
+    try {
+        const messages = await db.query('SELECT MESSAGES._id, content, USERS._id as sender_id, name as sender FROM MESSAGES INNER JOIN USERS ON MESSAGES._userid = USERS._id WHERE MESSAGES._chatid = $1',[
+            req.params.chatId
+        ])
+      
+        return res.status(200).json(messages.rows)
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
     }
 })
 

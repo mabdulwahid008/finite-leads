@@ -14,13 +14,13 @@ function GroupDetails({ selectedGroup, setGroupDetails }) {
             <CardBody>
                 <div className='group-details'>
                     <h6>Admin: </h6>
-                    <p>{selectedGroup.groupadmin}</p>
+                    <p>{selectedGroup.groupadmin_name}</p>
                 </div>
                 <div className='group-details'>
                     <h6>Members:</h6>
                     <div className='members'>
                         {selectedGroup.users.map((user)=>{
-                            if(user._id !== selectedGroup.groupAdmin._id)
+                            if(user._id !== selectedGroup.groupadmin_id)
                                 return <p key={user._id}>{user.name}</p>
                         })}
                     </div>

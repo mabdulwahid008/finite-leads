@@ -8,10 +8,17 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
+import io from 'socket.io-client'
 
 var ps;
 
 function Dashboard(props) {
+
+  // const socket = io(process.env.REACT_APP_BACKEND_HOST)
+  // socket.on('connection',()=>{})
+  // socket.emit('setup', localStorage.getItem('user'))
+
+
   const [backgroundColor, setBackgroundColor] = React.useState("black");
   const [activeColor, setActiveColor] = React.useState("info");
   const mainPanel = React.useRef();

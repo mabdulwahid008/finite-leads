@@ -7,8 +7,8 @@ function ScrollableMessage({ messages }) {
     <ScrollableFeed>
         {messages && messages.map((message)=>{
             if(message.content)
-            return <div key={message._id} className={`message ${myId === message.sender._id ? 'message-right': 'message-left'}`}>
-                <p>{myId === message.sender._id ? 'You' : message.sender.name}</p>
+            return <div key={message._id} className={`message ${myId == message.sender_id ? 'message-right': 'message-left'}`}>
+                <p>{myId === message.sender_id ? 'You' : message.sender}</p>
                 <p>{message.content}</p>
             </div>
         })}

@@ -110,7 +110,11 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res) 
         else
             users = await db.query('SELECT _id, name, email, phone, address, created_at, role FROM users WHERE role != 5')
 
-        return res.status(200).json(users.rows.reverse())    
+        users = users.rows.filter((user) => user._id != req.user_id)
+        return res.status(200).json(users.sort(function(a, b) {
+            if (a._id !== b._id) {
+                return b._id - a._id 
+            }}))    
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Server Error"})
