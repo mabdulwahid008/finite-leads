@@ -1,5 +1,5 @@
 const express = require('express');
-const { dateWithoutTime, date, startDate, endDate } = require('../date');
+const { dateWithoutTime, date, startDate, endDate, time } = require('../date');
 const db = require('../db');
 const authorization = require('../middleware/authorization');
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization');
@@ -60,15 +60,50 @@ router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorizat
 
 // edit sale
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
-    const {_id, client_name, client_phone, client_address, multiplier, extrabonus} = req.body;
+    const {_id, user_id, client_name, client_phone, client_address, multiplier, extrabonus, create_at} = req.body;
     try {
+        let newdate = create_at;
+
+        let dateUpdate = false;
+        if(newdate.length === 10){
+            newdate = create_at.concat(`/${time}`)
+            dateUpdate = true
+        }
         const sale = await db.query('SELECT * FROM sales WHERE _id = $1',[
             _id
         ])
 
-        await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4 WHERE _id = $5',[
-                    client_name, client_phone, client_address, extrabonus, _id
-        ])
+        if(!dateUpdate)
+            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, create_at= $5 WHERE _id = $6',[
+                        client_name, client_phone, client_address, extrabonus, newdate, _id
+            ])
+        if(dateUpdate){
+            // getting user sales
+            const userSales = await db.query('SELECT * FROM sales WHERE user_id = $1', [
+                user_id ? user_id : req.user_id
+            ])
+
+            // filtering user's today sales
+            const thatDaySales = userSales.rows.filter((sale) => sale.create_at.includes(newdate.substr(0, 10)))
+            
+            let multiplier = 1;
+
+            if(thatDaySales.length !== 0){
+                // getting the last value for the multiplier 
+                for (let i = 0; i < thatDaySales.length; i++) {
+                    multiplier = todaySales[i].multiplier
+                }
+                
+                if(multiplier < 5)
+                    multiplier += 1;
+                if(multiplier === 5)
+                    multiplier = 5;
+            }
+
+            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, multiplier = $5 WHERE _id = $6',[
+                client_name, client_phone, client_address, extrabonus, multiplier, _id
+            ])
+        }
         
         // if(sale.rows[0].multiplier !== multiplier)
         //     await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, updated_multiplier = $4 WHERE _id = $5',[

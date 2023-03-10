@@ -29,4 +29,6 @@ if((timeZone.month()+1) <= 9){
     endDate =  `${timeZone.year()}-0${timeZone.month()+1}-31`
 }
 
-module.exports = {date, dateWithoutTime, startDate, endDate}
+let time = `${timeZone.hour()}:${timeZone.minute()}`
+
+module.exports = {date, dateWithoutTime, startDate, endDate, time}

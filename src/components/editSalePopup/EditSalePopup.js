@@ -7,7 +7,6 @@ function EditSalePopup({ saleToBeEdited, setSaleToBeEdited, setEditSalePopup, se
     const [sale, setSale] = useState(saleToBeEdited)
     const [loading, setLoading] = useState(false)
 
-
     const onChange = (e) => {
         setSale({...sale, [e.target.name]: e.target.value})
     }
@@ -64,6 +63,10 @@ function EditSalePopup({ saleToBeEdited, setSaleToBeEdited, setEditSalePopup, se
                     <FormGroup>
                         <label>Extra Bonus</label>
                         <Input type="number" defaultValue={sale.extrabonus} name="extrabonus" onChange={onChange}/>
+                    </FormGroup>
+                    <FormGroup>
+                        <label>Create At</label>
+                        <Input type="date" defaultValue={sale.create_at.substr(0, 10)} name="create_at" onChange={onChange}/>
                     </FormGroup>
                     {/* <FormGroup>
                         <label>Multiplier</label>
