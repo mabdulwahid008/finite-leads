@@ -10,7 +10,7 @@ function AddnewUserPopup({ selectedGroup, setAddUserPopup, setRefreash }) {
     const [user, setUser] = useState(null)
 
     const fetchUsers = async() =>{
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user/99`,{
+        const response = await fetch(`/user/99`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -45,7 +45,7 @@ function AddnewUserPopup({ selectedGroup, setAddUserPopup, setRefreash }) {
             _id: selectedGroup._id,
             userId: user
         }
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/add-new-users`,{
+        const response = await fetch(`/chat/add-new-users`,{
             method: 'PATCH',
             headers: {
                 'Content-Type': 'Application/json',

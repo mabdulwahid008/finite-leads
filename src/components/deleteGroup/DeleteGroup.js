@@ -7,7 +7,7 @@ function DeleteGroup({ selectedGroup, setDeletGroupPopup, setRefreash }) {
     const [loading, setLoading] = useState(false)
     const onSubmit = async() => {
         setLoading(true)
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/delete-group`,{
+        const response = await fetch(`/chat/delete-group`,{
             method: 'DELETE',
             headers: {
                 'Content-Type': 'Application/json',
@@ -35,7 +35,7 @@ function DeleteGroup({ selectedGroup, setDeletGroupPopup, setRefreash }) {
                 <RxCross1 onClick={()=>setDeletGroupPopup(false)}/>
             </CardHeader>
             <CardBody>
-                <p>Deleting {selectedGroup.groupName}</p>
+                <p>Deleting {selectedGroup.groupname}</p>
                 <Button className='btn-danger' style={{width: '100%'}} disabled={loading? true : false} onClick={onSubmit}>{loading? "Please Wait" : "Delete"}</Button>
             </CardBody>
         </Card>

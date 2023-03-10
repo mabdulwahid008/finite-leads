@@ -9,7 +9,7 @@ function DeleteSalePopup({ saleToBeDeleted, setSaleToBeDeleted, setDeleteSalePop
 
   const deleteSale = async() => {
     setLoading(true)
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale/${saleToBeDeleted._id}`,{
+    const response = await fetch(`/sale/${saleToBeDeleted._id}`,{
       method: 'DELETE',
       headers:{
         'Content-Type' : 'Application/json',

@@ -147,7 +147,7 @@ function Dashboard() {
     
     
 
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale/${monthStart}/${monthEnd}/0`,{
+    const response = await fetch(`/sale/${monthStart}/${monthEnd}/0`,{
         method: 'GET',
         headers: {
             'Content-Type' : 'Application/json',
@@ -215,7 +215,7 @@ function Dashboard() {
 
   // for user
   const fectchMySales = async() => {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale/mysales`, {
+      const response = await fetch(`/sale/mysales`, {
           method: 'GET',
           headers: {
               'Content-Type': 'Application/json',
@@ -232,7 +232,7 @@ function Dashboard() {
   }
 
   const fetchStats = async() => {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale/stats`,{
+    const response = await fetch(`/sale/stats`,{
       method : 'GET',
       headers: {
         'Content-Type': 'Application/json',

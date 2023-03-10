@@ -55,7 +55,7 @@ function AgentSalesListing() {
     }
 
     const fectchMySales = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale/mysales`, {
+        const response = await fetch(`/sale/mysales`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',

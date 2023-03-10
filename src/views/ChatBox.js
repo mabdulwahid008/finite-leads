@@ -58,7 +58,7 @@ function ChatBox() {
             content: messageContent
         }
         socket.emit('new message', data)
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/send-msg`,{
+        const response = await fetch(`/chat/send-msg`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'Application/json',
@@ -78,7 +78,7 @@ function ChatBox() {
     }
 
     const fetchMessages = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/get-messages/${selectedGroup._id}`,{
+        const response = await fetch(`/chat/get-messages/${selectedGroup._id}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -96,7 +96,7 @@ function ChatBox() {
     }
 
     const fetchMyGroups = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/my-chats`,{
+        const response = await fetch(`/chat/my-chats`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',

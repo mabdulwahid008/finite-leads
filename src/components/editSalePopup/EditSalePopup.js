@@ -20,8 +20,8 @@ function EditSalePopup({ saleToBeEdited, setSaleToBeEdited, setEditSalePopup, se
             setLoading(false)
             return;
         }
-
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale`,{
+        
+        const response = await fetch(`/sale`,{
             method: 'PATCH',
             headers: {
                 'Content-Type': 'Application/json',
@@ -63,7 +63,7 @@ function EditSalePopup({ saleToBeEdited, setSaleToBeEdited, setEditSalePopup, se
                     </FormGroup>
                     <FormGroup>
                         <label>Extra Bonus</label>
-                        <Input type="number" defaultValue={sale.extrabonus} name="extraBonus" onChange={onChange}/>
+                        <Input type="number" defaultValue={sale.extrabonus} name="extrabonus" onChange={onChange}/>
                     </FormGroup>
                     {/* <FormGroup>
                         <label>Multiplier</label>

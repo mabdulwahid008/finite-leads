@@ -15,7 +15,7 @@ function Login() {
         e.preventDefault();
         setloading(true)
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user/login`,{
+        const response = await fetch(`/user/login`,{
             method: 'POST',
             headers: {
                 'Content-Type' : 'Application/json'

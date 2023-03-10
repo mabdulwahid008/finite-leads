@@ -38,7 +38,7 @@ function AddUser({ setAddNewAgent, setRefresh }) {
             return;
         }
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user`,{
+        const response = await fetch(`/user`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'Application/json',

@@ -30,7 +30,7 @@ function RemoveUserFromGroup({setRefreash, selectedGroup, setRemoveUserPopup}) {
             userId: userToBeRemoved
         }
         console.log(data);
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/remove-member`,{
+        const response = await fetch(`/chat/remove-member`,{
             method: 'PATCH',
             headers: {
                 'Content-Type': 'Application/json',

@@ -33,7 +33,7 @@ function AddSale() {
 
         sale.user_id = user_id
         
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/sale`,{
+        const response = await fetch(`/sale`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'Application/json',
@@ -53,7 +53,7 @@ function AddSale() {
     }
 
     const getAgents = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user`,{
+        const response = await fetch(`/user`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',

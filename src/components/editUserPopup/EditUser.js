@@ -39,7 +39,7 @@ function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
           return;
         }
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user`,{
+        const response = await fetch(`/user`,{
             method: 'PATCH',
             headers: {
                 'Content-Type': 'Application/json',

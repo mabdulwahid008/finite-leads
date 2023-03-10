@@ -34,7 +34,7 @@ function CreateGroupPopup({ setCreateGroupPopup, setRefreash }) {
             users: users
         }
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat`,{
+        const response = await fetch(`/chat`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'Application/json',
@@ -54,7 +54,7 @@ function CreateGroupPopup({ setCreateGroupPopup, setRefreash }) {
     }
 
     const fetchUsers = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user/99`,{
+        const response = await fetch(`/user/99`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',

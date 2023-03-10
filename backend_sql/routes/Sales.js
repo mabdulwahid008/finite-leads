@@ -60,14 +60,14 @@ router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorizat
 
 // edit sale
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
-    const {_id, client_name, client_phone, client_address, multiplier, extraBonus} = req.body;
+    const {_id, client_name, client_phone, client_address, multiplier, extrabonus} = req.body;
     try {
         const sale = await db.query('SELECT * FROM sales WHERE _id = $1',[
             _id
         ])
 
         await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4 WHERE _id = $5',[
-                    client_name, client_phone, client_address, extraBonus, _id
+                    client_name, client_phone, client_address, extrabonus, _id
         ])
         
         // if(sale.rows[0].multiplier !== multiplier)

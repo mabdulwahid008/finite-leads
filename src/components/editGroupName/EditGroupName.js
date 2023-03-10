@@ -20,7 +20,7 @@ function EditGroupName({ selectedGroup, setEditGroupNamePopup, setRefreash}) {
             updatedGroupName: updatedGroupName
         }
         
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/chat/update-group-name`,{
+        const response = await fetch(`/chat/update-group-name`,{
             method: 'PATCH',
             headers: {
                 'Content-Type': 'Application/json',

@@ -45,7 +45,7 @@ function Users() {
         }
     }
     const onSubmitDeleteAgent = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user/${agentToBeDeleted._id}`,{
+        const response = await fetch(`/user/${agentToBeDeleted._id}`,{
             method: 'DELETE',
             headers: {
                 'Content-Type': 'Application/json',
@@ -64,7 +64,7 @@ function Users() {
     }
 
     const fetchUsers = async() => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_HOST}/user/${userRole}`,{
+        const response = await fetch(`/user/${userRole}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
