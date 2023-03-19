@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const db = require('./db')
 require('dotenv').config()
+const path = require('path')
 
 const app = express();
 
@@ -12,9 +13,16 @@ db.connect();
 app.use(cors())
 app.use(express.json())
 
+app.use(express.static(path.join(__dirname, "client/build")))
+
 app.use('/user', require('./routes/User'))
 app.use('/sale', require('./routes/Sales'))
 app.use('/chat', require('./routes/Chat'))
+
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, "client/build", 'index.html'));
+});
 
 const server = app.listen(PORT, ()=>{
     console.log(`App is listening on port ${PORT}`);

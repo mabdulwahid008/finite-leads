@@ -7,14 +7,21 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     const history = useHistory()
-    history.push('/dashboard')
+    // history.push('/dashboard')
+
 
     const token = localStorage.getItem('token')
+
+    if(token)
+        history.push('/dashboard')
+    if(!token)
+        history.push('/')
+
     if(!token)
         return (
             <>
                 <Switch>
-                    <Route path="/dashboard" render={ (props) =>  <Login />} />
+                    <Route path="/" render={ (props) =>  <Login />} />
                 </Switch>
                 <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} transition={Slide} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss theme="light" />
             </>

