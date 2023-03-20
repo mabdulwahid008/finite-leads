@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{ useEffect } from 'react'
 import AdminLayout from "layouts/Admin.js";
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Login from 'views/Login';
@@ -10,12 +10,24 @@ function App() {
     // history.push('/dashboard')
 
 
+
     const token = localStorage.getItem('token')
 
-    if(token)
-        history.push('/dashboard')
-    if(!token)
-        history.push('/')
+    useEffect(()=>{
+        const path = window.location.pathname
+        if(token){
+            if(path.length > 1){
+                history.push(path)
+            }
+            else
+                history.push('/dashboard')
+        }
+        if(!token){
+            history.push('/')
+        }
+    }, [])
+
+    
 
     if(!token)
         return (

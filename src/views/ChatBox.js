@@ -146,7 +146,7 @@ function ChatBox() {
                 {(userRole == 3 || userRole === 5) && <i className='nc-icon nc-simple-add' onClick={()=>setCreateGroupPopup(true)}/>}
             </div>
             <div className='groups'>
-                {!myGroups && <div>No groups yet</div>}
+                {!myGroups && <div style={{color: 'white', padding:'10px 0'}}>No groups yet</div>}
                 {myGroups && myGroups.length === 0 && <div style={{padding:10, color:'white'}}>No groups yet</div>}
                 {myGroups && myGroups.map((group, index) => {
                     return  <div className='group' key={index} onClick={()=>{setSelectedGroup(group); socket.emit('join chat', group._id)}}>
