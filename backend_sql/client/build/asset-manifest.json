@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.a92c6a2e.css",
-    "main.js": "/static/js/main.a87e338a.js",
+    "main.js": "/static/js/main.be0805f0.js",
     "static/media/damir-bosnjak.jpg": "/static/media/damir-bosnjak.efcaca50b633c2ba2ba9.jpg",
     "static/media/clem-onojeghuo-2.jpg": "/static/media/clem-onojeghuo-2.d16702ce00aa38f275c0.jpg",
     "static/media/ayo-ogunseinde-2.jpg": "/static/media/ayo-ogunseinde-2.f4af8f2c98f6968c5ae9.jpg",
@@ -15,10 +15,10 @@
     "static/media/nucleo-icons.woff2": "/static/media/nucleo-icons.ec16bc4cc4526801004d.woff2",
     "index.html": "/index.html",
     "main.a92c6a2e.css.map": "/static/css/main.a92c6a2e.css.map",
-    "main.a87e338a.js.map": "/static/js/main.a87e338a.js.map"
+    "main.be0805f0.js.map": "/static/js/main.be0805f0.js.map"
   },
   "entrypoints": [
     "static/css/main.a92c6a2e.css",
-    "static/js/main.a87e338a.js"
+    "static/js/main.be0805f0.js"
   ]
 }

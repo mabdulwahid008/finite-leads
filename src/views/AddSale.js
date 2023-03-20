@@ -19,7 +19,7 @@ function AddSale() {
     const onSubmit = async(e) => {
         e.preventDefault()
         setLoading(true)
-        if(sale.client_phone.length !== 9){
+        if(sale.client_phone.length !== 10){
             toast.error('Client\'s phone number is incorrect')
             setLoading(false)
             return;

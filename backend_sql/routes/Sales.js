@@ -75,10 +75,11 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
         ])
 
         if(!dateUpdate)
-            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, create_at= $5 WHERE _id = $6',[
-                        client_name, client_phone, client_address, extrabonus, newdate, _id
+            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, multiplier = $5 WHERE _id = $6',[
+                client_name, client_phone, client_address, extrabonus, multiplier, _id
             ])
-        if(dateUpdate){
+        if(dateUpdate){ 
+            console.log(newdate);
             // getting user sales
             const userSales = await db.query('SELECT * FROM sales WHERE user_id = $1', [
                 user_id ? user_id : req.user_id
@@ -100,10 +101,11 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
                 if(multiplier === 5)
                     multiplier = 5;
             }
-
-            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, multiplier = $5 WHERE _id = $6',[
-                client_name, client_phone, client_address, extrabonus, multiplier, _id
+            
+            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, create_at= $5 WHERE _id = $6',[
+                client_name, client_phone, client_address, extrabonus, newdate, _id
             ])
+            
         }
         
         // if(sale.rows[0].multiplier !== multiplier)
