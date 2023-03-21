@@ -87,3 +87,13 @@ thead{
 
 }
 
+.sidebar{
+    width: 200px !important;
+}
+.main-panel{
+    width: calc(100% - 200px) !important;
+}
+.sidebar .sidebar-wrapper li.active>a:not([data-toggle=collapse]):before,
+.sidebar .sidebar-wrapper li.active>a:not([data-toggle=collapse]):after{
+    right: 45px !important;
+}
