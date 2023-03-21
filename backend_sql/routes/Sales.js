@@ -63,50 +63,68 @@ router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorizat
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
     const {_id, user_id, client_name, client_phone, client_address, multiplier, extrabonus, create_at} = req.body;
     try {
-        let newdate = create_at;
+        let newdate = '';
+        let dateToBeUpdate = create_at
 
         let dateUpdate = false;
-        if(newdate.length === 10){
+        if(dateToBeUpdate.length === 10){
             newdate = create_at.concat(`/${time}`)
             dateUpdate = true
         }
-        const sale = await db.query('SELECT * FROM sales WHERE _id = $1',[
-            _id
-        ])
-
-        if(!dateUpdate)
+        if(!dateUpdate){
             await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, multiplier = $5 WHERE _id = $6',[
                 client_name, client_phone, client_address, extrabonus, multiplier, _id
             ])
-        if(dateUpdate){ 
-            console.log(newdate);
-            // getting user sales
-            const userSales = await db.query('SELECT * FROM sales WHERE user_id = $1', [
-                user_id ? user_id : req.user_id
-            ])
-
-            // filtering user's today sales
-            const thatDaySales = userSales.rows.filter((sale) => sale.create_at.includes(newdate.substr(0, 10)))
-            
-            let multiplier = 1;
-
-            if(thatDaySales.length !== 0){
-                // getting the last value for the multiplier 
-                for (let i = 0; i < thatDaySales.length; i++) {
-                    multiplier = todaySales[i].multiplier
-                }
-                
-                if(multiplier < 5)
-                    multiplier += 1;
-                if(multiplier === 5)
-                    multiplier = 5;
-            }
-            
-            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, create_at= $5 WHERE _id = $6',[
-                client_name, client_phone, client_address, extrabonus, newdate, _id
-            ])
-            
         }
+        
+        if(dateUpdate){ 
+            // for getting user_id of sale
+            const sale = await db.query('SELECT * FROM sales WHERE _id = $1',[
+                _id
+            ])
+            
+            // getting user sales
+            let userSales = await db.query('SELECT * FROM sales WHERE user_id = $1', [
+                sale.rows[0].user_id
+            ])
+            
+            // filtering user's that day sales
+           const thatDaySales = userSales.rows.filter((sale) => sale.create_at.includes(newdate.substr(0, 10)))
+            
+           let multiplier = thatDaySales.length > 0 ? thatDaySales[thatDaySales.length-1].multiplier : 0
+           if(multiplier < 5)
+                multiplier += 1;
+            if(multiplier === 5)
+                multiplier = 5
+            // storing in DB  
+            await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, multiplier = $5, create_at = $6 WHERE _id = $7',[
+                client_name, client_phone, client_address, extrabonus, multiplier, newdate, _id
+            ])
+
+
+            
+            userSales = await db.query('SELECT * FROM sales WHERE user_id = $1', [
+                sale.rows[0].user_id
+            ])
+
+            const thisDate = sale.rows[0].create_at.substr(0, 10)
+            const thisDaySales = userSales.rows.filter((sale) => sale.create_at.includes(thisDate))
+            multiplier = 1
+            for (let i = 0; i < thisDaySales.length; i++) {
+                let id = thisDaySales[i]._id
+                await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, multiplier = $5 WHERE _id = $6',[
+                    client_name, client_phone, client_address, extrabonus, multiplier, id
+                ])
+                if(multiplier < 5)
+                    multiplier += 1
+                if(multiplier === 5)
+                    multiplier = 5
+
+            }
+
+        
+        }
+            
         
         // if(sale.rows[0].multiplier !== multiplier)
         //     await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, updated_multiplier = $4 WHERE _id = $5',[
@@ -230,8 +248,6 @@ router.delete('/sale/delete', async(req, res) => {
         return res.status(500).json({message: 'Server Error'})
     }
 })
-
-
 
 // for dashboard graph 
 router.get('/stats', authorization, async(req, res)=>{
