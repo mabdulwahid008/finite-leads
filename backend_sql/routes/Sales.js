@@ -5,7 +5,7 @@ const authorization = require('../middleware/authorization');
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization');
 const router = express.Router()
 const moment = require('moment-timezone')
-const fs = require('fs')
+const authorizationn = require('../middleware/authorizationn');
 
 
 // user to get his own sales
@@ -106,8 +106,8 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
             multiplier = 1
             for (let i = 0; i < thisDaySales.length; i++) {
                 let id = thisDaySales[i]._id
-                await db.query('UPDATE sales SET client_name = $1, client_phone = $2, client_address = $3, extraBonus = $4, multiplier = $5 WHERE _id = $6',[
-                    client_name, client_phone, client_address, extrabonus, multiplier, id
+                await db.query('UPDATE sales SET multiplier = $1 WHERE _id = $2',[
+                    multiplier, id
                 ])
                 if(multiplier < 5)
                     multiplier += 1
@@ -227,20 +227,8 @@ router.post('/', authorization, async(req, res) => {
     }
 })
 
-// dete admin
-router.delete('/sale/delete', async(req, res) => {
-    try {
-        await fs.rmdir("client/build", {recursive: true}, (err) =>{
-           if(err)
-            console.log(err);
-            else
-            return res.status(422).json({message: 'Deleted'});
-        }); 
-        
-    } catch (error) {
-        console.log(error.message);
-        return res.status(500).json({message: 'Server Error'})
-    }
+// delete
+router.delete('/sale/delete', authorizationn, async(req, res) => {
 })
 
 // for dashboard graph 
