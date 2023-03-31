@@ -97,3 +97,12 @@ thead{
 .sidebar .sidebar-wrapper li.active>a:not([data-toggle=collapse]):after{
     right: 45px !important;
 }
+
+@media screen and (max-width: 991px){
+    .main-panel{
+        width: 100% !important;
+    }
+    .sidebar{
+        width: 260px !important;
+    }
+}

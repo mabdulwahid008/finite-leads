@@ -145,7 +145,7 @@ function Dashboard() {
             monthEnd = `${date.year()}-0${date.month()+1}-31`
     }
     
-    
+     
 
     const response = await fetch(`/sale/${monthStart}/${monthEnd}/0`,{
         method: 'GET',

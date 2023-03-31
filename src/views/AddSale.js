@@ -10,6 +10,8 @@ function AddSale() {
     const [saleAgents, setSaleAgents] = useState(null)
     const [user_id, setUser_id] = useState(null)
 
+    
+
     const userRole = localStorage.getItem('userRole')
 
     const onChange = (e) => {

@@ -10,6 +10,10 @@ function AgentSalesListing() {
     const [dailyBonus, setDailyBonus] = useState(0)
     const [monthlyBonus, setMonthlyBonus] = useState(0)
 
+    
+    const { innerWidth: width } = window;
+    const onMobile = width < 762 ? true : false;
+
     const calculateBonus = () => {
         if(mySales){
             let _dailyBonus = 0;
@@ -65,6 +69,7 @@ function AgentSalesListing() {
         const res = await response.json()
         if(response.status === 200){
             setMySales(res)
+            console.log(res);
         }
         else{
             toast.error(res.message)
@@ -89,7 +94,7 @@ function AgentSalesListing() {
                     <CardBody>
                         {!mySales && <Loading />}
                         {mySales && mySales.length === 0 && <p>No sales yet</p>}
-                       {mySales && mySales.length !== 0 && <Table>
+                       {mySales && mySales.length !== 0 && <Table responsive={onMobile? true : false}>
                             <thead>
                                 <tr>
                                     <th style={{width:'5%'}}>#</th>

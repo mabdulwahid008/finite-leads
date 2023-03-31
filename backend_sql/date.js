@@ -26,7 +26,7 @@ let startDate =  `${timeZone.year()}-${timeZone.month()+1}-01`
 let endDate =  `${timeZone.year()}-${timeZone.month()+1}-31`
 if((timeZone.month()+1) <= 9){
     startDate =  `${timeZone.year()}-0${timeZone.month()+1}-01`
-    endDate =  `${timeZone.year()}-0${timeZone.month()+1}-31`
+    endDate =  `${timeZone.year()}-0${timeZone.month()+2}-01`
 }
 
 let time = `${timeZone.hour()}:${timeZone.minute()}`

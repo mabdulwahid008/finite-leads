@@ -24,6 +24,9 @@ function Users() {
 
     const [defaultUserRole, setDefaultUserRole] = useState({value: 99, label: 'All Users'})
 
+    const { innerWidth: width } = window;
+    const onMobile = width < 762 ? true : false;
+
     const userRoles = [
         {value: 99, label: 'All Users'},
         {value: 0, label: 'Sales Agent'},
@@ -99,14 +102,14 @@ function Users() {
                             <CardTitle tag="h4">Users</CardTitle>
                             <Button onClick={()=> setAddNewAgent(true)}>Add New</Button>
                         </div>
-                        <div style={{width:'20%'}}>
+                        <div style={{width:`${onMobile? '100%' : '20%'}` }}>
                             <ReactSelect options={userRoles} defaultValue={defaultUserRole} placeholder="Filter by role" onChange={(role)=>{filterUsers(role); setDefaultUserRole(role)}}/>
                         </div>
                     </CardHeader>
                     <CardBody>
                         {!saleAgents && <Loading />}
                         {saleAgents && saleAgents.length === 0 && <p>No users are found with this role</p>}
-                        {saleAgents && saleAgents.length !== 0  && <Table>
+                        {saleAgents && saleAgents.length !== 0  && <Table responsive={onMobile? true : false}>
                             <thead>
                                 <th style={{width: '5%'}}>#</th>
                                 <th style={{width: '20%'}}>Name</th>

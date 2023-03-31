@@ -50,3 +50,12 @@
 .members > p{
     margin-bottom: 0px !important;
 }
+
+@media screen and (max-width: 991px) {
+    .popup{
+        padding: 0px 10px 40px !important;
+    }
+    .card-popup{
+        width: 100% !important;
+    }
+}
