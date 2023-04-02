@@ -69,7 +69,6 @@ function AgentSalesListing() {
         const res = await response.json()
         if(response.status === 200){
             setMySales(res)
-            console.log(res);
         }
         else{
             toast.error(res.message)

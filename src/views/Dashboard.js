@@ -133,18 +133,12 @@ function Dashboard() {
     let monthEnd = ''
 
     if((date.month()+1) <= 9){
-        if(date.date() <= 9)
-            monthStart = `${date.year()}-0${date.month()+1}-01`
-        else
-            monthStart = `${date.year()}-0${date.month()+1}-01`
+      monthStart = `${date.year()}-0${date.month()+1}`
+      monthEnd = `${date.year()}-0${date.month()+2}`
     }
-    if((date.month()+1) <= 9){
-        if(date.date() <= 9)
-            monthEnd = `${date.year()}-0${date.month()+1}-31`
-        else
-            monthEnd = `${date.year()}-0${date.month()+1}-31`
-    }
-    
+    else
+      monthStart = `${date.year()}-${date.month()+1}`
+      monthEnd = `${date.year()}-${date.month()+2}`
      
 
     const response = await fetch(`/sale/${monthStart}/${monthEnd}/0`,{

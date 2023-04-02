@@ -22,11 +22,11 @@ if(timeZone.date() <= 9){
 let dateWithoutTime = `${timeZone.year()}-${timeZone.month()+1 <= 9? `0${timeZone.month()+1}`: `${timeZone.month()+1}`}-${timeZone.date() <= 9? `0${timeZone.date()}` : timeZone.date() }`
 
 
-let startDate =  `${timeZone.year()}-${timeZone.month()+1}-01`
-let endDate =  `${timeZone.year()}-${timeZone.month()+1}-31`
+let startDate =  `${timeZone.year()}-${timeZone.month()+1}`
+let endDate =  `${timeZone.year()}-${timeZone.month()+1}`
 if((timeZone.month()+1) <= 9){
-    startDate =  `${timeZone.year()}-0${timeZone.month()+1}-01`
-    endDate =  `${timeZone.year()}-0${timeZone.month()+2}-01`
+    startDate =  `${timeZone.year()}-0${timeZone.month()+1}`
+    endDate =  `${timeZone.year()}-0${timeZone.month()+2}`
 }
 
 let time = `${timeZone.hour()}:${timeZone.minute()}`
