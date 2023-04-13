@@ -78,7 +78,7 @@ CREATE TABLE LEADS(
     baths INT NOT NULL,
     price INT NOT NULL,
     additional_info VARCHAR(500),
-    agentName VARCHAR(100) NOT NULL,
+    agentName VARCHAR(100) NOT NULL
 )
 
 CREATE TABLE LEAD_ASSIGNED_TO(

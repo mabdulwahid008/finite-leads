@@ -18,6 +18,7 @@ app.use(express.static(path.join(__dirname, "client/build")))
 app.use('/user', require('./routes/User'))
 app.use('/sale', require('./routes/Sales'))
 app.use('/chat', require('./routes/Chat'))
+app.use('/lead', require('./routes/Leads'))
 
 
 app.get('*', (req, res) => {
