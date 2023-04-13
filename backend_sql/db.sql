@@ -62,3 +62,9 @@ CREATE TABLE Messages(
 --     FOREIGN KEY (_userId) REFERENCES Users(_id),
 -- )
 
+
+
+CREATE TABLE LEADS(
+    _id SERIAL PRIMARY KEY,
+    
+)
