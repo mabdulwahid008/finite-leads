@@ -65,6 +65,35 @@ CREATE TABLE Messages(
 
 
 CREATE TABLE LEADS(
+    _id SERIAL PRIMARY KEY, 
+    lead_type INT DEFAULT 0,
+    working_status INT DEFAULT 0,
+    fname VARCHAR(100) NOT NULL,
+    lname VARCHAR(100) NOT NULL,
+    address VARCHAR(150) NOT NULL,
+    state VARCHAR(50) NOT NULL,
+    zip_code VARCHAR(50) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    beds INT NOT NULL,
+    baths INT NOT NULL,
+    price INT NOT NULL,
+    additional_info VARCHAR(500),
+    agentName VARCHAR(100) NOT NULL,
+)
+
+CREATE TABLE LEAD_ASSIGNED_TO(
+    lead_id INT NOT NULL,
+    realEstateAgent_id INT NOT NULL,
+    FOREIGN KEY (lead_id) REFERENCES Leads(_id) ON DELETE CASCADE,
+    FOREIGN KEY (realEstateAgent_id) REFERENCES Users(_id) ON DELETE CASCADE
+)
+
+CREATE TABLE LEAD_COMMENTS(
     _id SERIAL PRIMARY KEY,
-    
+    lead_id INT NOT NULL,
+    content VARCHAR(500) NOT NULL,
+    lead_status INT DEFAULT 0,
+    realEstateAgent_id INT NOT NULL, 
+    FOREIGN KEY (lead_id) REFERENCES Leads(_id) ON DELETE CASCADE,
+    FOREIGN KEY (realEstateAgent_id) REFERENCES Users(_id) ON DELETE SET NULL
 )
