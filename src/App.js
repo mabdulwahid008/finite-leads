@@ -29,8 +29,11 @@ function App() {
 
     
     if(path == '/add-lead')
-        return <LeadForm />
-
+        return <>
+                <LeadForm />
+                <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} transition={Slide} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss theme="light" />
+            </>
+            
     else if(!token)
         return (
             <>
