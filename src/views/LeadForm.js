@@ -5,6 +5,7 @@ import '../assets/additional/LeadForm.css'
 
 function LeadForm() {
     const [priceText, setPriceText] = useState("Demand")
+    const [loading, setLoading] = useState(false)
     const [lead, setLead] = useState({lead_type: '', working_status: '', fname: '', lname: '', address: '', state: '', zip_code: '', phone: '', recording_link: null, beds: '', baths: '', price:'', additional_info: null, agentName: ''})
 
     const onChange = (e) => {
@@ -13,6 +14,11 @@ function LeadForm() {
 
     const onSubmit = async(e) => {
         e.preventDefault()
+        setLoading(true)
+        if(lead.phone.length !== 11){
+            setLoading(false)
+            return toast.error('Phone number is incorrect')
+        }
         const response = await fetch('/lead',{
             method:'POST',
             headers:{
@@ -21,24 +27,30 @@ function LeadForm() {
             body: JSON.stringify(lead)
         })
         const res = await response.json()
-        if(response.status === 200)
+        if(response.status === 200){
             toast.success(res.message)
+            document.querySelector('input[name="lead_type"]').checked = false
+            document.querySelector('input[name="working_status"]').checked = false
+            setLead({lead_type: '', working_status: '', fname: '', lname: '', address: '', state: '', zip_code: '', phone: '', recording_link: '', beds: '', baths: '', price:'', additional_info: '', agentName: ''})
+        }
         else
             toast.error(res.message)
+
+        setLoading(false)
     }
     
     const handleRadioChange = (e) => {
         setLead({...lead, [e.target.name]: e.target.value})
         const value = e.target.value;
-        if (value === "1") {
+        if (value === "1") 
           setPriceText("Budget");
-        } else {
+        else 
           setPriceText("Demand");
-        }
+        
       };
 
    useEffect(() => {
-   }, [priceText])
+   }, [priceText, lead])
    
     
   return (
@@ -50,14 +62,14 @@ function LeadForm() {
                         <CardTitle tag="h3">Add Lead</CardTitle>
                     </CardHeader>
                     <CardBody>
-                        <Form>
+                        <Form onSubmit={onSubmit}>
                             <Row>
                                 <Col md='6'>
                                     <FormGroup>
                                         <label>Lead Type *</label><br />
                                         <div style={{padding:'0px 20px',display:'flex', gap: '40px' }}>
                                             <div>
-                                                <Input type="radio" name="lead_type" value="0" onChange={handleRadioChange}/> <p>Seller</p>
+                                                <Input type="radio" name="lead_type" value="0" onChange={handleRadioChange} required/> <p>Seller</p>
                                             </div>
                                             <div>
                                                 <Input type="radio" name="lead_type" value="1" onChange={handleRadioChange}/> <p>Buyer</p>
@@ -70,7 +82,7 @@ function LeadForm() {
                                         <label>Currently working with an agent? *</label><br />
                                         <div style={{padding:'0px 20px',display:'flex', gap: '40px' }}>
                                             <div>
-                                                <Input type="radio" name="working_status" value="0" onChange={onChange}/> <p>No</p>
+                                                <Input type="radio" name="working_status" value="0" onChange={onChange} required/> <p>No</p>
                                             </div>
                                             <div>
                                                 <Input type="radio" name="working_status" value="1" onChange={onChange}/> <p>Yes</p>
@@ -85,13 +97,13 @@ function LeadForm() {
                                 <Col md='6'>
                                     <FormGroup>
                                         <label>First Name *</label>
-                                        <Input type='text' name='fname' required onChange={onChange}/>
+                                        <Input type='text' name='fname' required value={lead.fname} onChange={onChange}/>
                                     </FormGroup>
                                 </Col>
                                 <Col md='6'>
                                     <FormGroup>
                                         <label>Last Name *</label>
-                                        <Input type='text' name='lname' required onChange={onChange}/>
+                                        <Input type='text' name='lname' value={lead.lname} required onChange={onChange}/>
                                     </FormGroup>
                                 </Col>
                             </Row>
@@ -100,13 +112,13 @@ function LeadForm() {
                                 <Col md="6">
                                     <FormGroup>
                                         <label>Address *</label>
-                                        <Input type="text" name='address' required onChange={onChange} />
+                                        <Input type="text" name='address' value={lead.address} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                                 <Col md="6">
                                     <FormGroup>
                                         <label>State *</label>
-                                        <Input type="text" name='state' required onChange={onChange} />
+                                        <Input type="text" name='state' value={lead.state} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                             </Row>
@@ -114,7 +126,7 @@ function LeadForm() {
                                 <Col md="6">
                                     <FormGroup>
                                         <label>Zip Code *</label>
-                                        <Input type="number" name='zip_code' required onChange={onChange} />
+                                        <Input type="number" name='zip_code' required value={lead.zip_code} onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                                 <Col md="6">
@@ -122,13 +134,13 @@ function LeadForm() {
                                         <Col md="6">
                                             <FormGroup>
                                                 <label>Beds *</label>
-                                                <Input type="number" name='beds' required onChange={onChange} />
+                                                <Input type="number" name='beds' required value={lead.beds} onChange={onChange} />
                                             </FormGroup>
                                         </Col>
                                         <Col md="6">
                                             <FormGroup>
                                                 <label>Baths *</label>
-                                                <Input type="number" name='baths' required onChange={onChange} />
+                                                <Input type="number" name='baths' value={lead.baths} required onChange={onChange} />
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -138,35 +150,35 @@ function LeadForm() {
                                 <Col md="6">
                                     <FormGroup>
                                         <label>Phone *</label>
-                                        <Input type="number" name='phone' required onChange={onChange} />
+                                        <Input type="number" name='phone' value={lead.phone} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                                 <Col md="6">
                                     <FormGroup>
                                         <label>{priceText} *</label>
-                                        <Input type="number" name='price' required onChange={onChange} />
+                                        <Input type="number" name='price' value={lead.price} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                             </Row>
                             <FormGroup style={{display:'flex', flexDirection: 'column', gap:'5px'}}>
                                 <label>Aditional</label>
-                                <textarea name="additional_info" onChange={onChange}></textarea>
+                                <textarea name="additional_info" value={lead.additional_info} onChange={onChange}></textarea>
                             </FormGroup>
                             <Row>
                                 <Col md='6'>
                                     <FormGroup>
                                         <label>Agent Name *</label>
-                                        <Input type="text" name='agentName' required onChange={onChange} />
+                                        <Input type="text" name='agentName' value={lead.agentName} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                                 <Col md='6'>
                                     <FormGroup>
                                         <label>Recording Link </label>
-                                        <Input type="text" name='recording_link' required onChange={onChange} />
+                                        <Input type="text" name='recording_link' value={lead.recording_link} onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                             </Row>
-                            <Button style={{width:'100%'}}>Submit</Button>
+                            <Button disabled={loading? true : false} style={{width:'100%'}}>Submit</Button>
                         </Form>
                     </CardBody>
                 </Card>
