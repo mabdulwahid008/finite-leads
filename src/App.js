@@ -4,32 +4,34 @@ import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Login from 'views/Login';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LeadForm from 'views/LeadForm';
 
 function App() {
     const history = useHistory()
-    // history.push('/dashboard')
-
-
-
     const token = localStorage.getItem('token')
+    const path = window.location.pathname
 
     useEffect(()=>{
-        const path = window.location.pathname
-        if(token){
+        if(path == '/add-lead'){
+        }
+        else if(token){
             if(path.length > 1){
                 history.push(path)
             }
             else
                 history.push('/dashboard')
         }
-        if(!token){
+        else if(!token){
             history.push('/')
         }
+        else{}
     }, [])
 
     
+    if(path == '/add-lead')
+        return <LeadForm />
 
-    if(!token)
+    else if(!token)
         return (
             <>
                 <Switch>
@@ -38,7 +40,7 @@ function App() {
                 <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} transition={Slide} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss theme="light" />
             </>
         )
-        return (
+    return (
             <>
                 <Switch>
                     <Route path="/" render={ (props) =>  <AdminLayout {...props} /> } />

@@ -74,6 +74,7 @@ CREATE TABLE LEADS(
     state VARCHAR(50) NOT NULL,
     zip_code VARCHAR(50) NOT NULL,
     phone VARCHAR(15) NOT NULL,
+    recording_link VARCHAR(300),
     beds INT NOT NULL,
     baths INT NOT NULL,
     price INT NOT NULL,

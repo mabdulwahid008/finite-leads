@@ -7,10 +7,10 @@ const router = express.Router();
 
 // for form - lead posting
 router.post('/', async(req, res) => {
-    const { lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, agentName } = req.body;
+    const { lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName } = req.body;
     try {
-        await db.query('INSERT INTO leads(lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, agentName) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13 )',[
-            lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, agentName
+        await db.query('INSERT INTO leads(lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14 )',[
+            lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName
         ])
         return res.status(200).json({message: 'Lead added successfully.'})
     } catch (error) {
