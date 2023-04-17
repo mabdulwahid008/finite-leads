@@ -89,7 +89,8 @@ var routes = [
     icon: "nc-icon nc-chart-bar-32",
     component: LeadDetail,
     layout: "/admin",
-    role: [3,5]
+    role: [3,5],
+    child: true,
   },
   // {
   //   path: "/icons",

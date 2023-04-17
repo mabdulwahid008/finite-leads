@@ -57,14 +57,34 @@ function Header(props) {
   };
   const getBrand = () => {
     let brandName = "Default Brand";
-    routes.map((prop, key) => {
-      if (window.location.href.indexOf(prop.path) !== -1) {
-        brandName = prop.name;
-      }
-      return null;
+    const currentRoute = routes.find((route) => {
+      const routePath = route.path.split("/:")[0];
+      return window.location.href.indexOf(routePath) !== -1;
     });
+    if (currentRoute) {
+      const hasRouteParams = currentRoute.path.includes("/:"); // Check if current route has any params
+      if (hasRouteParams) {
+        const paramValue = window.location.pathname.split("/").pop(); // Get the parameter value from URL
+        if (paramValue !== "") { // Check if the parameter value is present in the URL
+          brandName = currentRoute.name;
+        }
+      } else {
+        brandName = currentRoute.name;
+      }
+    }
     return brandName;
   };
+  
+  // const getBrand = () => {
+  //   let brandName = "Default Brand";
+  //   routes.map((prop, key) => {
+  //     if (window.location.href.indexOf(prop.path) !== -1) {
+  //       brandName = prop.name;
+  //     }
+  //     return null;
+  //   });
+  //   return brandName;
+  // };
   const openSidebar = () => {
     document.documentElement.classList.toggle("nav-open");
     sidebarToggle.current.classList.toggle("toggled");

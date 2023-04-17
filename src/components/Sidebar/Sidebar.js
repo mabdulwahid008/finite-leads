@@ -65,7 +65,7 @@ function Sidebar(props) {
       <div className="sidebar-wrapper" ref={sidebar}>
         <Nav>
           {props.routes.map((prop, key) => {
-            if(prop.role.some((role)=> role == localStorage.getItem('userRole')))
+            if(prop.role.some((role)=> role == localStorage.getItem('userRole')) && !prop.child)
             return (
               <li
                 className={
