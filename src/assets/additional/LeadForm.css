@@ -26,3 +26,51 @@ textarea{
 textarea:focus{
     border-color: #66615b;
 }
+
+
+/* lead detail popup*/
+.card-header{
+    align-items: flex-start !important;
+}
+.card-title{
+    margin-top: 0px !important;
+}
+.card-title > p{
+    font-size: 12px !important;
+    margin: 0px !important;
+    margin-top: -10px !important;
+    text-transform: capitalize;
+}
+.name{
+    font-size: 16px;
+    font-weight: 600;
+    color: black;
+    text-transform: capitalize;
+}
+.working-status,
+.address{
+    line-height: 0.5;
+    padding: 0px 5px;
+}
+.lead-content{
+    margin-top: 20px;
+    background-color: #E3E3E3;
+    padding: 10px;
+    border-radius: 10px;
+}
+input:read-only {
+    background-color: white !important;
+}
+textarea:read-only{
+    height: 70px !important;
+    cursor: not-allowed;
+}
+.assign-lead{
+    margin-top: 20px;
+}
+.assign-lead > .row{
+    align-items: flex-end !important;
+}
+.assign-lead >.row > div > div > label{
+    font-size: 14px !important;
+}

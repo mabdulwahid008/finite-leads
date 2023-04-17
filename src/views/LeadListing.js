@@ -3,9 +3,13 @@ import { toast } from 'react-toastify'
 import { Card, CardBody, CardHeader, CardTitle, Col, Row, Table } from 'reactstrap'
 import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
+import LeadDetailPoup from 'components/leadDetailPoup/LeadDetailPoup'
 
 function LeadListing() {
     const [leads, setLeads] = useState(null)
+    const [detailPopup, setDetailPopup] = useState(false)
+    const [leadDetail, setLeadDetail] = useState(null)
+
     
     const fetchLeads = async() => {
         const response = await fetch('/lead',{
@@ -40,27 +44,27 @@ function LeadListing() {
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>First Name</th>
+                                    <th>State</th>
+                                    <th>Beds & Baths</th>
                                     <th>Lead Type</th>
                                     <th>Wroking Outside</th>
-                                    <th>State</th>
-                                    <th>First Name</th>
-                                    <th>Beds & Baths</th>
                                     <th>Agent</th>
                                     <th className='actions'>View</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {leads.map((lead, index) => {
-                                    return <tr>
+                                    return <tr key={index}>
                                         <td>{index+1}</td>
+                                        <td>{lead.lname}</td>
+                                        <td>{lead.state}</td>
+                                        <td>{lead.beds} - {lead.baths}</td>
                                         <td>{lead.lead_type == 0 ? 'Seller' : 'Buyer'}</td>
                                         <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>
-                                        <td>{lead.state}</td>
-                                        <td>{lead.fname}</td>
-                                        <td>{lead.beds} - {lead.baths}</td>
                                         <td>{lead.agentname}</td>
                                         <div className='actions'>
-                                            <BsEye  style={{fontSize: 28}}/>
+                                            <BsEye  style={{fontSize: 28}} onClick={()=> {setDetailPopup(true); setLeadDetail(lead)}}/>
                                         </div>
                                     </tr>
                                 })}
@@ -70,6 +74,7 @@ function LeadListing() {
                 </Card>
             </Col>
         </Row>
+        {detailPopup &&  <LeadDetailPoup setDetailPopup={setDetailPopup} leadDetail={leadDetail}/>}
     </div>
   )
 }
