@@ -30,6 +30,17 @@ router.get('/', authorization, async(req, res) => {
     }
 })
 
+// get single lead by id
+router.get('/:_id', authorization, async(req, res) => {
+    try {
+        const leads = await db.query('SELECT * FROM leads WHERE _id = $1', [req.params._id])
+        return res.status(200).json(leads.rows[0])
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
 // for assigning lead to real estate agents
 router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
     const { lead_id, agents } = req.body;

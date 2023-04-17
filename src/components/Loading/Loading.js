@@ -4,7 +4,7 @@ import loading from '../../assets/img/loading.gif'
 function Loading() {
   return (
     <div>
-        <img src={loading} alt="loading" style={{width: '30px', height:'30px', marginBottom: '10px'}}/>
+        <img src={loading} alt="loading" style={{width: '30px', height:'30px', padding: '10px'}}/>
     </div>
   )
 }

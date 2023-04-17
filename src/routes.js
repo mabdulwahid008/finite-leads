@@ -24,6 +24,7 @@ import AddSale from "views/AddSale";
 import AgentSalesListing from "views/AgentSalesListing";
 import ChatBox from 'views/ChatBox'
 import LeadListing from "views/LeadListing";
+import LeadDetail from "views/LeadDetail";
 
 var routes = [
   {
@@ -79,6 +80,14 @@ var routes = [
     name: "Leads",
     icon: "nc-icon nc-chart-bar-32",
     component: LeadListing,
+    layout: "/admin",
+    role: [3,5]
+  },
+  {
+    path: "/lead-details/:_id",
+    name: "Lead Details ",
+    icon: "nc-icon nc-chart-bar-32",
+    component: LeadDetail,
     layout: "/admin",
     role: [3,5]
   },

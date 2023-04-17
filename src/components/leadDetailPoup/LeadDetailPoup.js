@@ -67,7 +67,7 @@ function LeadDetailPoup({ setDetailPopup, leadDetail }) {
 
                 <div className='assign-lead'>
                     <Row>
-                        <Col md='9'>
+                        <Col md='10'>
                             <FormGroup>
                                 <label>Assign this lead to Real Estate Agents</label>
                                 <ReactSelect />

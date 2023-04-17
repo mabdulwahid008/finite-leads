@@ -4,6 +4,7 @@ import { Card, CardBody, CardHeader, CardTitle, Col, Row, Table } from 'reactstr
 import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
 import LeadDetailPoup from 'components/leadDetailPoup/LeadDetailPoup'
+import { Link } from 'react-router-dom'
 
 function LeadListing() {
     const [leads, setLeads] = useState(null)
@@ -64,7 +65,8 @@ function LeadListing() {
                                         <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>
                                         <td>{lead.agentname}</td>
                                         <div className='actions'>
-                                            <BsEye  style={{fontSize: 28}} onClick={()=> {setDetailPopup(true); setLeadDetail(lead)}}/>
+                                            {/* <BsEye  style={{fontSize: 28}} onClick={()=> {setDetailPopup(true); setLeadDetail(lead)}}/> */}
+                                            <Link to={`lead-details/${lead._id}`}><BsEye/></Link>
                                         </div>
                                     </tr>
                                 })}

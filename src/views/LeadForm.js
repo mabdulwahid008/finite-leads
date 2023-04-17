@@ -66,7 +66,7 @@ function LeadForm() {
                             <Row>
                                 <Col md='6'>
                                     <FormGroup>
-                                        <label>Lead Type *</label><br />
+                                        <label className='label'>Lead Type *</label><br />
                                         <div style={{padding:'0px 20px',display:'flex', gap: '40px' }}>
                                             <div>
                                                 <Input type="radio" name="lead_type" value="0" onChange={handleRadioChange} required/> <p>Seller</p>
@@ -79,7 +79,7 @@ function LeadForm() {
                                 </Col>
                                 <Col md='6'>
                                     <FormGroup>
-                                        <label>Currently working with an agent? *</label><br />
+                                        <label className='label'>Currently working with an agent? *</label><br />
                                         <div style={{padding:'0px 20px',display:'flex', gap: '40px' }}>
                                             <div>
                                                 <Input type="radio" name="working_status" value="0" onChange={onChange} required/> <p>No</p>
@@ -96,13 +96,13 @@ function LeadForm() {
                             <Row>
                                 <Col md='6'>
                                     <FormGroup>
-                                        <label>First Name *</label>
+                                        <label className='label'>First Name *</label>
                                         <Input type='text' name='fname' required value={lead.fname} onChange={onChange}/>
                                     </FormGroup>
                                 </Col>
                                 <Col md='6'>
                                     <FormGroup>
-                                        <label>Last Name *</label>
+                                        <label className='label'>Last Name *</label>
                                         <Input type='text' name='lname' value={lead.lname} required onChange={onChange}/>
                                     </FormGroup>
                                 </Col>
@@ -111,13 +111,13 @@ function LeadForm() {
                             <Row>
                                 <Col md="6">
                                     <FormGroup>
-                                        <label>Address *</label>
+                                        <label className='label'>Address *</label>
                                         <Input type="text" name='address' value={lead.address} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                                 <Col md="6">
                                     <FormGroup>
-                                        <label>State *</label>
+                                        <label className='label'>State *</label>
                                         <Input type="text" name='state' value={lead.state} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
@@ -125,7 +125,7 @@ function LeadForm() {
                             <Row>
                                 <Col md="6">
                                     <FormGroup>
-                                        <label>Zip Code *</label>
+                                        <label className='label'>Zip Code *</label>
                                         <Input type="number" name='zip_code' required value={lead.zip_code} onChange={onChange} />
                                     </FormGroup>
                                 </Col>
@@ -133,13 +133,13 @@ function LeadForm() {
                                     <Row>
                                         <Col md="6">
                                             <FormGroup>
-                                                <label>Beds *</label>
+                                                <label className='label'>Beds *</label>
                                                 <Input type="number" name='beds' required value={lead.beds} onChange={onChange} />
                                             </FormGroup>
                                         </Col>
                                         <Col md="6">
                                             <FormGroup>
-                                                <label>Baths *</label>
+                                                <label className='label'>Baths *</label>
                                                 <Input type="number" name='baths' value={lead.baths} required onChange={onChange} />
                                             </FormGroup>
                                         </Col>
@@ -149,31 +149,31 @@ function LeadForm() {
                             <Row>
                                 <Col md="6">
                                     <FormGroup>
-                                        <label>Phone *</label>
+                                        <label className='label'>Phone *</label>
                                         <Input type="number" name='phone' value={lead.phone} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                                 <Col md="6">
                                     <FormGroup>
-                                        <label>{priceText} *</label>
+                                        <label className='label'>{priceText} *</label>
                                         <Input type="number" name='price' value={lead.price} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                             </Row>
                             <FormGroup style={{display:'flex', flexDirection: 'column', gap:'5px'}}>
-                                <label>Aditional</label>
+                                <label className='label'>Aditional</label>
                                 <textarea name="additional_info" value={lead.additional_info} onChange={onChange}></textarea>
                             </FormGroup>
                             <Row>
                                 <Col md='6'>
                                     <FormGroup>
-                                        <label>Agent Name *</label>
+                                        <label className='label'>Agent Name *</label>
                                         <Input type="text" name='agentName' value={lead.agentName} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                                 <Col md='6'>
                                     <FormGroup>
-                                        <label>Recording Link </label>
+                                        <label className='label'>Recording Link </label>
                                         <Input type="text" name='recording_link' value={lead.recording_link} onChange={onChange} />
                                     </FormGroup>
                                 </Col>
