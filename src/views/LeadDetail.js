@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row } from 'reactstrap'
+import { RxExternalLink } from 'react-icons/rx'
+import { BsChevronDown } from 'react-icons/bs'
 
 function LeadDetail() {
   const { _id } = useParams()
@@ -39,6 +41,7 @@ function LeadDetail() {
                           {lead.lead_type == 0 ? 'Seller' : 'Buyer'} Lead
                           <p className='text-muted'>By: {lead.agentname}</p>
                         </CardTitle>
+                        {lead.recording_link.length > 3 ? <a href={lead.recording_link} target="BLANK"><RxExternalLink/></a> : ""}
                       </CardHeader>
                       <CardBody>
                         <Row style={{alignItems: 'flex-end'}}>
@@ -86,11 +89,39 @@ function LeadDetail() {
                                 <Col md='12'>
                                     <FormGroup style={{display:'flex', flexDirection:'column', gap:5}}>
                                         <label>Additional</label>
-                                        <textarea readOnly value={lead.additional} />
+                                        <textarea readOnly value={lead.additional_info} />
                                     </FormGroup>
                                 </Col>
                             </Row>
                         </div>
+
+                        {/* Assigning Lead Section */}
+                        <div className='assign-lead'>
+                          <Input type='checkbox' id='assignlead'/>
+                          <label style={{textAlign:'right'}} htmlFor='assignlead'>Assign Lead <BsChevronDown/></label>
+                          <div className='map'>
+
+                          </div>
+                          <hr  style={{margin:0}}/>
+                        </div>
+
+                      {/* Commments Section*/}
+                        <div className='lead-comments'>
+                          <Input type='checkbox' id='leadcomments'/>
+                          <label style={{textAlign:'right'}} htmlFor='leadcomments'>Comments By Real Estate Agents <BsChevronDown/></label>
+                          <div className='comment-box'>
+                            jnJFNJNAJNJNAGBJNJ
+                              {/* <div className='comment'>
+                                <div>
+                                  <p>Agent Name</p>
+                                  <p>Status</p>
+                                </div>
+                                <textarea readOnly></textarea>
+                              </div> */}
+                          </div>
+                          <hr  style={{margin:0}}/>
+                        </div>
+
                       </CardBody>
                   </>}
                 </Card>

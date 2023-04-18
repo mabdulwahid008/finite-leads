@@ -58,7 +58,7 @@ function LeadListing() {
                                 {leads.map((lead, index) => {
                                     return <tr key={index}>
                                         <td>{index+1}</td>
-                                        <td>{lead.lname}</td>
+                                        <td>{lead.fname}</td>
                                         <td>{lead.state}</td>
                                         <td>{lead.beds} - {lead.baths}</td>
                                         <td>{lead.lead_type == 0 ? 'Seller' : 'Buyer'}</td>

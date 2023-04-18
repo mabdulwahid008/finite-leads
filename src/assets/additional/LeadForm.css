@@ -28,7 +28,7 @@ textarea:focus{
 }
 
 
-/* lead detail popup*/
+/* lead detail */
 .popup{
     position: absolute !important;
     padding: 0px !important;
@@ -72,7 +72,75 @@ textarea:read-only{
 .assign-lead{
     margin-top: 20px;
 }
-.assign-lead > .row{
+.card-header > a > svg{
+    font-size: 40px;
+    padding: 10px;
+    color: black;
+    transition: .25s ease;
+}
+.card-header > a > svg:hover{
+    color: var(--primaryColor);
+}
+#leadcomments,
+#assignlead{
+    opacity: 0;
+}
+label > svg{
+    transition: .25s ease;
+}
+#assignlead:checked ~ label > svg {
+    transform: rotate(180deg);
+}
+#assignlead:checked ~ .map{
+    height: 400px;
+}
+#assignlead:checked ~ hr{
+    display: none;
+}
+.map{
+    height: 0px;
+    border-radius: 10px !important;
+    background-color: aquamarine;
+    transition: .25s ease;
+}
+
+.lead-comments{
+    margin: 10px 0px;
+}
+#leadcomments:checked ~ label > svg {
+    transform: rotate(180deg);
+}
+#leadcomments:checked ~ .comment-box{
+    height: auto;
+    padding: 10px;
+}
+#leadcomments:checked ~ .comment-box > .comment{
+    display: block;
+}
+.comment{
+    display: none;
+}
+#leadcomments:checked ~ hr{
+    display: none;
+}
+.comment-box{
+    height: 0px;
+    border-radius: 10px !important;
+    background-color: #E3E3E3;
+    transition: 1s ease;
+}
+.comment > div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.comment > textarea {
+    width: 100%;
+    height: 70px;
+}
+
+
+/* .assign-lead > .row{
     align-items: flex-end !important;
 }
 .assign-lead >.row > div > div > label{
@@ -80,4 +148,4 @@ textarea:read-only{
 }
 .assign-lead > .row > div:nth-of-type(2){
     padding: 0px !important;
-}
+} */
