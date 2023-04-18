@@ -127,7 +127,7 @@ label > svg{
     height: 0px;
     border-radius: 10px !important;
     background-color: #E3E3E3;
-    transition: 1s ease;
+    transition: .25s ease;
 }
 .comment > div{
     display: flex;

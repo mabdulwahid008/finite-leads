@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../db');
 const authorization = require('../middleware/authorization');
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization');
+const realEstateAutorization = require('../middleware/realEstateAutorization');
 const router = express.Router();
 
 
@@ -51,6 +52,33 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
             ])
         }
         return res.status(200).json({message: 'Lead assigned successfully.'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+// for real estate agent for posting a comment under a asigned lead
+router.post('/comment', authorization, realEstateAutorization, async(req, res) => {
+    const { lead_id , content, lead_status } = req.body;
+    try {   
+        await db.query('INSERT INTO LEAD_COMMENTS(lead_id , content, lead_status, realEstateAgent_id) VALUES($1, $2, $3, $4)',[
+            lead_id , content, lead_status, req.user_id
+        ])
+        return res.status(200).json({message: 'Comment posted successfully.'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+// for addmin to get cooments of lead of all real estate agents
+router.get('/comments/:_id', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        const comments = await db.query('SELECT lead_id, content, lead_status, name FROM LEAD_COMMENTS INNER JOIN USERS ON LEAD_COMMENTS.realEstateAgent_id = USERS._id WHERE lead_id = $1',[
+            req.params._id
+        ])
+        return res.status(200).json(comments.rows)
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})

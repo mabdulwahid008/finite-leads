@@ -100,7 +100,6 @@ function LeadDetail() {
                           <Input type='checkbox' id='assignlead'/>
                           <label style={{textAlign:'right'}} htmlFor='assignlead'>Assign Lead <BsChevronDown/></label>
                           <div className='map'>
-
                           </div>
                           <hr  style={{margin:0}}/>
                         </div>
@@ -110,17 +109,32 @@ function LeadDetail() {
                           <Input type='checkbox' id='leadcomments'/>
                           <label style={{textAlign:'right'}} htmlFor='leadcomments'>Comments By Real Estate Agents <BsChevronDown/></label>
                           <div className='comment-box'>
-                            jnJFNJNAJNJNAGBJNJ
-                              {/* <div className='comment'>
+                              <div className='comment'>
                                 <div>
                                   <p>Agent Name</p>
                                   <p>Status</p>
                                 </div>
                                 <textarea readOnly></textarea>
-                              </div> */}
+                              </div>
+                              <div className='comment'>
+                                <div>
+                                  <p>Agent Name</p>
+                                  <p>Status</p>
+                                </div>
+                                <textarea readOnly></textarea>
+                              </div>
+                              <div className='comment'>
+                                <div>
+                                  <p>Agent Name</p>
+                                  <p>Status</p>
+                                </div>
+                                <textarea readOnly></textarea>
+                              </div>
                           </div>
                           <hr  style={{margin:0}}/>
                         </div>
+
+                        
 
                       </CardBody>
                   </>}
