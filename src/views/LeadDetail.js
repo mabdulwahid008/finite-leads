@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row } from 'reactstrap'
 import { RxExternalLink } from 'react-icons/rx'
 import { BsChevronDown } from 'react-icons/bs'
+import LeadMap from 'components/leadMap/LeadMap'
 
 function LeadDetail() {
   const { _id } = useParams()
@@ -100,6 +101,7 @@ function LeadDetail() {
                           <Input type='checkbox' id='assignlead'/>
                           <label style={{textAlign:'right'}} htmlFor='assignlead'>Assign Lead <BsChevronDown/></label>
                           <div className='map'>
+                            <LeadMap />
                           </div>
                           <hr  style={{margin:0}}/>
                         </div>

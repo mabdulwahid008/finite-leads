@@ -9,12 +9,14 @@ import "assets/scss/paper-dashboard.scss?v=1.3.0";
 import "assets/demo/demo.css";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 import App from "App";
+import LeadMap from "components/leadMap/LeadMap";
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <BrowserRouter>
-      <App />
+      {/* <App /> */}
+      <LeadMap />
   </BrowserRouter>
 );
