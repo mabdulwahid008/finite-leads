@@ -16,7 +16,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Dashboard from "views/Dashboard.js";
+// import Dashboard from "views/Dashboard.js";
 import Icons from "views/Icons.js";
 import Users from "views/Users";
 import Sales from "views/Sales";
@@ -25,13 +25,14 @@ import AgentSalesListing from "views/AgentSalesListing";
 import ChatBox from 'views/ChatBox'
 import LeadListing from "views/LeadListing";
 import LeadDetail from "views/LeadDetail";
+import Mapbox from "components/leadMap/LeadMap";
 
 var routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
     icon: "nc-icon nc-bank",
-    component: Dashboard,
+    component: Sales,
     layout: "/admin",
     role: [0,3,5]
   },
@@ -91,6 +92,14 @@ var routes = [
     layout: "/admin",
     role: [3,5],
     child: true,
+  },
+  {
+    path: "/mapbox",
+    name: "Mapbox",
+    icon: "nc-icon nc-chart-bar-32",
+    component: Mapbox,
+    layout: "/admin",
+    role: [3,5],
   },
   // {
   //   path: "/icons",

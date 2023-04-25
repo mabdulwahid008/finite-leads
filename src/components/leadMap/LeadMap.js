@@ -1,47 +1,30 @@
-import React from 'react'
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import React, { useEffect } from 'react';
+import L from 'mapbox.js';
+import { Card } from 'reactstrap';
 
-const containerStyle = {
-  width: '400px',
-  height: '400px'
-};
+function Mapbox() {
+  useEffect(() => {
+    L.mapbox.accessToken =
+      'pk.eyJ1IjoibWFiZHVsd2FoaWQwMDgiLCJhIjoiY2xnbnlpYnVpMGN0dTNrcDkyZ3oxZWZjcSJ9.ga70btg357fC1KB2seVdHA';
+    const map = L.mapbox.map('map')
+      .setView([31.939198, 72.628899], 9)
+      .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
+    return () => map.remove();
+  }, []);
 
-const center = {
-  lat: -3.745,
-  lng: -38.523
-};
+  return (
+    <div className='content'>
+      <Card>
+        <div id="map" style={{ height: 400,
+  width: '100%',
+  position: 'relative',
+  margin: '0 auto', }}>
+        </div>
+      </Card>
 
-function LeadMap() {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBDQkVQ5dTM8lJ72epfylv0yCxNUVB8Ukw"
-  })
-
-  const [map, setMap] = React.useState(null)
-
-  const onLoad = React.useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds(center);
-    map.fitBounds(bounds);
-
-    setMap(map)
-  }, [])
-
-  const onUnmount = React.useCallback(function callback(map) {
-    setMap(null)
-  }, [])
-
-  return isLoaded ? (
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={10}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-      >
-        { /* Child components, such as markers, info windows, etc. */ }
-        <></>
-      </GoogleMap>
-  ) : <></>
+    </div>
+  );
 }
 
-export default React.memo(LeadMap)
+export default Mapbox;
+
