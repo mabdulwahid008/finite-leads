@@ -25,7 +25,6 @@ import AgentSalesListing from "views/AgentSalesListing";
 import ChatBox from 'views/ChatBox'
 import LeadListing from "views/LeadListing";
 import LeadDetail from "views/LeadDetail";
-import Mapbox from "components/leadMap/LeadMap";
 
 var routes = [
   {
@@ -92,14 +91,6 @@ var routes = [
     layout: "/admin",
     role: [3,5],
     child: true,
-  },
-  {
-    path: "/mapbox",
-    name: "Mapbox",
-    icon: "nc-icon nc-chart-bar-32",
-    component: Mapbox,
-    layout: "/admin",
-    role: [3,5],
   },
   // {
   //   path: "/icons",

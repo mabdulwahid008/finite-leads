@@ -91,18 +91,33 @@ label > svg{
 #assignlead:checked ~ label > svg {
     transform: rotate(180deg);
 }
-#assignlead:checked ~ .map{
-    height: 400px;
-}
+/* #assignlead:checked ~ .map{
+    height: 500px;
+} */
 #assignlead:checked ~ hr{
     display: none;
 }
 .map{
-    height: 0px;
-    border-radius: 10px !important;
-    background-color: aquamarine;
+    position: relative;
+    height: auto;
     transition: .25s ease;
 }
+
+/* #map {
+  height: 0px;animation-name: expand-map;
+  animation-duration: .25s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+
+@keyframes expand-map {
+  from {
+    height: 0px;
+  }
+  to {
+    height: 500px;
+  }
+} */
 
 .lead-comments{
     margin: 10px 0px;

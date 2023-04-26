@@ -10,8 +10,12 @@ import LeadMap from 'components/leadMap/LeadMap'
 function LeadDetail() {
   const { _id } = useParams()
 
+  // lead data after fetching API
   const [lead, setLead] = useState(null)
+  // for showing map for assign based on input[type = "checkbox"]
+  const [isChecked, setIsChecked] = useState(false)
 
+  // API Calling
   const fetchlead = async () => {
     const response = await fetch(`/lead/${_id}`,{
       method: 'GET',
@@ -42,7 +46,7 @@ function LeadDetail() {
                           {lead.lead_type == 0 ? 'Seller' : 'Buyer'} Lead
                           <p className='text-muted'>By: {lead.agentname}</p>
                         </CardTitle>
-                        {lead.recording_link.length > 3 ? <a href={lead.recording_link} target="BLANK"><RxExternalLink/></a> : ""}
+                        {lead.recording_link && lead.recording_link.length > 3 ? <a href={lead.recording_link} target="BLANK"><RxExternalLink/></a> : ""}
                       </CardHeader>
                       <CardBody>
                         <Row style={{alignItems: 'flex-end'}}>
@@ -97,14 +101,14 @@ function LeadDetail() {
                         </div>
 
                         {/* Assigning Lead Section */}
-                        <div className='assign-lead'>
-                          <Input type='checkbox' id='assignlead'/>
+                        {/* <div className='assign-lead'>
+                          <Input type='checkbox' id='assignlead' onChange={()=>setIsChecked(!isChecked)}/>
                           <label style={{textAlign:'right'}} htmlFor='assignlead'>Assign Lead <BsChevronDown/></label>
                           <div className='map'>
-                            <LeadMap />
+                            {isChecked && <LeadMap />}
                           </div>
                           <hr  style={{margin:0}}/>
-                        </div>
+                        </div> */}
 
                       {/* Commments Section*/}
                         <div className='lead-comments'>
@@ -118,31 +122,29 @@ function LeadDetail() {
                                 </div>
                                 <textarea readOnly></textarea>
                               </div>
-                              <div className='comment'>
-                                <div>
-                                  <p>Agent Name</p>
-                                  <p>Status</p>
-                                </div>
-                                <textarea readOnly></textarea>
-                              </div>
-                              <div className='comment'>
-                                <div>
-                                  <p>Agent Name</p>
-                                  <p>Status</p>
-                                </div>
-                                <textarea readOnly></textarea>
-                              </div>
                           </div>
                           <hr  style={{margin:0}}/>
                         </div>
-
-                        
-
                       </CardBody>
                   </>}
                 </Card>
             </Col>
         </Row>
+
+        <Row>
+          <Col md="12">
+            <Card>
+              <CardHeader>
+                <CardTitle tag='h4'>Assign Lead</CardTitle>
+              </CardHeader>
+              <CardBody>
+                {/* {!lead && <Loading />} */}
+                {lead && <LeadMap street={lead.address} zipcode={lead.zip_code} state={lead.state}/>}
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+
     </div>
   )
 }
