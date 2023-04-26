@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import L from 'mapbox.js';
 import { Card } from 'reactstrap';
 
@@ -13,65 +13,101 @@ const leadMArker = L.icon({
   popupAnchor: [1, -34],
 });
 
-L.mapbox.accessToken = 'pk.eyJ1IjoibWFiZHVsd2FoaWQwMDgiLCJhIjoiY2xnbnlpYnVpMGN0dTNrcDkyZ3oxZWZjcSJ9.ga70btg357fC1KB2seVdHA';
+const agents = [
+  {
+    "id": 1,
+    "street": "735 Main St.",
+    "zipcode": "95336",
+    "state": "CA",
+    "miles": Math.floor(Math.random() * 36) + 10
+  },
+  {
+    "id": 2,
+    "street": "25 Purdy Avenue",
+    "zipcode": "10580",
+    "state": "NY",
+    "miles": Math.floor(Math.random() * 36) + 10
+  },
+  {
+    "id": 3,
+    "street": "6761 Old Jacksonville Hwy",
+    "zipcode": "75703",
+    "state": "Texas",
+    "miles": Math.floor(Math.random() * 36) + 10
+  },
+];
+
+
+
+
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibWFiZHVsd2FoaWQwMDgiLCJhIjoiY2xnbnlpYnVpMGN0dTNrcDkyZ3oxZWZjcSJ9.ga70btg357fC1KB2seVdHA';
+L.mapbox.accessToken =  MAPBOX_ACCESS_TOKEN;
 
 
 function Mapbox(street, zipcode, state) {
+  const map = useRef()
+  const circleRef = useRef()
 
+  const getLatLongFromAddress = async(street, state, zipcode) => {
+    // const address = '16064 Anaconda Rd. Madera, CA 93636';
+    const address = `${street}, ${state} ${zipcode}`
 
-  const getLatLongFromAddress = async (street, zipcode, state) => {
-    // const address = `${street}, ${state} ${zipcode}`;
-
-    const address = '1600 Amphitheatre Parkway, Mountain View, CA';
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
       address
     )}.json?access_token=${MAPBOX_ACCESS_TOKEN}`;
  
-
     const response = await fetch(url, {
       method: 'GET'
     })
     const data = await response.json()
-    const [long, lat] = data.features[0].center;
+
+    const [long, lat] = data.features[2].center;
     
-    
-    const map = L.mapbox.map('map')
-      .setView([lat, long], 10.4)
-      .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
-
-    L.marker([lat, long],  { icon: leadMArker }).addTo(map);
-
-    L.circle([lat, long], {
-      radius: 10 * 1609.34, 
-    }).addTo(map);
-
-    // L.marker([31.939198, 72.228899]).addTo(map);
-
-    return () => map.remove();
-  
+    return ([lat, long])
   };
 
-  useEffect(() => {
+  const fetchRealEstateAgents = async() => {
 
-    getLatLongFromAddress('3517 MAIN ST', zipcode, state)
-    // const map = L.mapbox.map('map')
-    //   .setView([-122.07121, 37.41582], 9)
-    //   .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
+    for(let i = 0; i < agents.length; i++){
+      const [lat, long] = await getLatLongFromAddress(agents[i].street, agents[i].state, agents[i].zipcode);
+      // L.marker([lat, long]).addTo(map.current);
+      const marker = L.marker([lat, long]).addTo(map.current);
+      const agentId = `agent-${i}`;
+      // marker.bindPopup(`Agent ${i+1}`);
+      marker.on('click', () => handleMarkerClick(agentId, lat, long));
+    }
+  
+  }
+  
+  const handleMarkerClick = (agentId, lat, long) => {
+    if(circleRef.current)
+      circleRef.current.remove()
 
-    // L.marker([-122.07121, 37.41582],  { icon: leadMArker }).addTo(map);
+    const circle = L.circle([lat, long], {
+      radius: 20 * 1609.34, 
+    }).addTo(map.current);
 
-    // L.circle([-122.07121, 37.41582], {
-    //   radius: 30 * 1609.34, 
-    // }).addTo(map);
+    circleRef.current = circle
+  }
 
-    // // L.marker([31.939198, 72.228899]).addTo(map);
+  const loadMap = (lat, long) => {
+    map.current = L.mapbox.map('map')
+      .setView([lat, long], 9)
+      .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
+    L.marker([lat, long],  { icon: leadMArker }).addTo(map.current);
 
-    // return () => map.remove();
+    return () => map.remove();
+  }
+
+  useEffect(async() => {
+    const [lat, long] = await getLatLongFromAddress('16064 Anaconda Rd. Madera', 'CA', '93636')
+    loadMap(lat, long)
+    fetchRealEstateAgents()
+
   }, []);
 
   return (
-    <div id="map" style={{height: 500, width: '100%', borderRadius:20 }}></div>
+    <div id="map" style={{height: 500, width: '100%', borderRadius:10 }}></div>
   )
 }
 
