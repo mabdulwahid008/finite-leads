@@ -100,6 +100,7 @@ function Mapbox(street, zipcode, state) {
       console.log(selectedAgent);
   }
 
+
   const getLatLongFromAddress = async(street, state, zipcode) => {
     // const address = '16064 Anaconda Rd. Madera, CA 93636';
     const address = `${street}, ${state} ${zipcode}`
@@ -144,6 +145,24 @@ function Mapbox(street, zipcode, state) {
     }).addTo(map.current);
 
     setSelectedAgent(agent[0].id)
+
+    L.mapbox.featureLayer().loadURL(
+      `https://api.mapbox.com/v4/examples.map-4l7djmvo/zoompan.geojson?access_token=${MAPBOX_ACCESS_TOKEN}`
+    ).on('ready', function(layer) {
+      layer.eachLayer(function(l) {
+        if (l.feature.properties.zip === '93636') {
+          l.setStyle({
+            weight: 2,
+            color: '#0000ff',
+            fillOpacity: 0.2,
+            fillColor: '#0000ff'
+          });
+        }
+      });
+      map.current.fitBounds(layer.getBounds());
+    }).addTo(map.current);
+
+    
 
     circleRef.current = circle
   }

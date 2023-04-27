@@ -1,12 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row } from 'reactstrap'
 import { RxCross1 } from 'react-icons/rx'
 import { toast } from 'react-toastify'
 import ReactSelect from 'react-select'
+import Loading from 'components/Loading/Loading'
 
 function AddUser({ setAddNewAgent, setRefresh }) {
     const [loading, setLoading] = useState(false)
     const [formType, setFormType] = useState(0)
+    
+    // reperesentative options
+    const [repOptions, setRepOptions] = useState(null)
 
 
     const [saleAgentData, setSaleAgentData] = useState({name: '', phone: '', email: '', address: '', password: '', role: null})
@@ -19,6 +23,30 @@ function AddUser({ setAddNewAgent, setRefresh }) {
     // for real estate agents
     const onChangeRealEstate = (e) =>{
 
+    }
+
+    const fetchUsers = async() =>{
+        const response = await fetch(`/user/0`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            const options = []
+            for (let i = 0; i < res.length; i++) {
+               let obj = {
+                   value: res[i]._id,
+                   label: res[i].name
+               }
+               options.push(obj)
+            }
+            setRepOptions(options)
+        }
+        else
+            toast.error(res.message)
     }
 
     const userRoles = [
@@ -69,6 +97,10 @@ function AddUser({ setAddNewAgent, setRefresh }) {
         }
         setLoading(false)
     }
+
+    useEffect(()=>{
+        fetchUsers()
+    }, [])
   return (
     <div className='popup'>
         <div className='overlay'></div>
@@ -115,7 +147,8 @@ function AddUser({ setAddNewAgent, setRefresh }) {
                 </Form>}
 
                 {/* for Real Estate Agents */}
-                {formType == 2 && <Form>
+                {formType == 2 && !repOptions && <Loading />}
+                {formType == 2 && repOptions && <Form>
                     <Row>
                         <Col md='6'>
                             <FormGroup>
