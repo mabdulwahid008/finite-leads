@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import L from 'mapbox.js';
-import { Card } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, CardTitle } from 'reactstrap';
 
 
 const leadMArker = L.icon({
@@ -94,6 +94,12 @@ function Mapbox(street, zipcode, state) {
   const map = useRef()
   const circleRef = useRef()
 
+  const [selectedAgent, setSelectedAgent] = useState(null)
+
+  const assignLead = () => {
+      console.log(selectedAgent);
+  }
+
   const getLatLongFromAddress = async(street, state, zipcode) => {
     // const address = '16064 Anaconda Rd. Madera, CA 93636';
     const address = `${street}, ${state} ${zipcode}`
@@ -126,13 +132,18 @@ function Mapbox(street, zipcode, state) {
   }
   
   const handleMarkerClick = (agentId, lat, long) => {
-    if(circleRef.current)
+    if(circleRef.current){
       circleRef.current.remove()
+      setSelectedAgent(null)
+    }
 
-    // const agent = agents.filter((agent)=> agent.miles === agentId)
+    const agent = agents.filter((agent)=> agent.id === agentId)
+
     const circle = L.circle([lat, long], {
-      radius: 40 * 1609.34, 
+      radius: agent[0].miles * 1609.34, 
     }).addTo(map.current);
+
+    setSelectedAgent(agent[0].id)
 
     circleRef.current = circle
   }
@@ -154,7 +165,15 @@ function Mapbox(street, zipcode, state) {
   }, []);
 
   return (
-    <div id="map" style={{height: 500, width: '100%', borderRadius:10 }}></div>
+    <Card>
+      <CardHeader>
+        <CardTitle tag='h4'>Assign Lead</CardTitle>
+        <Button onClick={assignLead}>Assign Lead</Button>
+      </CardHeader>
+      <CardBody>
+        <div id="map" style={{height: 500, width: '100%', borderRadius:10 }}></div>
+      </CardBody>
+    </Card>
   )
 }
 

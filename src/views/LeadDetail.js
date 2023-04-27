@@ -2,7 +2,7 @@ import Loading from 'components/Loading/Loading'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row } from 'reactstrap'
 import { RxExternalLink } from 'react-icons/rx'
 import { BsChevronDown } from 'react-icons/bs'
 import LeadMap from 'components/leadMap/LeadMap'
@@ -111,7 +111,7 @@ function LeadDetail() {
                         </div> */}
 
                       {/* Commments Section*/}
-                        <div className='lead-comments'>
+                        <div className='lead-comments mt-4'>
                           <Input type='checkbox' id='leadcomments'/>
                           <label style={{textAlign:'right'}} htmlFor='leadcomments'>Comments By Real Estate Agents <BsChevronDown/></label>
                           <div className='comment-box'>
@@ -132,16 +132,8 @@ function LeadDetail() {
         </Row>
 
         <Row>
-          <Col md="12">
-            <Card>
-              <CardHeader>
-                <CardTitle tag='h4'>Assign Lead</CardTitle>
-              </CardHeader>
-              <CardBody>
-                {/* {!lead && <Loading />} */}
+          <Col md="12 mt-4">
                 {lead && <LeadMap street={lead.address} zipcode={lead.zip_code} state={lead.state}/>}
-              </CardBody>
-            </Card>
           </Col>
         </Row>
 
