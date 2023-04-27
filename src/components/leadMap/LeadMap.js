@@ -99,6 +99,9 @@ function Mapbox(street, zipcode, state) {
   const assignLead = () => {
       console.log(selectedAgent);
   }
+  
+  
+
 
 
   const getLatLongFromAddress = async(street, state, zipcode) => {
@@ -114,6 +117,7 @@ function Mapbox(street, zipcode, state) {
     })
     const data = await response.json()
 
+    console.log(data);
     const [long, lat] = data.features[2].center;
     
     return ([lat, long])
@@ -146,23 +150,15 @@ function Mapbox(street, zipcode, state) {
 
     setSelectedAgent(agent[0].id)
 
-    L.mapbox.featureLayer().loadURL(
-      `https://api.mapbox.com/v4/examples.map-4l7djmvo/zoompan.geojson?access_token=${MAPBOX_ACCESS_TOKEN}`
-    ).on('ready', function(layer) {
-      layer.eachLayer(function(l) {
-        if (l.feature.properties.zip === '93636') {
-          l.setStyle({
-            weight: 2,
-            color: '#0000ff',
-            fillOpacity: 0.2,
-            fillColor: '#0000ff'
-          });
-        }
-      });
-      map.current.fitBounds(layer.getBounds());
+
+    const polygonCoords = []
+    const polygon = L.polygon(polygonCoords, {
+      color: 'red',
+      fillColor: 'red',
+      fillOpacity: 0.5
     }).addTo(map.current);
 
-    
+    map.current.fitBounds(polygon.getBounds());
 
     circleRef.current = circle
   }
