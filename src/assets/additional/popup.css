@@ -1,5 +1,5 @@
 .popup, .overlay{
-    height: calc(100vh + 50px);
+    height: calc(100vh + 100px);
     width: 100%;
     position: fixed;
     top: 0px;
@@ -15,7 +15,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 0 0 250px ;
+    padding: 0 0 50px 250px;
 }
 .card-popup{
     z-index: 99999;

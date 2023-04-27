@@ -6,10 +6,19 @@ import ReactSelect from 'react-select'
 
 function AddUser({ setAddNewAgent, setRefresh }) {
     const [loading, setLoading] = useState(false)
-    const [agentData, setAgentData] = useState({name: '', phone: '', email: '', address: '', password: '', role: null})
+    const [formType, setFormType] = useState(0)
 
+
+    const [saleAgentData, setSaleAgentData] = useState({name: '', phone: '', email: '', address: '', password: '', role: null})
+
+    // for saale agent
     const onChange = (e) => {
-        setAgentData({...agentData, [e.target.name]: e.target.value})
+        setSaleAgentData({...saleAgentData, [e.target.name]: e.target.value})
+    }
+
+    // for real estate agents
+    const onChangeRealEstate = (e) =>{
+
     }
 
     const userRoles = [
@@ -22,17 +31,17 @@ function AddUser({ setAddNewAgent, setRefresh }) {
     const addNewAgent = async( e ) => {
         e.preventDefault();
         setLoading(true)
-        if(agentData.phone.length !== 11){
+        if(saleAgentData.phone.length !== 11){
             toast.error('Agents phone number is incorrect')
             setLoading(false)
             return;
         }
-        if(agentData.password.length < 4){
+        if(saleAgentData.password.length < 4){
             toast.error('Password should be 4 character long')
             setLoading(false)
             return;
         }
-        if(agentData.role === null){
+        if(saleAgentData.role === null){
             toast.error('Assign a role to the user')
             setLoading(false)
             return;
@@ -44,7 +53,7 @@ function AddUser({ setAddNewAgent, setRefresh }) {
                 'Content-Type': 'Application/json',
                 token: localStorage.getItem('token')
             },
-            body: JSON.stringify(agentData) 
+            body: JSON.stringify(saleAgentData) 
         })
 
         const res = await response.json()
@@ -69,7 +78,12 @@ function AddUser({ setAddNewAgent, setRefresh }) {
                 <RxCross1 onClick={()=> setAddNewAgent(false)}/>
             </CardHeader>
             <CardBody>
-                <Form onSubmit={addNewAgent}>
+                <FormGroup>
+                    <label>Assign Role</label>
+                    <ReactSelect options={userRoles} required onChange={(option)=>{saleAgentData.role = option.value; setFormType(option.value)}}/>
+                </FormGroup>
+                {/* for Sale Agents */}
+                {formType == 0 && <Form onSubmit={addNewAgent}>
                     <FormGroup>
                         <label>Name</label>
                         <Input type='text' name='name' required onChange={onChange}/>
@@ -88,22 +102,130 @@ function AddUser({ setAddNewAgent, setRefresh }) {
                             </FormGroup>
                         </Col>
                     </Row>
-                   
                     
                     <FormGroup>
                         <label>Password</label>
                         <Input type='password' name='password' required onChange={onChange}/>
                     </FormGroup>
                     <FormGroup>
-                        <label>Assign Role</label>
-                        <ReactSelect options={userRoles} required onChange={(option)=>{agentData.role = option.value}}/>
-                    </FormGroup>
-                    <FormGroup>
                         <label>Address (optional)</label>
                         <Input type='text' name='address' onChange={onChange}/>
                     </FormGroup>
                     <Button color='primary' disabled={loading? true : false}>{`${loading? "Please Wait":"Add New"}`}</Button>
-                </Form>
+                </Form>}
+
+                {/* for Real Estate Agents */}
+                {formType == 2 && <Form>
+                    <Row>
+                        <Col md='6'>
+                            <FormGroup>
+                                <label>First Name</label>
+                                <Input type='text' name='fname' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                        <Col md='6'>
+                            <FormGroup>
+                                <label>Last Name</label>
+                                <Input type='text' name='lname' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md='6'>
+                            <FormGroup>
+                                <label>Email</label>
+                                <Input type='email' name='fname' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                        <Col md='6'>
+                            <FormGroup>
+                                <label>Phone</label>
+                                <Input type='number' name='lname' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md='6'>
+                            <FormGroup>
+                                <label>Brokerage Name</label>
+                                <Input type='text' name='brokerage_name' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                        <Col md='3'>
+                            <FormGroup>
+                                <label>Broker Name</label>
+                                <Input type='text' name='broker_name' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                        <Col md='3'>
+                            <FormGroup>
+                                <label>Office Phone</label>
+                                <Input type='text' name='office_phone' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md='6'>
+                            <FormGroup>
+                                <label>Address</label>
+                                <Input type='text' name='address' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                        <Col md='3'>
+                            <FormGroup>
+                                <label>City</label>
+                                <Input type='text' name='city' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                        <Col md='3'>
+                            <FormGroup>
+                                <label>Zip Code</label>
+                                <Input type='text' name='zip_code' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md='6'>
+                            <FormGroup>
+                                <label>Country</label>
+                                <Input type='text' name='country' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                        <Col md='6'>
+                            <FormGroup>
+                                <label>State</label>
+                                <Input type='text' name='state' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md='6'>
+                            <FormGroup>
+                                <label>Service Areas</label>
+                                <Input type='text' name='service_areas' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                        <Col md='3'>
+                            <FormGroup>
+                                <label>Service Radius (miles)</label>
+                                <Input type='number' name='service_radius' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                        <Col md='3'>
+                            <FormGroup>
+                                <label>RE License No</label>
+                                <Input type='text' name='re_license_no' required onChange={onChangeRealEstate} />
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <FormGroup>
+                        <label>Repersentative</label>
+                        <ReactSelect options={userRoles}/>
+                    </FormGroup>
+                    <Button color='primary' disabled={loading? true : false}>{`${loading? "Please Wait":"Add New"}`}</Button>
+                </Form>}
+
+
             </CardBody>
         </Card>
     </div>

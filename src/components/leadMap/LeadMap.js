@@ -154,15 +154,26 @@ function Mapbox(street, zipcode, state) {
       .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
     L.marker([lat, long],  { icon: leadMArker }).addTo(map.current);
 
-    return () => map.remove();
+    return () => map.current.remove();
   }
 
-  useEffect(async() => {
-    const [lat, long] = await getLatLongFromAddress('16064 Anaconda Rd. Madera', 'CA', '93636')
-    loadMap(lat, long)
-    fetchRealEstateAgents()
-
+  useEffect(() => {
+    let cleanupFunction;
+    const loadMapAndReturnCleanupFunction = async () => {
+      const [lat, long] = await getLatLongFromAddress('16064 Anaconda Rd. Madera','CA','93636');
+      cleanupFunction = loadMap(lat, long); // save the cleanup function
+      fetchRealEstateAgents();
+    };
+    loadMapAndReturnCleanupFunction();
+  
+    // return a function that calls the cleanup function
+    return () => {
+      if (typeof cleanupFunction === 'function') {
+        cleanupFunction();
+      }
+    };
   }, []);
+  
 
   return (
     <Card>
