@@ -18,73 +18,74 @@ const agents = [
     id: '1',
     street: '735 Main St.',
     zip_code: '95336',
+    areas: 'LODI,STOCKTON,LOCKEFORD,LATHROP,TRACY,MANTECA,LINDEN,GALT',
     state: 'CA',
     miles: 40
   },
-  {
-    id: '2',
-    street: '25 Purdy Avenue',
-    zip_code: '10580',
-    state: 'NY',
-    miles: 10
-  },
-  {
-    id: '3',
-    street: '6761 Old Jacksonville Hwy',
-    zip_code: '75703',
-    state: 'Texas',
-    miles: 20
-  },
-  {
-    id: '4',
-    street: '1820 Commerce St',
-    zip_code: '10598',
-    state: 'New York',
-    miles: 30
-  },
-  {
-    id: '5',
-    street: '3 Grace Ave Ste 180, Suite 180',
-    zip_code: '11021-2415',
-    state: 'NY',
-    miles: 20
-  },
-  {
-    id: '6',
-    street: '342 Highland Ave',
-    zip_code: '94611',
-    state: 'CA',
-    miles: 35
-  },
-  {
-    id: '7',
-    street: '1820 Commerce Street',
-    zip_code: '10566',
-    state: 'New York',
-    miles: 40
-  },
-  {
-    id: '8',
-    street: '2510 Sand Creek Rd',
-    zip_code: '94513',
-    state: 'CA',
-    miles: 10
-  },
-  {
-    id: '9',
-    street: '2829 Indian Creek Dr, Apt 1007',
-    zip_code: '33140',
-    state: 'Florida',
-    miles: 25
-  },
-  {
-    id: '10',
-    street: '12751 Westlinks Dr Ste 2',
-    zip_code: '33913',
-    state: 'FL',
-    areas: 'Lee county, Charlotte county, Hendry county, Collier County',
-    miles: 20
-  }
+  // {
+  //   id: '2',
+  //   street: '25 Purdy Avenue',
+  //   zip_code: '10580',
+  //   state: 'NY',
+  //   miles: 10
+  // },
+  // {
+  //   id: '3',
+  //   street: '6761 Old Jacksonville Hwy',
+  //   zip_code: '75703',
+  //   state: 'Texas',
+  //   miles: 20
+  // },
+  // {
+  //   id: '4',
+  //   street: '1820 Commerce St',
+  //   zip_code: '10598',
+  //   state: 'New York',
+  //   miles: 30
+  // },
+  // {
+  //   id: '5',
+  //   street: '3 Grace Ave Ste 180, Suite 180',
+  //   zip_code: '11021-2415',
+  //   state: 'NY',
+  //   miles: 20
+  // },
+  // {
+  //   id: '6',
+  //   street: '342 Highland Ave',
+  //   zip_code: '94611',
+  //   state: 'CA',
+  //   miles: 35
+  // },
+  // {
+  //   id: '7',
+  //   street: '1820 Commerce Street',
+  //   zip_code: '10566',
+  //   state: 'New York',
+  //   miles: 40
+  // },
+  // {
+  //   id: '8',
+  //   street: '2510 Sand Creek Rd',
+  //   zip_code: '94513',
+  //   state: 'CA',
+  //   miles: 10
+  // },
+  // {
+  //   id: '9',
+  //   street: '2829 Indian Creek Dr, Apt 1007',
+  //   zip_code: '33140',
+  //   state: 'Florida',
+  //   miles: 25
+  // },
+  // {
+  //   id: '10',
+  //   street: '12751 Westlinks Dr Ste 2',
+  //   zip_code: '33913',
+  //   state: 'FL',
+  //   areas: 'Lee county, Charlotte county, Hendry county, Collier County',
+  //   miles: 20
+  // }
 ];
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibWFiZHVsd2FoaWQwMDgiLCJhIjoiY2xnbnlpYnVpMGN0dTNrcDkyZ3oxZWZjcSJ9.ga70btg357fC1KB2seVdHA';

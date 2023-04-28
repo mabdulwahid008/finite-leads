@@ -60,13 +60,15 @@ thead{
     justify-content: flex-end;
     align-items: center;
 }
+.actions > a > svg,
 .actions > svg{
     padding: 5px;
     font-size: 24px;
-    color: var(--blackColor);
+    color: var(--blackColor) ;
     transition: .25s ease;
     cursor: pointer;
 }
+.actions > a > svg:hover,
 .actions > svg:nth-child(1):hover{
     color: var(--primaryColor);
 }

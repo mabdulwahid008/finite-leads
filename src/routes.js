@@ -25,6 +25,7 @@ import AgentSalesListing from "views/AgentSalesListing";
 import ChatBox from 'views/ChatBox'
 import LeadListing from "views/LeadListing";
 import LeadDetail from "views/LeadDetail";
+import EditUser from "components/editUserPopup/EditUser";
 
 var routes = [
   {
@@ -41,6 +42,15 @@ var routes = [
     icon: "nc-icon nc-single-02",
     component: Users,
     layout: "/admin",
+    role: [3,5]
+  },
+  {
+    path: "/edit-user/:id",
+    name: "Edit User",
+    icon: "nc-icon nc-single-02",
+    component: EditUser,
+    layout: "/admin",
+    child: true,
     role: [3,5]
   },
   {

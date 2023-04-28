@@ -42,7 +42,7 @@ router.post('/login', async(req, res) => {
 
 // create User
 router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
-    const { name, phone, email, address, password, role, brokerage_name, broker_name, office_phone, city, country, zip_code, state, service_areas, service_radius, re_license_no, rep } = req.body
+    const { name, phone, email, address, password, role, brokerage_name, broker_name, office_phone, city, country, zip_code, state,  service_radius, re_license_no, rep } = req.body
     try {
         const user = await db.query('SELECT * FROM users WHERE email = $1',[
             email
@@ -61,8 +61,8 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
         }
         // RE agnet
         if(role == 2){
-            const createUser = await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at, brokerage_name, broker_name, office_phone, city, country, zip_code, state, service_areas, service_radius, re_license_no, rep) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)',[
-                name, phone, email, address, encryptedPass, role, date, brokerage_name, broker_name, office_phone, city, country, zip_code, state, service_areas, service_radius, re_license_no, rep
+            const createUser = await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at, brokerage_name, broker_name, office_phone, city, country, zip_code, state, service_radius, re_license_no, rep) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',[
+                name, phone, email, address, encryptedPass, role, date, brokerage_name, broker_name, office_phone, city, country, zip_code, state, service_radius, re_license_no, rep
             ])
         }
         return res.status(200).json({message: 'User Created'})
@@ -131,6 +131,17 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res) 
     }
 })
 
+// get single user
+router.get('/get-single/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        const user = await db.query('SELECT * From Users WHERE _id = $1', [req.params.id])
+        return res.status(200).json(user.rows[0])
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Server Error"})
+    }
+})
+
 // get user details
 router.post('/getdetails', async(req, res)=> {
     try {
@@ -165,8 +176,11 @@ router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)
         if(req.user_role === 3 && user.rows[0].role >= 3)
             return res.status(401).json({message: 'You can\'t delete users of this role'})
         
-        await db.query('DELETE FROM users WHERE _id = $1', [
-            req.params.id
+        // await db.query('DELETE FROM users WHERE _id = $1', [
+        //     req.params.id
+        // ])
+        await db.query('UPDATE USERS SET active = $1 WHERE _id = $2',[
+            0, req.params.id
         ])
 
         return res.status(200).json({message: 'User deleted successfully'})

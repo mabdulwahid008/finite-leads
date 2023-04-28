@@ -33,7 +33,6 @@ function AddUser({ setAddNewAgent, setRefresh }) {
         country: '',
         zip_code: '',
         state: '',
-        service_areas: '',
         service_radius: '',
         re_license_no: '',
         rep: null
@@ -54,7 +53,6 @@ function AddUser({ setAddNewAgent, setRefresh }) {
             country: '',
             zip_code: '',
             state: '',
-            service_areas: '',
             service_radius: '',
             re_license_no: '',
             rep: null
@@ -321,12 +319,19 @@ function AddUser({ setAddNewAgent, setRefresh }) {
                     </Row>
                     <Row>
                         <Col md='6'>
+                            <FormGroup style={{position: 'relative'}}>
+                                <label>Password</label>
+                                <Input defaultValue={agentData.password} type='text' name="password" required onChange={onChange} />
+                                <AiOutlineUnlock onClick={generatePassword} style={{position: 'absolute', bottom: 12, right: 10, fontSize: 18, cursor: 'pointer'}}/>
+                            </FormGroup>
+                        </Col>
+                        <Col md='3'>
                             <FormGroup>
                                 <label>Country</label>
                                 <Input type='text' name='country' required onChange={onChange} />
                             </FormGroup>
                         </Col>
-                        <Col md='6'>
+                        <Col md='3'>
                             <FormGroup>
                                 <label>State</label>
                                 <Input type='text' name='state' required onChange={onChange} />
@@ -334,12 +339,6 @@ function AddUser({ setAddNewAgent, setRefresh }) {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md='6'>
-                            <FormGroup>
-                                <label>Service Areas (separate area with comma)</label>
-                                <Input type='text' name='service_areas' required onChange={onChange} />
-                            </FormGroup>
-                        </Col>
                         <Col md='3'>
                             <FormGroup>
                                 <label>Service Radius (miles)</label>
@@ -350,15 +349,6 @@ function AddUser({ setAddNewAgent, setRefresh }) {
                             <FormGroup>
                                 <label>RE License No</label>
                                 <Input type='text' name='re_license_no' required onChange={onChange} />
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md='6'>
-                            <FormGroup style={{position: 'relative'}}>
-                                <label>Password</label>
-                                <Input defaultValue={agentData.password} type='text' name="password" required onChange={onChange} />
-                                <AiOutlineUnlock onClick={generatePassword} style={{position: 'absolute', bottom: 12, right: 10, fontSize: 18, cursor: 'pointer'}}/>
                             </FormGroup>
                         </Col>
                         <Col md='6'>

@@ -13,8 +13,8 @@ function DeletePopup({ setDeletePopup, agentToBeDeleted, setAgentToBeDeleted, on
                 <RxCross1 onClick={()=> {setDeletePopup(false); setAgentToBeDeleted(null)}}/>
             </CardHeader>
             <CardBody>
-                <p>Deleting {agentToBeDeleted.name} will also delete all his activities.</p>
-                <Button className='btn-danger' style={{width:'100%'}} onClick={onSubmitDeleteAgent}>Delete</Button>
+                <p>{agentToBeDeleted.name} will not be able to access the system.</p>
+                <Button className='btn-danger' style={{width:'100%'}} onClick={onSubmitDeleteAgent}>Deactivate</Button>
             </CardBody>
         </Card>
     </div>

@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row } from 'reactstrap'
 import { RxCross1 } from 'react-icons/rx'
 import { toast } from 'react-toastify'
 import ReactSelect from 'react-select'
 import Loading from '../Loading/Loading'
+import { useParams } from 'react-router-dom'
 
-function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
-    const [agentData, setAgentData] = useState(agentToBeEdited)
+function EditUser({ agentToBeEdited }) {
+
+    const { id } = useParams()
+
+    const [agentData, setAgentData] = useState(null)
     const [agentRole, setAgentRole] = useState(null)
 
     const userRoles = [
@@ -17,13 +21,13 @@ function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
     ]
 
     const findAgentRole = () => {
-        if(agentData.role === 0)
+        if(agentData.role == 0)
             setAgentRole({value: 0, label: 'Sales Agent'})
-        else if(agentData.role === 1)
+        else if(agentData.role == 1)
             setAgentRole({value: 1, label: 'Markeing Agent'})
-        else if(agentData.role === 2)
+        else if(agentData.role == 2)
             setAgentRole({value: 2, label: 'Real Estate Agent'})
-        else if(agentData.role === 3)
+        else if(agentData.role == 3)
             setAgentRole({value: 3, label: 'Admin'})
         else{}
     } 
@@ -50,8 +54,6 @@ function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
         const res = await response.json();
         if(response.status === 200){
             toast.success(res.message)
-            setEditAgent(false);
-            setRefresh(true)
         }
         else{
             toast.error(res.message)
@@ -59,21 +61,40 @@ function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
         
     };
 
+    const fetchUser = async() => {
+        const response = await fetch(`/user/get-single/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json();
+        if(response.status === 200){
+            setAgentData(res)
+        }
+        else{
+            toast.error(res.message)
+        }
+    }
+
     useEffect(()=>{
-        findAgentRole();
-    }, [])
+        fetchUser()
+        if(agentData)
+            findAgentRole();
+    }, [agentData])
       
   return (
-    <div className='popup'>
-        <div className='overlay'></div>
-        <Card className='card-popup add-user-popup'>
+   <div className='content'>
+    <Row>
+        <Col md='12'>
+        <Card>
             <CardHeader>
                 <CardTitle tag="h5">Edit User's Data</CardTitle>
-                <RxCross1 onClick={()=>{setEditAgent(false)}}/>
             </CardHeader>
             <CardBody>
                 {!agentRole && <Loading />}
-               {agentRole && <Form onSubmit={editAgent}>
+               {agentRole  && <Form onSubmit={editAgent}>
                     <FormGroup>
                         <label>Name</label>
                         <Input type='text' name='name' defaultValue={agentData.name} required onChange={onChange}/>
@@ -98,7 +119,9 @@ function EditUser({setEditAgent, agentToBeEdited, setRefresh }) {
                 </Form>}
             </CardBody>
         </Card>
-    </div>
+    </Col>
+  </Row>
+</div>
   )
 }
 

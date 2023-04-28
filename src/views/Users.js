@@ -7,6 +7,7 @@ import AddUser from 'components/addUser/AddUser';
 import EditUser from 'components/editUserPopup/EditUser';
 import Loading from '../components/Loading/Loading'
 import ReactSelect from 'react-select'
+import { Link } from 'react-router-dom';
 
 function Users() {
     const [saleAgents, setSaleAgents] = useState(null)
@@ -127,7 +128,8 @@ function Users() {
                                         <td>{agent.email}</td>
                                         <td>{agent.address}</td>
                                         <div className='actions'>
-                                            <FaRegEdit onClick={()=> {setEditAgent(true); setAgentToBeEdited(agent)}}/>
+                                            {/* <FaRegEdit onClick={()=> {setEditAgent(true); setAgentToBeEdited(agent)}}/> */}
+                                            <Link to={`edit-user/${agent._id}`}><FaRegEdit /></Link>
                                             <FaTrash onClick={()=> {setDeletePopup(true); setAgentToBeDeleted(agent)}}/>
                                         </div>
                                     </tr>
