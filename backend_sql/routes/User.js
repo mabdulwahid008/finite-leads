@@ -42,7 +42,7 @@ router.post('/login', async(req, res) => {
 
 // create User
 router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
-    const { name, phone, email, address, password, role } = req.body
+    const { name, phone, email, address, password, role, brokerage_name, broker_name, office_phone, city, country, zip_code, state, service_areas, service_radius, re_license_no, rep } = req.body
     try {
         const user = await db.query('SELECT * FROM users WHERE email = $1',[
             email
@@ -53,9 +53,18 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
         const salt = bcrypt.genSaltSync(10)
         const encryptedPass = bcrypt.hashSync(password, salt)
 
-        const createUser = await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at) VALUES($1, $2, $3, $4, $5, $6, $7)',[
-            name, phone, email, address, encryptedPass, role, date
-        ])
+        // sale agent
+        if(role == 0){
+            const createUser = await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at) VALUES($1, $2, $3, $4, $5, $6, $7)',[
+                name, phone, email, address, encryptedPass, role, date
+            ])
+        }
+        // RE agnet
+        if(role == 2){
+            const createUser = await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at, brokerage_name, broker_name, office_phone, city, country, zip_code, state, service_areas, service_radius, re_license_no, rep) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)',[
+                name, phone, email, address, encryptedPass, role, date, brokerage_name, broker_name, office_phone, city, country, zip_code, state, service_areas, service_radius, re_license_no, rep
+            ])
+        }
         return res.status(200).json({message: 'User Created'})
     } catch (error) {
         console.log(error.message);

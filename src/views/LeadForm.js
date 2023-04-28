@@ -59,7 +59,7 @@ function LeadForm() {
             <Col md='8'>
                 <Card>
                     <CardHeader>
-                        <CardTitle tag="h3">Add Lead</CardTitle>
+                        <CardTitle tag="h3">Add Finite Lead</CardTitle>
                     </CardHeader>
                     <CardBody>
                         <Form onSubmit={onSubmit}>
