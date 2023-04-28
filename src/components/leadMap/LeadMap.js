@@ -79,9 +79,10 @@ const agents = [
   },
   {
     id: '10',
-    street: '9280 W. STOCKTON BLVD# 120',
-    zip_code: '95758',
-    state: 'CA',
+    street: '12751 Westlinks Dr Ste 2',
+    zip_code: '33913',
+    state: 'FL',
+    areas: 'Lee county, Charlotte county, Hendry county, Collier County',
     miles: 20
   }
 ];
@@ -92,17 +93,15 @@ L.mapbox.accessToken =  MAPBOX_ACCESS_TOKEN;
 
 function Mapbox(street, zipcode, state) {
   const map = useRef()
-  const circleRef = useRef()
+  const agentCircleRef = useRef()
+  const agentAreasCircleRef = useRef()
 
   const [selectedAgent, setSelectedAgent] = useState(null)
+
 
   const assignLead = () => {
       console.log(selectedAgent);
   }
-  
-  
-
-
 
   const getLatLongFromAddress = async(street, state, zipcode) => {
     // const address = '16064 Anaconda Rd. Madera, CA 93636';
@@ -117,7 +116,6 @@ function Mapbox(street, zipcode, state) {
     })
     const data = await response.json()
 
-    console.log(data);
     const [long, lat] = data.features[2].center;
     
     return ([lat, long])
@@ -136,31 +134,50 @@ function Mapbox(street, zipcode, state) {
   
   }
   
-  const handleMarkerClick = (agentId, lat, long) => {
-    if(circleRef.current){
-      circleRef.current.remove()
+  
+  
+  const handleMarkerClick = async(agentId, lat, long) => {
+    // removing areas of previous selected agent
+    if(agentAreasCircleRef.current){
+      agentAreasCircleRef.current.forEach(circle => circle.remove());
+    }
+    // removing previous selected agent
+    if(agentCircleRef.current){
+      agentCircleRef.current.remove()
       setSelectedAgent(null)
     }
 
+    // getting agent data
     const agent = agents.filter((agent)=> agent.id === agentId)
 
-    const circle = L.circle([lat, long], {
+    agentCircleRef.current = L.circle([lat, long], {
       radius: agent[0].miles * 1609.34, 
     }).addTo(map.current);
-
+    
+    // for assigning lead for assign lead btn
     setSelectedAgent(agent[0].id)
-
-
-    const polygonCoords = []
-    const polygon = L.polygon(polygonCoords, {
-      color: 'red',
-      fillColor: 'red',
-      fillOpacity: 0.5
-    }).addTo(map.current);
-
-    map.current.fitBounds(polygon.getBounds());
-
-    circleRef.current = circle
+    
+    // for agent areas 
+    let circles = []
+    let areas = agent[0].areas.split(',')
+    for (let i = 0; i < areas.length; i++) {
+      const [lat, long] = await getLatLongFromAddress(areas[i], '', '')
+      let newCircle = L.circle([lat, long], {
+        radius: agent[0].miles * 1609.34, 
+        color: 'red'
+      }).addTo(map.current);
+      circles.push(newCircle)
+    }
+    agentAreasCircleRef.current = circles
+    
+        // const polygonCoords = []
+        // const polygon = L.polygon(polygonCoords, {
+        //   color: 'red',
+        //   fillColor: 'red',
+        //   fillOpacity: 0.5
+        // }).addTo(map.current);
+    
+        // map.current.fitBounds(polygon.getBounds());
   }
 
   const loadMap = (lat, long) => {
