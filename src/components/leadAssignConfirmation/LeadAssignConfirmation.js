@@ -6,7 +6,7 @@ function LeadAssignConfirmation({ agentName, assignLead, setConfirmAssignPopup }
   return (
     <div className='popup'>
         <div className='overlay'></div>
-        <Card className='card-popup'>
+        <Card className='confirm-lead-assign-popup'>
             <CardHeader>
                 <CardTitle tag="h4">{agentName} Exceed Monthly Limit</CardTitle>
                 <RxCross1 onClick={()=> setConfirmAssignPopup(false)}/>

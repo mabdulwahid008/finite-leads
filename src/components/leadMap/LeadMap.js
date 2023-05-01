@@ -78,7 +78,6 @@ function LeadMap({lead_id, street, zipcode, state}) {
     else
       toast.error(res.message)
 
-     setSelectedAgent(null)
      // removing areas of previous selected agent
      if(agentAreasCircleRef.current){
       agentAreasCircleRef.current.forEach(circle => circle.remove());

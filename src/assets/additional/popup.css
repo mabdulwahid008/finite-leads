@@ -21,6 +21,12 @@
     z-index: 99999;
     width: 40%;
 }
+.confirm-lead-assign-popup{
+    position: fixed;
+    top:40%;
+    z-index: 99999;
+    width: 40%;
+}
 
 .lead-popup,
 .add-user-popup{
