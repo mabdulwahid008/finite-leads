@@ -4,7 +4,6 @@ import { FaRegEdit, FaTrash } from "react-icons/fa";
 import DeletePopup from 'components/deleteUserPopup/DeletePopup';
 import { toast } from 'react-toastify';
 import AddUser from 'components/addUser/AddUser';
-import EditUser from 'components/editUserPopup/EditUser';
 import Loading from '../components/Loading/Loading'
 import ReactSelect from 'react-select'
 import { Link } from 'react-router-dom';
@@ -128,7 +127,6 @@ function Users() {
                                         <td>{agent.email}</td>
                                         <td>{agent.address}</td>
                                         <div className='actions'>
-                                            {/* <FaRegEdit onClick={()=> {setEditAgent(true); setAgentToBeEdited(agent)}}/> */}
                                             <Link to={`edit-user/${agent._id}`}><FaRegEdit /></Link>
                                             <FaTrash onClick={()=> {setDeletePopup(true); setAgentToBeDeleted(agent)}}/>
                                         </div>
@@ -141,7 +139,6 @@ function Users() {
             </Col>
         </Row>
         {addNewAgent && <AddUser setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents} setRefresh={setRefresh}/>}
-        {editAgent && <EditUser setEditAgent={setEditAgent} agentToBeEdited={agentToBeEdited} fetchUsers={fetchUsers} setRefresh={setRefresh}/> }
         {deletePopup && <DeletePopup setDeletePopup={setDeletePopup} agentToBeDeleted={agentToBeDeleted} setAgentToBeDeleted={setAgentToBeDeleted} onSubmitDeleteAgent={onSubmitDeleteAgent}/>}
     </div>
   )

@@ -74,8 +74,9 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
 
 // edit user
 router.patch('/', authorization, masterOrAdminAuthorization, async(req, res) => {
-    const { _id, name, phone, email, address, role } = req.body;
+    const { _id, name, phone, email, address, role, brokerage_name, broker_name, office_phone, city, country, zip_code, state,  service_radius, re_license_no, service_areas, rep } = req.body;
     try {
+        console.log(req.body);
         let user = await db.query('SELECT * FROM users WHERE _id = $1',[
             _id
         ])
@@ -97,8 +98,8 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res) => 
         }
 
         
-        user = await db.query('UPDATE users SET name = $1, phone = $2, email = $3, address = $4, role = $5 WHERE _id = $6',[
-            name, phone, email, address, role, _id
+        user = await db.query('UPDATE users SET name = $1, phone = $2, email = $3, address = $4, role = $5, brokerage_name = $6, broker_name  = $7, office_phone = $8, city = $9, country = $10, zip_code = $11, state = $12,  service_radius = $13, re_license_no = $14, service_areas = $15, rep = $16 WHERE _id = $17',[
+            name, phone, email, address, role, brokerage_name, broker_name, office_phone, city, country, zip_code, state,  service_radius, re_license_no, service_areas, rep, _id
         ])
 
         return res.status(200).json({message: 'Successfully Updated user\'s data'})
