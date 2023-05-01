@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import L from 'mapbox.js';
 import { Button, Card, CardBody, CardHeader, CardTitle } from 'reactstrap';
 import { toast } from 'react-toastify';
-
+import LeadAssignConfirmation from 'components/leadAssignConfirmation/LeadAssignConfirmation';
 
 const leadMArker = L.icon({
   iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -14,96 +14,80 @@ const leadMArker = L.icon({
   popupAnchor: [1, -34],
 });
 
-// const agents = [
-//   {
-//     id: '1',
-//     street: '735 Main St.',
-//     zip_code: '95336',
-//     areas: 'LODI,STOCKTON,LOCKEFORD,LATHROP,TRACY,MANTECA,LINDEN,GALT',
-//     state: 'CA',
-//     miles: 40
-//   },
-//   {
-//     id: '2',
-//     street: '25 Purdy Avenue',
-//     zip_code: '10580',
-//     state: 'NY',
-//     miles: 10
-//   },
-//   {
-//     id: '3',
-//     street: '6761 Old Jacksonville Hwy',
-//     zip_code: '75703',
-//     state: 'Texas',
-//     miles: 20
-//   },
-//   {
-//     id: '4',
-//     street: '1820 Commerce St',
-//     zip_code: '10598',
-//     state: 'New York',
-//     miles: 30
-//   },
-//   {
-//     id: '5',
-//     street: '3 Grace Ave Ste 180, Suite 180',
-//     zip_code: '11021-2415',
-//     state: 'NY',
-//     miles: 20
-//   },
-//   {
-//     id: '6',
-//     street: '342 Highland Ave',
-//     zip_code: '94611',
-//     state: 'CA',
-//     miles: 35
-//   },
-//   {
-//     id: '7',
-//     street: '1820 Commerce Street',
-//     zip_code: '10566',
-//     state: 'New York',
-//     miles: 40
-//   },
-//   {
-//     id: '8',
-//     street: '2510 Sand Creek Rd',
-//     zip_code: '94513',
-//     state: 'CA',
-//     miles: 10
-//   },
-//   {
-//     id: '9',
-//     street: '2829 Indian Creek Dr, Apt 1007',
-//     zip_code: '33140',
-//     state: 'Florida',
-//     miles: 25
-//   },
-//   {
-//     id: '10',
-//     street: '12751 Westlinks Dr Ste 2',
-//     zip_code: '33913',
-//     state: 'FL',
-//     areas: 'Lee county, Charlotte county, Hendry county, Collier County',
-//     miles: 20
-//   }
-// ];
-
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibWFiZHVsd2FoaWQwMDgiLCJhIjoiY2xnbnlpYnVpMGN0dTNrcDkyZ3oxZWZjcSJ9.ga70btg357fC1KB2seVdHA';
 L.mapbox.accessToken =  MAPBOX_ACCESS_TOKEN;
 
 
-function LeadMap({street, zipcode, state}) {
+function LeadMap({lead_id, street, zipcode, state}) {
   const map = useRef()
   const agentCircleRef = useRef()
   const agentAreasCircleRef = useRef()
 
   const [selectedAgent, setSelectedAgent] = useState(null)
   const [reAgents, setREAgents] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [confirmAssignPopup, setConfirmAssignPopup] = useState(false)
 
 
-  const assignLead = () => {
-      console.log(selectedAgent);
+
+  const checkBeforeAssign = async() => {
+    setLoading(true)
+    if(!selectedAgent){
+      setLoading(false)
+      return toast.error('Select an Real Estate Agent')
+    }
+
+    const response = await fetch(`/lead/getLeads/${selectedAgent._id}`,{
+      method: 'GET',
+      headers:{
+        'Content-Type' : 'Application/json',
+        token: localStorage.getItem('token')
+      }
+    })
+    const res = await response.json()
+    if(response.status === 200){
+      console.log(res.length);
+      if(res.length >= 1){
+        setConfirmAssignPopup(true)
+      }
+      else{
+        assignLead()
+      }
+    }
+    else{
+      console.log("here");
+      toast.error(res.message)
+    }
+    setLoading(false)
+  }
+
+  const assignLead = async () => {
+    setConfirmAssignPopup(false)
+
+    const response = await fetch(`/lead/assign`,{
+      method: 'POST',
+      headers:{
+        'Content-Type' : 'Application/json',
+        token: localStorage.getItem('token')
+      },
+      body: JSON.stringify({lead_id : lead_id, agent_id : selectedAgent._id})
+    })
+    const res = await response.json()
+    if(response.status === 200)
+      toast.success(res.message)
+    else
+      toast.error(res.message)
+
+     setSelectedAgent(null)
+     // removing areas of previous selected agent
+     if(agentAreasCircleRef.current){
+      agentAreasCircleRef.current.forEach(circle => circle.remove());
+    }
+    // removing previous selected agent
+    if(agentCircleRef.current){
+      agentCircleRef.current.remove()
+      setSelectedAgent(null)
+    }
   }
 
   const getLatLongFromAddress = async(street, state, zipcode) => {
@@ -122,7 +106,7 @@ function LeadMap({street, zipcode, state}) {
     const [long, lat] = data.features[2].center;
     
     return ([lat, long])
-  };
+  }
 
   const fetchRealEstateAgents = async() => {
     const response = await fetch(`/user/2`,{
@@ -135,21 +119,19 @@ function LeadMap({street, zipcode, state}) {
     const res = await response.json()
     if(response.status === 200){ 
       setREAgents(res)
-      for(let i = 0; i < res.length; i++){
-        const [lat, long] = await getLatLongFromAddress(res[i].address, res[i].state, res[i].zip_code);
-        const marker = L.marker([lat, long]).addTo(map.current);
-        marker.on('click', () => handleMarkerClick(res[i]._id, lat, long));
-      }
     }
     else
         toast.error(res.message)
-
-      // L.marker([lat, long]).addTo(map.current);
-      // const agentId = `agent-${i}`;
-      // marker.bindPopup(`Agent ${i+1}`);
+  }
+  
+  const pinREAgnets = async() => {
+    for(let i = 0; i < reAgents.length; i++){
+      const [lat, long] = await getLatLongFromAddress(reAgents[i].address, reAgents[i].state, reAgents[i].zip_code);
+      const marker = L.marker([lat, long]).addTo(map.current);
+      marker.on('click', () => handleMarkerClick(reAgents[i]._id, lat, long));
+      marker.bindPopup(reAgents[i].name.split(' ')[0]);
     }
-  
-  
+  }
   
   const handleMarkerClick = async(agentId, lat, long) => {
     // removing areas of previous selected agent
@@ -163,36 +145,31 @@ function LeadMap({street, zipcode, state}) {
     }
 
     // getting agent data
-    console.log(reAgents);
     const agent = reAgents.filter((agent)=> agent._id === agentId)
+
     agentCircleRef.current = L.circle([lat, long], {
       radius: agent[0].service_radius * 1609.34, 
     }).addTo(map.current);
     
     // for assigning lead for assign lead btn
-    setSelectedAgent(agent[0].id)
+    setSelectedAgent(agent[0])
     
     // for agent areas 
     let circles = []
-    // let latitudesLonfitudes = []
 
-    // let areas = agent[0].service_areas.split(' | ')
+    let areas = agent[0].service_areas.split(' | ')
 
-    // for (let i = 0; i < areas.length; i++) {
-    //   let area = areas[i].split(',')
-    //   let lat = parseFloat(area[0].replace('[', ''))
-    //   let long = parseFloat(area[1].replace(']', ''))
-    //   let latilong = [lat, long]
-    //   latitudesLonfitudes.push(latilong)
-    // }
-    // for (let i = 0; i < latitudesLonfitudes.length; i++) {
-    //   let newCircle = L.circle(latitudesLonfitudes[i], {
-    //     radius: agent[0].miles * 1609.34, 
-    //     color: 'red'
-    //   }).addTo(map.current);
-    //   circles.push(newCircle)
-    // }
-    
+    for (let i = 0; i < areas.length; i++) {
+      let area = areas[i].split(',')
+      let lat = parseFloat(area[0].replace('[', ''))
+      let long = parseFloat(area[1].replace(']', ''))
+
+      let newCircle = L.circle([lat, long], {
+        radius: agent[0].service_radius * 1609.34, 
+        color: 'red'
+      }).addTo(map.current);
+      circles.push(newCircle)
+    }
     agentAreasCircleRef.current = circles
   }
 
@@ -204,6 +181,11 @@ function LeadMap({street, zipcode, state}) {
 
     return () => map.current.remove();
   }
+
+  useEffect(()=>{
+    if(reAgents)
+      pinREAgnets()
+  }, [reAgents])
 
   useEffect(() => {
     let cleanupFunction;
@@ -224,15 +206,18 @@ function LeadMap({street, zipcode, state}) {
   
 
   return (
+    <>
     <Card>
       <CardHeader>
         <CardTitle tag='h4'>Assign Lead</CardTitle>
-        <Button onClick={assignLead}>Assign Lead</Button>
+        <Button disabled={loading? true : false} onClick={checkBeforeAssign}>Assign Lead</Button>
       </CardHeader>
       <CardBody>
         <div id="map" style={{height: 500, width: '100%', borderRadius:10 }}></div>
       </CardBody>
     </Card>
+    {confirmAssignPopup && <LeadAssignConfirmation agentName={selectedAgent.name} assignLead={assignLead} setConfirmAssignPopup={setConfirmAssignPopup}/>}
+    </>
   )
 }
 

@@ -49,7 +49,7 @@ router.get('/:_id', authorization, async(req, res) => {
 
 router.get('/getLeads/:agent_id', authorization, async(req, res) => {
     try {
-        const leads = await db.query('SELECT * FRPM LEAD_ASSIGNED_TO WHERE agent_id = $1 AND create_at = $2',[
+        const leads = await db.query('SELECT * FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1 AND create_at = $2',[
             req.params.agent_id, dateWithoutTime
         ])
         return res.status(200).json(leads.rows.sort(function(a, b) {
@@ -63,7 +63,7 @@ router.get('/getLeads/:agent_id', authorization, async(req, res) => {
 })
 
 // for assigning lead to real estate agents
-router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
+router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res) => {
     const { lead_id, agent_id } = req.body;
     try {
         await db.query('INSERT INTO LEAD_ASSIGNED_TO(lead_id, realEstateAgent_id, create_at) VALUES($1, $2, $3)',[

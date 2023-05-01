@@ -124,7 +124,7 @@ function LeadDetail() {
 
         <Row>
           <Col md="12 mt-4">
-                {lead && <LeadMap street={lead.address} zipcode={lead.zip_code} state={lead.state}/>}
+                {lead && <LeadMap lead_id={lead._id} street={lead.address} zipcode={lead.zip_code} state={lead.state}/>}
           </Col>
         </Row>
 
