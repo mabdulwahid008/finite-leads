@@ -91,8 +91,8 @@ CREATE TABLE LEADS(
     zip_code VARCHAR(50) NOT NULL,
     phone VARCHAR(15) NOT NULL,
     recording_link VARCHAR(300),
-    beds INT NOT NULL,
-    baths INT NOT NULL,
+    beds FLOAT NOT NULL,
+    baths FLOAT NOT NULL,
     price INT NOT NULL,
     additional_info VARCHAR(500),
     agentName VARCHAR(100) NOT NULL
@@ -101,6 +101,7 @@ CREATE TABLE LEADS(
 CREATE TABLE LEAD_ASSIGNED_TO(
     lead_id INT NOT NULL,
     realEstateAgent_id INT NOT NULL,
+    create_at VARCHAR(15) NOT NULL,
     FOREIGN KEY (lead_id) REFERENCES Leads(_id) ON DELETE CASCADE,
     FOREIGN KEY (realEstateAgent_id) REFERENCES Users(_id) ON DELETE CASCADE
 )

@@ -115,7 +115,7 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res) 
     try {
         let users = []
         if(req.params.role != 99)
-            users = await db.query('SELECT _id, name, email, phone, address, created_at, role FROM users WHERE role != 5 AND role = $1',[
+            users = await db.query('SELECT _id, name, email, phone, address, state, zip_code, service_areas, service_radius, created_at, role FROM users WHERE role != 5 AND role = $1',[
                 req.params.role
             ])
         else

@@ -15,7 +15,7 @@ function LeadForm() {
     const onSubmit = async(e) => {
         e.preventDefault()
         setLoading(true)
-        if(lead.phone.length !== 11){
+        if(lead.phone.length !== 10){
             setLoading(false)
             return toast.error('Phone number is incorrect')
         }

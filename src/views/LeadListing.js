@@ -41,7 +41,8 @@ function LeadListing() {
                     </CardHeader>
                     <CardBody>
                         {!leads && <Loading />}
-                        {leads && <Table>
+                        {leads && leads.length === 0 && <p>No Leads yet</p>}
+                        {leads && leads.length !== 0 && <Table>
                             <thead>
                                 <tr>
                                     <th>#</th>

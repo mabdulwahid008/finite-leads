@@ -3,6 +3,7 @@ const db = require('../db');
 const authorization = require('../middleware/authorization');
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization');
 const realEstateAutorization = require('../middleware/realEstateAutorization');
+const { dateWithoutTime } = require('../date');
 const router = express.Router();
 
 
@@ -24,7 +25,10 @@ router.post('/', async(req, res) => {
 router.get('/', authorization, async(req, res) => {
     try {
         const leads = await db.query('SELECT * FROM leads')
-        return res.status(200).json(leads.rows)
+        return res.status(200).json(leads.rows.sort(function(a, b) {
+            if (a._id !== b._id) 
+                return b._id - a._id 
+            }))
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
@@ -42,15 +46,29 @@ router.get('/:_id', authorization, async(req, res) => {
     }
 })
 
+
+router.get('/getLeads/:agent_id', authorization, async(req, res) => {
+    try {
+        const leads = await db.query('SELECT * FRPM LEAD_ASSIGNED_TO WHERE agent_id = $1 AND create_at = $2',[
+            req.params.agent_id, dateWithoutTime
+        ])
+        return res.status(200).json(leads.rows.sort(function(a, b) {
+            if (a._id !== b._id) 
+                return b._id - a._id 
+            }))
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
 // for assigning lead to real estate agents
 router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
-    const { lead_id, agents } = req.body;
+    const { lead_id, agent_id } = req.body;
     try {
-        for (let i = 0; i < agents.length; i++) {
-            await db.query('INSERT INTO LEAD_ASSIGNED_TO(lead_id, realEstateAgent_id) VALUES($1, $2)',[
-                lead_id, agents[i]
-            ])
-        }
+        await db.query('INSERT INTO LEAD_ASSIGNED_TO(lead_id, realEstateAgent_id, create_at) VALUES($1, $2, $3)',[
+            lead_id, agent_id, dateWithoutTime
+        ])
         return res.status(200).json({message: 'Lead assigned successfully.'})
     } catch (error) {
         console.log(error.message);

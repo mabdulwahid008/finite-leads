@@ -85,7 +85,7 @@ function LeadDetail() {
                                 </Col>
                                 <Col md='6'>
                                     <FormGroup>
-                                        <label>{lead.lead_type == 0 ? 'Budget' : 'Demand'}</label>
+                                        <label>{lead.lead_type == 0 ? 'Demand' : 'Budget'}</label>
                                         <Input readOnly value={`${lead.price}$`} />
                                     </FormGroup>
                                 </Col>
@@ -100,15 +100,6 @@ function LeadDetail() {
                             </Row>
                         </div>
 
-                        {/* Assigning Lead Section */}
-                        {/* <div className='assign-lead'>
-                          <Input type='checkbox' id='assignlead' onChange={()=>setIsChecked(!isChecked)}/>
-                          <label style={{textAlign:'right'}} htmlFor='assignlead'>Assign Lead <BsChevronDown/></label>
-                          <div className='map'>
-                            {isChecked && <LeadMap />}
-                          </div>
-                          <hr  style={{margin:0}}/>
-                        </div> */}
 
                       {/* Commments Section*/}
                         <div className='lead-comments mt-4'>

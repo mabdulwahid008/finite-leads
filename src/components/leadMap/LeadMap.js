@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import L from 'mapbox.js';
 import { Button, Card, CardBody, CardHeader, CardTitle } from 'reactstrap';
+import { toast } from 'react-toastify';
 
 
 const leadMArker = L.icon({
@@ -13,91 +14,92 @@ const leadMArker = L.icon({
   popupAnchor: [1, -34],
 });
 
-const agents = [
-  {
-    id: '1',
-    street: '735 Main St.',
-    zip_code: '95336',
-    areas: 'LODI,STOCKTON,LOCKEFORD,LATHROP,TRACY,MANTECA,LINDEN,GALT',
-    state: 'CA',
-    miles: 40
-  },
-  // {
-  //   id: '2',
-  //   street: '25 Purdy Avenue',
-  //   zip_code: '10580',
-  //   state: 'NY',
-  //   miles: 10
-  // },
-  // {
-  //   id: '3',
-  //   street: '6761 Old Jacksonville Hwy',
-  //   zip_code: '75703',
-  //   state: 'Texas',
-  //   miles: 20
-  // },
-  // {
-  //   id: '4',
-  //   street: '1820 Commerce St',
-  //   zip_code: '10598',
-  //   state: 'New York',
-  //   miles: 30
-  // },
-  // {
-  //   id: '5',
-  //   street: '3 Grace Ave Ste 180, Suite 180',
-  //   zip_code: '11021-2415',
-  //   state: 'NY',
-  //   miles: 20
-  // },
-  // {
-  //   id: '6',
-  //   street: '342 Highland Ave',
-  //   zip_code: '94611',
-  //   state: 'CA',
-  //   miles: 35
-  // },
-  // {
-  //   id: '7',
-  //   street: '1820 Commerce Street',
-  //   zip_code: '10566',
-  //   state: 'New York',
-  //   miles: 40
-  // },
-  // {
-  //   id: '8',
-  //   street: '2510 Sand Creek Rd',
-  //   zip_code: '94513',
-  //   state: 'CA',
-  //   miles: 10
-  // },
-  // {
-  //   id: '9',
-  //   street: '2829 Indian Creek Dr, Apt 1007',
-  //   zip_code: '33140',
-  //   state: 'Florida',
-  //   miles: 25
-  // },
-  // {
-  //   id: '10',
-  //   street: '12751 Westlinks Dr Ste 2',
-  //   zip_code: '33913',
-  //   state: 'FL',
-  //   areas: 'Lee county, Charlotte county, Hendry county, Collier County',
-  //   miles: 20
-  // }
-];
+// const agents = [
+//   {
+//     id: '1',
+//     street: '735 Main St.',
+//     zip_code: '95336',
+//     areas: 'LODI,STOCKTON,LOCKEFORD,LATHROP,TRACY,MANTECA,LINDEN,GALT',
+//     state: 'CA',
+//     miles: 40
+//   },
+//   {
+//     id: '2',
+//     street: '25 Purdy Avenue',
+//     zip_code: '10580',
+//     state: 'NY',
+//     miles: 10
+//   },
+//   {
+//     id: '3',
+//     street: '6761 Old Jacksonville Hwy',
+//     zip_code: '75703',
+//     state: 'Texas',
+//     miles: 20
+//   },
+//   {
+//     id: '4',
+//     street: '1820 Commerce St',
+//     zip_code: '10598',
+//     state: 'New York',
+//     miles: 30
+//   },
+//   {
+//     id: '5',
+//     street: '3 Grace Ave Ste 180, Suite 180',
+//     zip_code: '11021-2415',
+//     state: 'NY',
+//     miles: 20
+//   },
+//   {
+//     id: '6',
+//     street: '342 Highland Ave',
+//     zip_code: '94611',
+//     state: 'CA',
+//     miles: 35
+//   },
+//   {
+//     id: '7',
+//     street: '1820 Commerce Street',
+//     zip_code: '10566',
+//     state: 'New York',
+//     miles: 40
+//   },
+//   {
+//     id: '8',
+//     street: '2510 Sand Creek Rd',
+//     zip_code: '94513',
+//     state: 'CA',
+//     miles: 10
+//   },
+//   {
+//     id: '9',
+//     street: '2829 Indian Creek Dr, Apt 1007',
+//     zip_code: '33140',
+//     state: 'Florida',
+//     miles: 25
+//   },
+//   {
+//     id: '10',
+//     street: '12751 Westlinks Dr Ste 2',
+//     zip_code: '33913',
+//     state: 'FL',
+//     areas: 'Lee county, Charlotte county, Hendry county, Collier County',
+//     miles: 20
+//   }
+// ];
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibWFiZHVsd2FoaWQwMDgiLCJhIjoiY2xnbnlpYnVpMGN0dTNrcDkyZ3oxZWZjcSJ9.ga70btg357fC1KB2seVdHA';
 L.mapbox.accessToken =  MAPBOX_ACCESS_TOKEN;
 
 
-function Mapbox(street, zipcode, state) {
+function LeadMap({street, zipcode, state}) {
   const map = useRef()
   const agentCircleRef = useRef()
   const agentAreasCircleRef = useRef()
 
   const [selectedAgent, setSelectedAgent] = useState(null)
+  const [reAgents, setREAgents] = useState(null)
 
 
   const assignLead = () => {
@@ -105,8 +107,8 @@ function Mapbox(street, zipcode, state) {
   }
 
   const getLatLongFromAddress = async(street, state, zipcode) => {
-    // const address = '16064 Anaconda Rd. Madera, CA 93636';
-    const address = `${street}, ${state} ${zipcode}`
+    
+    const address = `${street} ${state} ${zipcode}`
 
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
       address
@@ -123,17 +125,29 @@ function Mapbox(street, zipcode, state) {
   };
 
   const fetchRealEstateAgents = async() => {
+    const response = await fetch(`/user/2`,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'Application/json',
+        token: localStorage.getItem('token')
+      }
+    })
+    const res = await response.json()
+    if(response.status === 200){ 
+      setREAgents(res)
+      for(let i = 0; i < res.length; i++){
+        const [lat, long] = await getLatLongFromAddress(res[i].address, res[i].state, res[i].zip_code);
+        const marker = L.marker([lat, long]).addTo(map.current);
+        marker.on('click', () => handleMarkerClick(res[i]._id, lat, long));
+      }
+    }
+    else
+        toast.error(res.message)
 
-    for(let i = 0; i < agents.length; i++){
-      const [lat, long] = await getLatLongFromAddress(agents[i].street, agents[i].state, agents[i].zipcode);
       // L.marker([lat, long]).addTo(map.current);
-      const marker = L.marker([lat, long]).addTo(map.current);
       // const agentId = `agent-${i}`;
       // marker.bindPopup(`Agent ${i+1}`);
-      marker.on('click', () => handleMarkerClick(agents[i].id, lat, long));
     }
-  
-  }
   
   
   
@@ -149,10 +163,10 @@ function Mapbox(street, zipcode, state) {
     }
 
     // getting agent data
-    const agent = agents.filter((agent)=> agent.id === agentId)
-
+    console.log(reAgents);
+    const agent = reAgents.filter((agent)=> agent._id === agentId)
     agentCircleRef.current = L.circle([lat, long], {
-      radius: agent[0].miles * 1609.34, 
+      radius: agent[0].service_radius * 1609.34, 
     }).addTo(map.current);
     
     // for assigning lead for assign lead btn
@@ -160,25 +174,26 @@ function Mapbox(street, zipcode, state) {
     
     // for agent areas 
     let circles = []
-    let areas = agent[0].areas.split(',')
-    for (let i = 0; i < areas.length; i++) {
-      const [lat, long] = await getLatLongFromAddress(areas[i], '', '')
-      let newCircle = L.circle([lat, long], {
-        radius: agent[0].miles * 1609.34, 
-        color: 'red'
-      }).addTo(map.current);
-      circles.push(newCircle)
-    }
+    // let latitudesLonfitudes = []
+
+    // let areas = agent[0].service_areas.split(' | ')
+
+    // for (let i = 0; i < areas.length; i++) {
+    //   let area = areas[i].split(',')
+    //   let lat = parseFloat(area[0].replace('[', ''))
+    //   let long = parseFloat(area[1].replace(']', ''))
+    //   let latilong = [lat, long]
+    //   latitudesLonfitudes.push(latilong)
+    // }
+    // for (let i = 0; i < latitudesLonfitudes.length; i++) {
+    //   let newCircle = L.circle(latitudesLonfitudes[i], {
+    //     radius: agent[0].miles * 1609.34, 
+    //     color: 'red'
+    //   }).addTo(map.current);
+    //   circles.push(newCircle)
+    // }
+    
     agentAreasCircleRef.current = circles
-    
-        // const polygonCoords = []
-        // const polygon = L.polygon(polygonCoords, {
-        //   color: 'red',
-        //   fillColor: 'red',
-        //   fillOpacity: 0.5
-        // }).addTo(map.current);
-    
-        // map.current.fitBounds(polygon.getBounds());
   }
 
   const loadMap = (lat, long) => {
@@ -193,7 +208,7 @@ function Mapbox(street, zipcode, state) {
   useEffect(() => {
     let cleanupFunction;
     const loadMapAndReturnCleanupFunction = async () => {
-      const [lat, long] = await getLatLongFromAddress('16064 Anaconda Rd. Madera','CA','93636');
+      const [lat, long] = await getLatLongFromAddress(street, state, zipcode);
       cleanupFunction = loadMap(lat, long); // save the cleanup function
       fetchRealEstateAgents();
     };
@@ -221,5 +236,5 @@ function Mapbox(street, zipcode, state) {
   )
 }
 
-export default Mapbox;
+export default LeadMap;
 
