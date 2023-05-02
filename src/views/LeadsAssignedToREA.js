@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { Card, CardBody, CardHeader, CardTitle, Col, Row, Table } from 'reactstrap'
+import { Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row, Table } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
 
 function LeadsAssignedToREA() {
     const [leads, setLeads] = useState(null)
+
+    const date = new Date()
+    const month = `${date.getFullYear()}-${date.getMonth()+1 <= 9 ? `0${date.getMonth()}` : date.getMonth()}`
 
     const fetchMyLeads = async() => {
         const response = await fetch('/lead/agent/leads', {
@@ -37,8 +40,12 @@ function LeadsAssignedToREA() {
                     <CardTitle tag="h4">My Leads</CardTitle>
                 </CardHeader>
                 <CardBody>
+                    <FormGroup style={{width: 200}}>
+                        <label>Select Month</label>
+                        <Input type="month" defaultValue={month} />
+                    </FormGroup>
                     {!leads && <Loading/>}
-                    {leads && leads.length === 0 && <p>No leads assigned yet</p>}
+                    {leads && leads.length === 0 && <p>No leads found</p>}
                     {leads && leads.length !== 0 && <Table>
                         <thead>
                             <tr>

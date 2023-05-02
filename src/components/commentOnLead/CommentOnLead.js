@@ -3,27 +3,32 @@ import { toast } from 'react-toastify'
 import { Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input } from 'reactstrap'
 
 function CommentOnLead({ lead_id }) {
+
+    // for RE agent to comment
     const [comment, setComment] = useState({lead_id: lead_id, lead_status: null, content: null})
-    const [commentedAlready, setCommentedAlready] = useState(false)
+    const [commentedAlready, setCommentedAlready] = useState(true)
+
+    // for Admin to Read
+    const [comments, setComments] = useState(null) 
 
     const onChange = (e) => {
         setComment({...comment, [e.target.name]: e.target.value})
     }
 
-    const checkIsHeCommentedAlready = async(e) => {
-        e.preventDefault()
+    const checkIsHeCommentedAlready = async() => {
         const response = await fetch(`/lead/comment/${lead_id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
                 token: localStorage.getItem('token')
             },
-            body: JSON.stringify(comment)
         })
         const res = await response.json()
         if(response.status === 200){
             if(res.length > 0)
                 setCommentedAlready(true)
+            else
+                setCommentedAlready(false)
         }
         else
             toast.error(res.message)
@@ -48,13 +53,48 @@ function CommentOnLead({ lead_id }) {
             toast.error(res.message)
     }
 
+    const leadStatus = [
+        { status : 0, label : 'Accepted'},
+        { status : 1, label : 'Rejected'},
+        { status : 2, label : 'Listed'},
+        { status : 3, label : 'Sold'},
+        { status : 4, label : 'Follow Up'},
+        { status : 5, label : 'On Contract'}
+    ]
+
+
+    const fetchComments = async() => {
+        const response = await fetch(`/lead/comments/${lead_id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            for (let i = 0; i < res.length; i++) {
+                const obj = leadStatus.filter((lead)=> lead.status === res[i].lead_status)
+                res[i].lead_status = obj[0].label
+            }
+            setComments(res)
+        }
+        else
+            toast.error(res.message)
+    }
+
     useEffect(()=>{
-        checkIsHeCommentedAlready()
+        if(localStorage.getItem('userRole') == 2)
+            checkIsHeCommentedAlready()
+            
+        if(localStorage.getItem('userRole') != 2)
+            fetchComments()
     }, [])
 
   return (
     <>
-    {!commentedAlready && <Card>
+    {/* for posting */}
+    {!commentedAlready && localStorage.getItem('userRole') == 2 && <Card>
         <CardHeader>
             <CardTitle tag="h5">Have Any Comments?</CardTitle>
         </CardHeader>
@@ -88,6 +128,26 @@ function CommentOnLead({ lead_id }) {
             </Form>
         </CardBody>
       </Card>}
+
+    {/* for reading */}
+    {comments && comments.length > 0 && <Card>
+        <CardHeader>
+            <CardTitle tag="h4">Comments By RE Agent</CardTitle>
+        </CardHeader>
+        <CardBody>
+            <div className='comments-box'>
+                {comments.map((comment)=>{
+                    return <FormGroup key={comment.lead_id} style={{display:'flex', flexDirection:'column'}}>
+                        <div className='comment-header'>
+                            <label>{comment.name}</label>
+                            <label>{comment.lead_status}</label>
+                        </div>
+                        <textarea value={comment.content} readOnly style={{height:70}}></textarea>
+                    </FormGroup>
+                })}
+            </div>
+        </CardBody>
+    </Card>}
     </>
   )
 }

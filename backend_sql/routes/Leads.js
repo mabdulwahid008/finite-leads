@@ -70,7 +70,7 @@ router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res
             lead_id, agent_id
         ])
         if(isAlreadyAssigned.rows.length > 0)
-            return res.status(422).json({message: 'Lead already assigned this agent'})
+            return res.status(422).json({message: 'Lead has already assigned to this agent'})
 
         await db.query('INSERT INTO LEAD_ASSIGNED_TO(lead_id, realEstateAgent_id, create_at) VALUES($1, $2, $3)',[
             lead_id, agent_id, dateWithoutTime
@@ -85,8 +85,8 @@ router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res
 // RE agent to get his leads which are assigned to him
 router.get('/agent/leads', authorization, async(req, res) => {
     try {
-        const leads = await db.query('SELECT _id, fname, lname, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at = $2',[
-            req.user_id, dateWithoutTime
+        const leads = await db.query('SELECT _id, fname, lname, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1',[
+            req.user_id
         ])
         return res.status(200).json(leads.rows.reverse())
         // return res.status(200).json({message: 'hello'})

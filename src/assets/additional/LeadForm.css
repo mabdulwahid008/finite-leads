@@ -61,6 +61,7 @@ textarea:focus{
     background-color: #E3E3E3;
     padding: 10px;
     border-radius: 10px;
+    margin-bottom: 20px;
 }
 input:read-only {
     background-color: white !important;
@@ -80,5 +81,16 @@ textarea:read-only{
 }
 .card-header > a > svg:hover{
     color: var(--primaryColor);
+}
+
+.comments-box{
+    background-color: #E3E3E3;
+    padding: 10px;
+    border-radius: 10px;
+}
+.comment-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
