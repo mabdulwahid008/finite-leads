@@ -1,18 +1,60 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import { Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input } from 'reactstrap'
 
 function CommentOnLead({ lead_id }) {
-    const [comment, setComment] = useState({lead_status: null, content: null})
+    const [comment, setComment] = useState({lead_id: lead_id, lead_status: null, content: null})
+    const [commentedAlready, setCommentedAlready] = useState(false)
+
     const onChange = (e) => {
         setComment({...comment, [e.target.name]: e.target.value})
     }
-    const submitComment = (e) => {
+
+    const checkIsHeCommentedAlready = async(e) => {
         e.preventDefault()
-        console.log(comment);
+        const response = await fetch(`/lead/comment/${lead_id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            },
+            body: JSON.stringify(comment)
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            if(res.length > 0)
+                setCommentedAlready(true)
+        }
+        else
+            toast.error(res.message)
     }
+
+    const submitComment = async(e) => {
+        e.preventDefault()
+        const response = await fetch('/lead/comment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            },
+            body: JSON.stringify(comment)
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            toast.success(res.message)
+            setCommentedAlready(true)
+        }
+        else
+            toast.error(res.message)
+    }
+
+    useEffect(()=>{
+        checkIsHeCommentedAlready()
+    }, [])
+
   return (
     <>
-      <Card>
+    {!commentedAlready && <Card>
         <CardHeader>
             <CardTitle tag="h5">Have Any Comments?</CardTitle>
         </CardHeader>
@@ -45,7 +87,7 @@ function CommentOnLead({ lead_id }) {
                 <Button>Submit</Button>
             </Form>
         </CardBody>
-      </Card>
+      </Card>}
     </>
   )
 }

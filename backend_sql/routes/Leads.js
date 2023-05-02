@@ -66,6 +66,12 @@ router.get('/getLeads/:agent_id', authorization, async(req, res) => {
 router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res) => {
     const { lead_id, agent_id } = req.body;
     try {
+        const isAlreadyAssigned = await db.query('SELECT * FROM LEAD_ASSIGNED_TO WHERE lead_id = $1 AND realEstateAgent_id = $2',[
+            lead_id, agent_id
+        ])
+        if(isAlreadyAssigned.rows.length > 0)
+            return res.status(422).json({message: 'Lead already assigned this agent'})
+
         await db.query('INSERT INTO LEAD_ASSIGNED_TO(lead_id, realEstateAgent_id, create_at) VALUES($1, $2, $3)',[
             lead_id, agent_id, dateWithoutTime
         ])
@@ -76,8 +82,7 @@ router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res
     }
 })
 
-
-
+// RE agent to get his leads which are assigned to him
 router.get('/agent/leads', authorization, async(req, res) => {
     try {
         const leads = await db.query('SELECT _id, fname, lname, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at = $2',[
@@ -91,10 +96,21 @@ router.get('/agent/leads', authorization, async(req, res) => {
     }
 })
 
-
+// for real estate agent before posting a comment under a asigned lead, whether has he already commented
+router.get('/comment/:id', authorization, async(req, res) => {
+    try {
+        const lead = await db.query('SELECT * FROM LEAD_COMMENTS WHERE lead_id = $1 AND realEstateAgent_id = $2',[
+            req.params.id, req.user_id
+        ])
+        return res.status(200).json(lead.rows)
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
 
 // for real estate agent for posting a comment under a asigned lead
-router.post('/comment', authorization, realEstateAutorization, async(req, res) => {
+router.post('/comment', authorization, async(req, res) => {
     const { lead_id , content, lead_status } = req.body;
     try {   
         await db.query('INSERT INTO LEAD_COMMENTS(lead_id , content, lead_status, realEstateAgent_id) VALUES($1, $2, $3, $4)',[
