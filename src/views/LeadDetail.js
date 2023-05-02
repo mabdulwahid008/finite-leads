@@ -2,9 +2,8 @@ import Loading from 'components/Loading/Loading'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row } from 'reactstrap'
+import { Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row } from 'reactstrap'
 import { RxExternalLink } from 'react-icons/rx'
-import { BsChevronDown } from 'react-icons/bs'
 import LeadMap from 'components/leadMap/LeadMap'
 
 function LeadDetail() {
@@ -99,34 +98,17 @@ function LeadDetail() {
                                 </Col>
                             </Row>
                         </div>
-
-
-                      {/* Commments Section*/}
-                        <div className='lead-comments mt-4'>
-                          <Input type='checkbox' id='leadcomments'/>
-                          <label style={{textAlign:'right'}} htmlFor='leadcomments'>Comments By Real Estate Agents <BsChevronDown/></label>
-                          <div className='comment-box'>
-                              <div className='comment'>
-                                <div>
-                                  <p>Agent Name</p>
-                                  <p>Status</p>
-                                </div>
-                                <textarea readOnly></textarea>
-                              </div>
-                          </div>
-                          <hr  style={{margin:0}}/>
-                        </div>
                       </CardBody>
                   </>}
                 </Card>
             </Col>
         </Row>
 
-        <Row>
+        {localStorage.getItem('userRole') != 2 && <Row>
           <Col md="12 mt-4">
                 {lead && <LeadMap lead_id={lead._id} street={lead.address} zipcode={lead.zip_code} state={lead.state}/>}
           </Col>
-        </Row>
+        </Row>}
 
     </div>
   )

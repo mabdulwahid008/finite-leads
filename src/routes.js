@@ -26,13 +26,15 @@ import ChatBox from 'views/ChatBox'
 import LeadListing from "views/LeadListing";
 import LeadDetail from "views/LeadDetail";
 import EditUser from "views/EditUser";
+import Dashboard from "views/Dashboard";
+import LeadsAssignedToREA from "views/LeadsAssignedToREA";
 
 var routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
     icon: "nc-icon nc-bank",
-    component: Sales,
+    component: Dashboard,
     layout: "/admin",
     role: [0,3,5]
   },
@@ -99,8 +101,16 @@ var routes = [
     icon: "nc-icon nc-chart-bar-32",
     component: LeadDetail,
     layout: "/admin",
-    role: [3,5],
+    role: [2,3,5],
     child: true,
+  },
+  {
+    path: "/my-leads",
+    name: "My Leads",
+    icon: "nc-icon nc-chart-bar-32",
+    component: LeadsAssignedToREA,
+    layout: "/admin",
+    role: [2,3,5], // have to remove 3,5
   },
   // {
   //   path: "/icons",

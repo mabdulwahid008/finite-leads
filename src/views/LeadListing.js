@@ -3,13 +3,10 @@ import { toast } from 'react-toastify'
 import { Card, CardBody, CardHeader, CardTitle, Col, Row, Table } from 'reactstrap'
 import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
-import LeadDetailPoup from 'components/leadDetailPoup/LeadDetailPoup'
 import { Link } from 'react-router-dom'
 
 function LeadListing() {
     const [leads, setLeads] = useState(null)
-    const [detailPopup, setDetailPopup] = useState(false)
-    const [leadDetail, setLeadDetail] = useState(null)
 
     
     const fetchLeads = async() => {
@@ -66,7 +63,6 @@ function LeadListing() {
                                         <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>
                                         <td>{lead.agentname}</td>
                                         <div className='actions'>
-                                            {/* <BsEye  style={{fontSize: 28}} onClick={()=> {setDetailPopup(true); setLeadDetail(lead)}}/> */}
                                             <Link to={`lead-details/${lead._id}`}><BsEye/></Link>
                                         </div>
                                     </tr>
@@ -77,7 +73,6 @@ function LeadListing() {
                 </Card>
             </Col>
         </Row>
-        {detailPopup &&  <LeadDetailPoup setDetailPopup={setDetailPopup} leadDetail={leadDetail}/>}
     </div>
   )
 }

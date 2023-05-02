@@ -22,7 +22,7 @@ router.post('/', async(req, res) => {
 })
 
 // for getting leads
-router.get('/', authorization, async(req, res) => {
+router.get('/', authorization, masterOrAdminAuthorization, async(req, res) => {
     try {
         const leads = await db.query('SELECT * FROM leads')
         return res.status(200).json(leads.rows.sort(function(a, b) {
@@ -46,7 +46,7 @@ router.get('/:_id', authorization, async(req, res) => {
     }
 })
 
-
+// checking lead before assigning
 router.get('/getLeads/:agent_id', authorization, async(req, res) => {
     try {
         const leads = await db.query('SELECT * FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1 AND create_at = $2',[
@@ -75,6 +75,23 @@ router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res
         return res.status(500).json({message: 'Server Error'})
     }
 })
+
+
+
+router.get('/agent/leads', authorization, async(req, res) => {
+    try {
+        const leads = await db.query('SELECT _id, fname, lname, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at = $2',[
+            req.user_id, dateWithoutTime
+        ])
+        return res.status(200).json(leads.rows)
+        // return res.status(200).json({message: 'hello'})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+
 
 // for real estate agent for posting a comment under a asigned lead
 router.post('/comment', authorization, realEstateAutorization, async(req, res) => {
