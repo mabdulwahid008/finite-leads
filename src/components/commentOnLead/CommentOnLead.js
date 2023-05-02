@@ -62,7 +62,6 @@ function CommentOnLead({ lead_id }) {
         { status : 5, label : 'On Contract'}
     ]
 
-
     const fetchComments = async() => {
         const response = await fetch(`/lead/comments/${lead_id}`, {
             method: 'GET',

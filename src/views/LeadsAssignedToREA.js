@@ -5,12 +5,23 @@ import { Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row, Tabl
 import { Link } from 'react-router-dom'
 import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
+import ReactSelect from 'react-select'
+import { reactStyles } from 'assets/additional/reactStyles'
 
 function LeadsAssignedToREA() {
     const [leads, setLeads] = useState(null)
 
     const date = new Date()
     const month = `${date.getFullYear()}-${date.getMonth()+1 <= 9 ? `0${date.getMonth()}` : date.getMonth()}`
+
+    const leadStatus = [
+        { value : 0, label : 'Accepted'},
+        { value : 1, label : 'Rejected'},
+        { value : 2, label : 'Listed'},
+        { value : 3, label : 'Sold'},
+        { value : 4, label : 'Follow Up'},
+        { value : 5, label : 'On Contract'}
+    ]
 
     const fetchMyLeads = async() => {
         const response = await fetch('/lead/agent/leads', {
@@ -40,10 +51,16 @@ function LeadsAssignedToREA() {
                     <CardTitle tag="h4">My Leads</CardTitle>
                 </CardHeader>
                 <CardBody>
-                    <FormGroup style={{width: 200}}>
-                        <label>Select Month</label>
-                        <Input type="month" defaultValue={month} />
-                    </FormGroup>
+                    <div style={{display:'flex', gap:20}}>
+                        <FormGroup style={{width: 200}}>
+                            <label>Select Month</label>
+                            <Input type="month" defaultValue={month} />
+                        </FormGroup>
+                        <FormGroup style={{width: 200}}>
+                            <label>Filter Category</label>
+                            <ReactSelect options={leadStatus} styles={reactStyles}/>
+                        </FormGroup>
+                    </div>
                     {!leads && <Loading/>}
                     {leads && leads.length === 0 && <p>No leads found</p>}
                     {leads && leads.length !== 0 && <Table>
