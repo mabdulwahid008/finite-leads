@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row } from 'reactstrap'
 import { RxExternalLink } from 'react-icons/rx'
 import LeadMap from 'components/leadMap/LeadMap'
+import CommentOnLead from 'components/commentOnLead/CommentOnLead'
 
 function LeadDetail() {
   const { _id } = useParams()
@@ -43,7 +44,7 @@ function LeadDetail() {
                      <CardHeader>
                        <CardTitle tag='h4'>
                           {lead.lead_type == 0 ? 'Seller' : 'Buyer'} Lead
-                          <p className='text-muted'>By: {lead.agentname}</p>
+                          {localStorage.getItem('userRole') != 2 && <p className='text-muted'>By: {lead.agentname}</p>}
                         </CardTitle>
                         {lead.recording_link && lead.recording_link.length > 3 ? <a href={lead.recording_link} target="BLANK"><RxExternalLink/></a> : ""}
                       </CardHeader>
@@ -85,7 +86,7 @@ function LeadDetail() {
                                 <Col md='6'>
                                     <FormGroup>
                                         <label>{lead.lead_type == 0 ? 'Demand' : 'Budget'}</label>
-                                        <Input readOnly value={`${lead.price}$`} />
+                                        <Input readOnly value={`${lead.price} $`} />
                                     </FormGroup>
                                 </Col>
                             </Row>
@@ -103,9 +104,18 @@ function LeadDetail() {
                 </Card>
             </Col>
         </Row>
+          
+        {/* Comments */}
+        <Row>
+          <Col md="12 mt-1">
+             {lead && <CommentOnLead lead_id={lead._id}/>}
+          </Col>
+        </Row>
 
+
+        {/* Map */}
         {localStorage.getItem('userRole') != 2 && <Row>
-          <Col md="12 mt-4">
+          <Col md="12 mt-1">
                 {lead && <LeadMap lead_id={lead._id} street={lead.address} zipcode={lead.zip_code} state={lead.state}/>}
           </Col>
         </Row>}

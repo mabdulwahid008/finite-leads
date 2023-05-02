@@ -93,7 +93,7 @@ CREATE TABLE LEADS(
     recording_link VARCHAR(300),
     beds FLOAT NOT NULL,
     baths FLOAT NOT NULL,
-    price INT NOT NULL,
+    price VARCHAR(100) NOT NULL,
     additional_info VARCHAR(500),
     agentName VARCHAR(100) NOT NULL
 )
@@ -109,7 +109,7 @@ CREATE TABLE LEAD_ASSIGNED_TO(
 CREATE TABLE LEAD_COMMENTS(
     _id SERIAL PRIMARY KEY,
     lead_id INT NOT NULL,
-    content VARCHAR(500) NOT NULL,
+    content VARCHAR(500),
     lead_status INT DEFAULT 0,
     realEstateAgent_id INT NOT NULL, 
     FOREIGN KEY (lead_id) REFERENCES Leads(_id) ON DELETE CASCADE,

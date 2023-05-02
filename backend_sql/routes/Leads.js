@@ -83,7 +83,7 @@ router.get('/agent/leads', authorization, async(req, res) => {
         const leads = await db.query('SELECT _id, fname, lname, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at = $2',[
             req.user_id, dateWithoutTime
         ])
-        return res.status(200).json(leads.rows)
+        return res.status(200).json(leads.rows.reverse())
         // return res.status(200).json({message: 'hello'})
     } catch (error) {
         console.log(error);

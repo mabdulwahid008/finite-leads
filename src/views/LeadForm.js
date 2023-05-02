@@ -156,7 +156,7 @@ function LeadForm() {
                                 <Col md="6">
                                     <FormGroup>
                                         <label className='label'>{priceText} *</label>
-                                        <Input type="number" name='price' value={lead.price} required onChange={onChange} />
+                                        <Input type="text" name='price' value={lead.price} required onChange={onChange} />
                                     </FormGroup>
                                 </Col>
                             </Row>
