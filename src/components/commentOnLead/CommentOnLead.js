@@ -6,7 +6,8 @@ function CommentOnLead({ lead_id }) {
 
     // for RE agent to comment
     const [comment, setComment] = useState({lead_id: lead_id, lead_status: null, content: null})
-    const [commentedAlready, setCommentedAlready] = useState(true)
+    const [rejectAlready, setRejectAlready] = useState(true)
+    const [myComments, setMyComments] = useState(null)
 
     // for Admin to Read
     const [comments, setComments] = useState(null) 
@@ -15,7 +16,7 @@ function CommentOnLead({ lead_id }) {
         setComment({...comment, [e.target.name]: e.target.value})
     }
 
-    const checkIsHeCommentedAlready = async() => {
+    const checkIsHerejectAlready = async() => {
         const response = await fetch(`/lead/comment/${lead_id}`, {
             method: 'GET',
             headers: {
@@ -25,10 +26,20 @@ function CommentOnLead({ lead_id }) {
         })
         const res = await response.json()
         if(response.status === 200){
-            if(res.length > 0)
-                setCommentedAlready(true)
-            else
-                setCommentedAlready(false)
+            setRejectAlready(false)
+            for (let i = 0; i < res.length; i++) {
+                const obj = leadStatus.filter((lead)=> lead.status === res[i].lead_status)
+                res[i].lead_status = obj[0].label
+            }
+            setMyComments(res)
+        }
+        else if(response.status === 400){
+            setRejectAlready(true)
+            for (let i = 0; i < res.length; i++) {
+                const obj = leadStatus.filter((lead)=> lead.status === res[i].lead_status)
+                res[i].lead_status = obj[0].label
+            }
+            setMyComments(res)
         }
         else
             toast.error(res.message)
@@ -47,7 +58,17 @@ function CommentOnLead({ lead_id }) {
         const res = await response.json()
         if(response.status === 200){
             toast.success(res.message)
-            setCommentedAlready(true)
+
+            if(comment.lead_status === 1)
+                setRejectAlready(true)
+
+            let radioBtns = document.getElementsByTagName("input");
+            for (let i = 0; i < radioBtns.length; i++) {
+                    if (radioBtns[i].type == "radio") 
+                            radioBtns[i].checked = false;
+            }
+            const textarea = document.getElementById('content').value = ""
+            setComment({lead_id: lead_id, lead_status: null, content: null})
         }
         else
             toast.error(res.message)
@@ -84,33 +105,27 @@ function CommentOnLead({ lead_id }) {
 
     useEffect(()=>{
         if(localStorage.getItem('userRole') == 2)
-            checkIsHeCommentedAlready()
+            checkIsHerejectAlready()
             
         if(localStorage.getItem('userRole') != 2)
             fetchComments()
-    }, [])
+    }, [comment])
 
   return (
     <>
     {/* for posting */}
-    {!commentedAlready && localStorage.getItem('userRole') == 2 && <Card>
+    {myComments && localStorage.getItem('userRole') == 2 && <Card>
         <CardHeader>
-            <CardTitle tag="h5">Have Any Comments?</CardTitle>
+            <CardTitle tag="h5">{rejectAlready ? 'My Comments' : 'Have Any Comments?'}</CardTitle>
         </CardHeader>
         <CardBody>
-            <Form onSubmit={submitComment}>
+            {!rejectAlready && <Form onSubmit={submitComment}>
                 <div style={{margin:'-15px 0px 10px' ,padding:'0px 20px',display:'flex', gap: '40px' }}>
                     <div>
-                        <Input type="radio" name="lead_status" value="0" onChange={onChange} required/> <p>Accepted</p>
+                        <Input type="radio" name="lead_status" value="1" onChange={onChange} required/> <p>Rejected</p>
                     </div>
                     <div>
-                        <Input type="radio" name="lead_status" value="1" onChange={onChange}/> <p>Rejected</p>
-                    </div>
-                    <div>
-                        <Input type="radio" name="lead_status" value="2" onChange={onChange}/> <p>Listed</p>
-                    </div>
-                    <div>
-                        <Input type="radio" name="lead_status" value="3" onChange={onChange}/> <p>Sold</p>
+                        <Input type="radio" name="lead_status" value="0" onChange={onChange} /> <p>Accepted</p>
                     </div>
                     <div>
                         <Input type="radio" name="lead_status" value="4" onChange={onChange}/> <p>Follow Up</p>
@@ -118,13 +133,27 @@ function CommentOnLead({ lead_id }) {
                     <div>
                         <Input type="radio" name="lead_status" value="5" onChange={onChange}/> <p>On Contract</p>
                     </div>
+                    <div>
+                        <Input type="radio" name="lead_status" value="2" onChange={onChange}/> <p>Listed</p>
+                    </div>
+                    <div>
+                        <Input type="radio" name="lead_status" value="3" onChange={onChange}/> <p>Sold</p>
+                    </div>
                 </div>
                 <FormGroup style={{display:'flex', flexDirection:'column'}}>
                     <label>Write Something (optional)</label>
-                    <textarea name="content" style={{height: 70}} onChange={onChange}></textarea>
+                    <textarea name="content" id="content" style={{height: 70}} onChange={onChange}></textarea>
                 </FormGroup>
                 <Button>Submit</Button>
-            </Form>
+            </Form>}
+            {myComments && myComments.length > 0 && <div className='comments-box'>
+                {myComments.map((comment)=> {
+                    return <FormGroup key={comment._id} style={{display:'flex', flexDirection:'column'}}>
+                        <label>{comment.lead_status}</label>
+                        <textarea value={comment.content} readOnly id='commented'></textarea>
+                    </FormGroup>    
+                })}
+            </div>}
         </CardBody>
       </Card>}
 

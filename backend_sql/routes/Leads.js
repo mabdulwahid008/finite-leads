@@ -107,11 +107,18 @@ router.get('/agent/leads/:year/:month/:lead_status', authorization, async(req, r
 })
 
 // for real estate agent before posting a comment under a asigned lead, whether has he already commented
+// and sending back agents comment
 router.get('/comment/:id', authorization, async(req, res) => {
     try {
         const lead = await db.query('SELECT * FROM LEAD_COMMENTS WHERE lead_id = $1 AND realEstateAgent_id = $2',[
             req.params.id, req.user_id
         ])
+        if(lead.rows.length > 0){
+            // for rejected lead status = 1
+            const isLeadRejected = lead.rows[lead.rows.length-1].lead_status === 1 ? true : false
+            if(isLeadRejected)
+                return res.status(400).json(lead.rows)
+        }
         return res.status(200).json(lead.rows)
     } catch (error) {
         console.log(error.message);

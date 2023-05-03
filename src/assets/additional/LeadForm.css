@@ -94,3 +94,7 @@ textarea:read-only{
     align-items: center;
 }
 
+#commented{
+    height: 40px !important;
+    max-height: 70px !important;
+}
