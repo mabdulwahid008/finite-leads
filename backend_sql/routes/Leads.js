@@ -94,14 +94,15 @@ router.get('/agent/leads/:year/:month/:lead_status', authorization, async(req, r
             leads = await db.query('SELECT _id, fname, lname, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
                 req.user_id, thisMonth, toMonth
             ])
-        else
-            leads = await db.query('SELECT leads._id, fname, lname, lead_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_COMMENTS.lead_status = $4;',[
+        else{
+            leads = await db.query('SELECT count(leads._id), leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on',[
                 req.user_id, thisMonth, toMonth, req.params.lead_status
             ])
+        }
 
         return res.status(200).json(leads.rows.reverse())
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
     }
 })
@@ -130,6 +131,10 @@ router.get('/comment/:id', authorization, async(req, res) => {
 router.post('/comment', authorization, async(req, res) => {
     const { lead_id , content, lead_status } = req.body;
     try {   
+        await db.query('UPDATE LEAD_ASSIGNED_TO SET current_status = $1 WHERE lead_id = $2 AND realEstateAgent_id = $3',[
+            lead_status, lead_id, req.user_id
+        ])
+
         await db.query('INSERT INTO LEAD_COMMENTS(lead_id , content, lead_status, realEstateAgent_id) VALUES($1, $2, $3, $4)',[
             lead_id , content, lead_status, req.user_id
         ])

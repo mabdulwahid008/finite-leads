@@ -58,7 +58,7 @@ textarea:focus{
 }
 .lead-content{
     margin-top: 20px;
-    background-color: #E3E3E3;
+    background-color: #efefef;
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -84,7 +84,7 @@ textarea:read-only{
 }
 
 .comments-box{
-    background-color: #E3E3E3;
+    background-color: #efefef;
     padding: 10px;
     border-radius: 10px;
 }
@@ -95,6 +95,6 @@ textarea:read-only{
 }
 
 #commented{
-    height: 40px !important;
-    max-height: 70px !important;
+    min-height: 40px !important;
+    max-height: auto !important;
 }

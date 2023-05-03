@@ -141,15 +141,18 @@ function CommentOnLead({ lead_id }) {
                     </div>
                 </div>
                 <FormGroup style={{display:'flex', flexDirection:'column'}}>
-                    <label>Write Something (optional)</label>
-                    <textarea name="content" id="content" style={{height: 70}} onChange={onChange}></textarea>
+                    <label>{comment.lead_status == 1 ? 'Enter Reason *' : 'Write Something (optional)'}</label>
+                    <textarea name="content" id="content" style={{height: 70}} onChange={onChange} required={comment.lead_status == 1 ? true : false}></textarea>
                 </FormGroup>
                 <Button>Submit</Button>
             </Form>}
-            {myComments && myComments.length > 0 && <div className='comments-box'>
+            {myComments && myComments.length > 0 && <div className='comments-box mt-2'>
                 {myComments.map((comment)=> {
                     return <FormGroup key={comment._id} style={{display:'flex', flexDirection:'column'}}>
-                        <label>{comment.lead_status}</label>
+                        <div className='comment-header'>
+                            <label>You:</label>
+                            <label>{comment.lead_status}</label>
+                        </div>
                         <textarea value={comment.content} readOnly id='commented'></textarea>
                     </FormGroup>    
                 })}
