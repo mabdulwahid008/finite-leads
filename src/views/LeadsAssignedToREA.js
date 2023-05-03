@@ -54,6 +54,7 @@ function LeadsAssignedToREA() {
         })
         const res = await response.json()
         if(response.status === 200){
+            console.log(res);
             setLeads(res)
         }
         else
@@ -96,6 +97,7 @@ function LeadsAssignedToREA() {
                                 <th>Lead Type</th>
                                 <th>Wroking Outside</th>
                                 <th>Assigned on</th>
+                                <th>Status</th>
                                 <th className='actions'>View</th>
                             </tr>
                         </thead>
@@ -109,6 +111,7 @@ function LeadsAssignedToREA() {
                                     <td>{lead.lead_type == 0 ? 'Seller' : 'Buyer'}</td>
                                     <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>
                                     <td>{lead.assigned_on}</td>
+                                    <td ><span style={{backgroundColor:'#7fff7f', padding:'3px 5px', color:'black', borderRadius:20}}>{lead.current_status} Accepted</span></td>
                                     <div className='actions'>
                                         <Link to={`lead-details/${lead._id}`}><BsEye/></Link>
                                     </div>
