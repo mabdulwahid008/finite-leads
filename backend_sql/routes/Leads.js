@@ -83,13 +83,23 @@ router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res
 })
 
 // RE agent to get his leads which are assigned to him
-router.get('/agent/leads', authorization, async(req, res) => {
+router.get('/agent/leads/:year/:month/:lead_status', authorization, async(req, res) => {
+    const thisMonth = `${req.params.year}-${req.params.month}`
+    const toMonth = `${req.params.year}-${1+parseInt(req.params.month) <= 9 ? `0${1+parseInt(req.params.month)}` : `${1+parseInt(req.params.month)}`}`
+
     try {
-        const leads = await db.query('SELECT _id, fname, lname, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1',[
-            req.user_id
-        ])
+        let leads;
+
+        if (req.params.lead_status == 99)
+            leads = await db.query('SELECT _id, fname, lname, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
+                req.user_id, thisMonth, toMonth
+            ])
+        else
+            leads = await db.query('SELECT leads._id, fname, lname, lead_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_COMMENTS.lead_status = $4;',[
+                req.user_id, thisMonth, toMonth, req.params.lead_status
+            ])
+
         return res.status(200).json(leads.rows.reverse())
-        // return res.status(200).json({message: 'hello'})
     } catch (error) {
         console.log(error);
         return res.status(500).json({message: 'Server Error'})

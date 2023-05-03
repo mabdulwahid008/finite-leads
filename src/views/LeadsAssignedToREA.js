@@ -8,23 +8,44 @@ import Loading from 'components/Loading/Loading'
 import ReactSelect from 'react-select'
 import { reactStyles } from 'assets/additional/reactStyles'
 
+const leadStatus = [
+    { value : 99, label : 'All'},
+    { value : 1, label : 'Rejected'},
+    { value : 10, label : 'Accepted'},
+    { value : 4, label : 'Follow Up'},
+    { value : 5, label : 'On Contract'},
+    { value : 2, label : 'Listed'},
+    { value : 3, label : 'Sold'},
+]
+
+
+
 function LeadsAssignedToREA() {
-    const [leads, setLeads] = useState(null)
-
     const date = new Date()
-    const month = `${date.getFullYear()}-${date.getMonth()+1 <= 9 ? `0${date.getMonth()}` : date.getMonth()}`
+    const thisMonth = `${date.getFullYear()}-${date.getMonth()+1 <= 9 ? `0${date.getMonth()+1}` : date.getMonth()+1}`
 
-    const leadStatus = [
-        { value : 0, label : 'Accepted'},
-        { value : 1, label : 'Rejected'},
-        { value : 2, label : 'Listed'},
-        { value : 3, label : 'Sold'},
-        { value : 4, label : 'Follow Up'},
-        { value : 5, label : 'On Contract'}
-    ]
+    // for getting leads
+    const [leads, setLeads] = useState(null)
+    // for filtering leads
+    const [yearMonth, setYearMonth] = useState(thisMonth.split('-'))
+    const [status, seStatus] = useState(leadStatus[0].value)
 
-    const fetchMyLeads = async() => {
-        const response = await fetch('/lead/agent/leads', {
+
+   
+    const monthChange = (e) => {
+        let date = e.target.value.split('-')
+        setYearMonth(date)
+        setLeads(null)
+        fetchMyLeads(date[0], date[1])
+    }
+
+    const fetchMyLeads = async(year = yearMonth[0], month = yearMonth[1]) => {
+        // its because useState was not setting 0 value 
+        let lead_status = status 
+        if(lead_status == 10)
+            lead_status = 0
+
+        const response = await fetch(`/lead/agent/leads/${year}/${month}/${lead_status}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -39,9 +60,11 @@ function LeadsAssignedToREA() {
             toast.error(res.message)
     }
 
+
     useEffect(()=>{
-        fetchMyLeads()
-    }, [])
+        if(status)
+            fetchMyLeads()
+    }, [status])
   return (
     <div className='content'>
       <Row>
@@ -54,11 +77,11 @@ function LeadsAssignedToREA() {
                     <div style={{display:'flex', gap:20}}>
                         <FormGroup style={{width: 200}}>
                             <label>Select Month</label>
-                            <Input type="month" defaultValue={month} />
+                            <Input type="month" defaultValue={thisMonth} onChange={monthChange}/>
                         </FormGroup>
                         <FormGroup style={{width: 200}}>
                             <label>Filter Category</label>
-                            <ReactSelect options={leadStatus} styles={reactStyles}/>
+                            <ReactSelect options={leadStatus} styles={reactStyles} onChange={(option) => seStatus(option.value)}/>
                         </FormGroup>
                     </div>
                     {!leads && <Loading/>}
