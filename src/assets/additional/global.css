@@ -80,6 +80,9 @@ thead{
 .card label{
     color: var(--blackColor) !important;
 }
+.next-prev{
+    background-color: var(--blackColor) !important;
+}
 
 .copyright > a {
     font-family: 'Montserret';

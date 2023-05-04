@@ -82,30 +82,100 @@ router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res
     }
 })
 
-// RE agent to get his leads which are assigned to him
-router.get('/agent/leads/:year/:month/:lead_status', authorization, async(req, res) => {
-    const thisMonth = `${req.params.year}-${req.params.month}`
-    const toMonth = `${req.params.year}-${1+parseInt(req.params.month) <= 9 ? `0${1+parseInt(req.params.month)}` : `${1+parseInt(req.params.month)}`}`
-
+const getTimePeriod = (year, month)=>{
+    const thisMonth = `${year}-${month}`
+    const toMonth = `${year}-${1+parseInt(month) <= 9 ? `0${1+parseInt(month)}` : `${1+parseInt(month)}`}`
+   return [thisMonth, toMonth]
+}
+router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, async(req, res) => {
+    // const thisMonth = `${req.params.year}-${req.params.month}`
+    // const toMonth = `${req.params.year}-${1+parseInt(req.params.month) <= 9 ? `0${1+parseInt(req.params.month)}` : `${1+parseInt(req.params.month)}`}`
     try {
-        let leads;
 
-        if (req.params.lead_status == 99)
-            leads = await db.query('SELECT _id, fname, lname, working_status, current_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
-                req.user_id, thisMonth, toMonth
-            ])
-        else{
-            leads = await db.query('SELECT count(leads._id), leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on',[
+    const record = 3;
+    const page = parseInt(req.params.page) ;
+    const offset = (page - 1) * record;
+        
+    let leads;
+    let totalCount;
+      // default call when time period and status are not specified
+      if(req.params.year == 'null' && req.params.month == 'null' && req.params.lead_status == 99){
+        console.log("1 cond");
+           totalCount = await db.query('SELECT count(*) FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1', [
+            req.user_id
+          ]);
+          leads = await db.query('SELECT _id, fname, lname, working_status, current_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 ORDER BY create_at DESC LIMIT $2 OFFSET $3', [
+            req.user_id, record, offset
+          ]);
+      }
+      // when both are specifiec
+      else if(req.params.year != 'null'  && req.params.month != 'null' && req.params.lead_status != 99){
+        console.log("2 cond");
+            const [thisMonth, toMonth] = getTimePeriod(req.params.year, req.params.month)
+
+            totalCount = await db.query('SELECT count(*) FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4', [
                 req.user_id, thisMonth, toMonth, req.params.lead_status
-            ])
-        }
+            ]);
+            leads = await db.query('SELECT count(leads._id), leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on ORDER BY create_at DESC LIMIT $5 OFFSET $6', [
+                req.user_id, thisMonth, toMonth, req.params.lead_status, record, offset
+            ]);
+      }
+      // only when time period is specified 
+      else if (req.params.year != 'null' && req.params.month != 'null' &&  req.params.lead_status == 99){
+          const [thisMonth, toMonth] = getTimePeriod(req.params.year, req.params.month)
+          totalCount = await db.query('SELECT count(*) FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3', [
+              req.user_id, thisMonth, toMonth
+            ]);
+            console.log("3 cond")
+            leads = await db.query('SELECT _id, fname, lname, working_status, current_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 ORDER BY create_at DESC LIMIT $4 OFFSET $5', [
+                req.user_id, thisMonth, toMonth, record, offset
+            ]);
+      }
+    //  only when status is specified
+      else if(req.params.year == 'null' && req.params.month == 'null' && req.params.lead_status != 99){
+        console.log("4 cond")
+        totalCount = await db.query('SELECT count(*) FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND LEAD_ASSIGNED_TO.current_status = $2', [
+            req.user_id, req.params.lead_status
+        ]);
+        leads = await db.query('SELECT count(leads._id), leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND LEAD_ASSIGNED_TO.current_status = $2 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on ORDER BY create_at DESC LIMIT $3 OFFSET $4', [
+            req.user_id, req.params.lead_status, record, offset
+        ]);
+      }
+      else{}
 
-        return res.status(200).json(leads.rows.reverse())
+    const totalRows = totalCount.rows[0].count;
+    return res.status(200).json({ data: leads.rows, totalRows });
     } catch (error) {
-        console.log(error.message);
-        return res.status(500).json({message: 'Server Error'})
+      console.log(error.message);
+      return res.status(500).json({ message: 'Server Error' });
     }
-})
+  });
+  
+
+// // RE agent to get his leads which are assigned to him
+// router.get('/agent/leads/:year/:month/:lead_status', authorization, async(req, res) => {
+//     const thisMonth = `${req.params.year}-${req.params.month}`
+//     const toMonth = `${req.params.year}-${1+parseInt(req.params.month) <= 9 ? `0${1+parseInt(req.params.month)}` : `${1+parseInt(req.params.month)}`}`
+
+//     try {
+//         let leads;
+
+//         if (req.params.lead_status == 99)
+//             leads = await db.query('SELECT _id, fname, lname, working_status, current_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on  FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
+//                 req.user_id, thisMonth, toMonth
+//             ])
+//         else{
+//             leads = await db.query('SELECT count(leads._id), leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on',[
+//                 req.user_id, thisMonth, toMonth, req.params.lead_status
+//             ])
+//         }
+
+//         return res.status(200).json(leads.rows.reverse())
+//     } catch (error) {
+//         console.log(error.message);
+//         return res.status(500).json({message: 'Server Error'})
+//     }
+// })
 
 // for real estate agent before posting a comment under a asigned lead, whether has he already commented
 // and sending back agents comment

@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row, Table } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
 import ReactSelect from 'react-select'
 import { reactStyles } from 'assets/additional/reactStyles'
 
-const leadStatus = [
-    { value : 99, label : 'All'},
-    { value : 1, label : 'Rejected'},
-    { value : 10, label : 'Accepted'},
-    { value : 4, label : 'Follow Up'},
-    { value : 5, label : 'On Contract'},
-    { value : 2, label : 'Listed'},
-    { value : 3, label : 'Sold'},
+const leadStatus =[
+    { value: 99, label: 'All' },
+    { value: 1, label: 'Rejected', color: '#ff7f7f' },
+    { value: 10, label: 'Accepted', color: '#7fff7f' },
+    { value: 4, label: 'Follow Up', color: '#ffff7f' },
+    { value: 5, label: 'On Contract', color: '#7fbfff' },
+    { value: 2, label: 'Listed', color: '#bf7fff' },
+    { value: 3, label: 'Sold', color: '#ffbf7f' }
 ]
 
 
@@ -26,6 +26,10 @@ function LeadsAssignedToREA() {
 
     // for getting leads
     const [leads, setLeads] = useState(null)
+    // pagination
+    const [totalRecord, setTotalRecord] = useState(null)
+    const [page, setPage] = useState(1)
+
     // for filtering leads
     const [yearMonth, setYearMonth] = useState(thisMonth.split('-'))
     const [status, seStatus] = useState(leadStatus[0].value)
@@ -39,13 +43,13 @@ function LeadsAssignedToREA() {
         fetchMyLeads(date[0], date[1])
     }
 
-    const fetchMyLeads = async(year = yearMonth[0], month = yearMonth[1]) => {
+    const fetchMyLeads = async(year = null, month = null) => {
         // its because useState was not setting 0 value 
         let lead_status = status 
         if(lead_status == 10)
             lead_status = 0
 
-        const response = await fetch(`/lead/agent/leads/${year}/${month}/${lead_status}`, {
+        const response = await fetch(`/lead/agent/leads/${year}/${month}/${lead_status}/${page}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -54,8 +58,14 @@ function LeadsAssignedToREA() {
         })
         const res = await response.json()
         if(response.status === 200){
-            console.log(res);
-            setLeads(res)
+            res.data.forEach(lead => {
+               const status = leadStatus.filter((status) => status.value == (lead.current_status == 0 ? 10 : lead.current_status))
+               if(lead.current_status != 99)
+                    lead.current_status = status[0].label
+                    lead.color = status[0].color
+            });
+            setLeads(res.data)
+            setTotalRecord(res.totalRows)
         }
         else
             toast.error(res.message)
@@ -65,7 +75,7 @@ function LeadsAssignedToREA() {
     useEffect(()=>{
         if(status)
             fetchMyLeads()
-    }, [status])
+    }, [status, page])
   return (
     <div className='content'>
       <Row>
@@ -82,12 +92,13 @@ function LeadsAssignedToREA() {
                         </FormGroup>
                         <FormGroup style={{width: 200}}>
                             <label>Filter Category</label>
-                            <ReactSelect options={leadStatus} styles={reactStyles} onChange={(option) => seStatus(option.value)}/>
+                            <ReactSelect options={leadStatus} styles={reactStyles} onChange={(option) => {seStatus(option.value); setPage(1)}}/>
                         </FormGroup>
                     </div>
                     {!leads && <Loading/>}
                     {leads && leads.length === 0 && <p>No leads found</p>}
-                    {leads && leads.length !== 0 && <Table>
+                    {leads && leads.length !== 0 && <>
+                    <Table>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -111,14 +122,28 @@ function LeadsAssignedToREA() {
                                     <td>{lead.lead_type == 0 ? 'Seller' : 'Buyer'}</td>
                                     <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>
                                     <td>{lead.assigned_on}</td>
-                                    <td ><span style={{backgroundColor:'#7fff7f', padding:'3px 5px', color:'black', borderRadius:20}}>{lead.current_status} Accepted</span></td>
+                                    <td>
+                                        <span style={{padding:'2px 5px 4px', borderRadius:'10px', color:'black' ,backgroundColor:`${lead.current_status == 99 ? '' :lead.color }`}}>
+                                            {lead.current_status == 99 ? '---' : lead.current_status}
+                                        </span>
+                                    </td>
                                     <div className='actions'>
                                         <Link to={`lead-details/${lead._id}`}><BsEye/></Link>
                                     </div>
                                 </tr>
                             })}
                         </tbody>
-                    </Table>}
+                    </Table>
+                    <div style={{display:'flex', justifyContent:'space-between'}}>
+                        <div>
+                            <Button className='next-prev' disabled={page === 1 ? true : false} onClick={()=>{if(page !== 1) setPage(page-1)}}>Prev</Button>
+                            <Button className='next-prev' disabled={totalRecord > 0 && page < Math.ceil(totalRecord / 1) ? false : true} onClick={()=>{if(totalRecord > 0 && page < Math.ceil(totalRecord / 1)) setPage(page+1)}}>Next</Button>
+                        </div>
+                        <div>
+                            <p>Page: {page} / Total Leads: {totalRecord}</p>
+                        </div>
+                    </div>
+                    </>}
                 </CardBody>
             </Card>
         </Col>

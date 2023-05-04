@@ -28,6 +28,7 @@ import LeadDetail from "views/LeadDetail";
 import EditUser from "views/EditUser";
 import Dashboard from "views/Dashboard";
 import LeadsAssignedToREA from "views/LeadsAssignedToREA";
+import REAgentDashboard from "views/REAgentDashboard";
 
 var routes = [
   {
@@ -37,6 +38,14 @@ var routes = [
     component: Dashboard,
     layout: "/admin",
     role: [0,3,5]
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: "nc-icon nc-bank",
+    component: REAgentDashboard,
+    layout: "/admin",
+    role: [2]
   },
   {
     path: "/users",
@@ -110,7 +119,7 @@ var routes = [
     icon: "nc-icon nc-chart-bar-32",
     component: LeadsAssignedToREA,
     layout: "/admin",
-    role: [2,3,5], // have to remove 3,5
+    role: [2], 
   },
   // {
   //   path: "/icons",
