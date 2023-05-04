@@ -85,8 +85,6 @@ router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res
 // RE agent to get his leads which are assigned to him
 router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEstateAutorization, async(req, res) => {
     try {
-        console.log("month ",req.params.month);
-        console.log("yaer ", req.params.year);
         const record = 1;
         const page = parseInt(req.params.page) ;
         const offset = (page - 1) * record;
