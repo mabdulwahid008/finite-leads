@@ -32,17 +32,18 @@ function LeadsAssignedToREA() {
 
     // for filtering leads
     const [status, seStatus] = useState(leadStatus[0].value)
+    const [yearMonth, setYearMonth] = useState([null, null])
 
    
     const monthChange = (e) => {
-        if(e.target.value == ' '){
+        if(e.target.value == ''){
             setLeads(null)
-            fetchMyLeads()
+            setYearMonth([null, null])
         }
         else{
             let date = e.target.value.split('-')
+            setYearMonth([date[0], date[1]])
             setLeads(null)
-            fetchMyLeads(date[0], date[1])
         }
     }
 
@@ -52,12 +53,7 @@ function LeadsAssignedToREA() {
         if(lead_status == 10)
             lead_status = 0
 
-        if(!month)
-            month = null
-        if(!year)
-            year = null
-
-        const response = await fetch(`/lead/agent/leads/${year}/${month}/${lead_status}/${page}`, {
+        const response = await fetch(`/lead/agent/leads/${yearMonth[0]}/${yearMonth[1]}/${lead_status}/${page}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -83,7 +79,7 @@ function LeadsAssignedToREA() {
     useEffect(()=>{
         if(status)
             fetchMyLeads()
-    }, [status, page])
+    }, [status, page, yearMonth])
   return (
     <div className='content'>
       <Row>

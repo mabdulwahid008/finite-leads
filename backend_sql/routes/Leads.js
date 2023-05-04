@@ -95,7 +95,6 @@ router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEs
         let totalCount;
         // default call when time period and status are not specified
         if(req.params.year == 'null' && req.params.month == 'null' && req.params.lead_status == 99){
-            console.log("1 cond");
             totalCount = await db.query('SELECT count(*) FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1', [
                 req.user_id
             ]);
@@ -105,7 +104,6 @@ router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEs
         }
         // when both are specifiec
         else if(req.params.year != 'null'  && req.params.month != 'null' && req.params.lead_status != 99){
-            console.log("2 cond");
                 const [thisMonth, toMonth] = getTimePeriod(req.params.year, req.params.month)
 
                 totalCount = await db.query('SELECT count(*) FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4', [
@@ -121,14 +119,12 @@ router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEs
             totalCount = await db.query('SELECT count(*) FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3', [
                 req.user_id, thisMonth, toMonth
                 ]);
-                console.log("3 cond")
                 leads = await db.query('SELECT _id, fname, lname, working_status, current_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 ORDER BY create_at DESC LIMIT $4 OFFSET $5', [
                     req.user_id, thisMonth, toMonth, record, offset
                 ]);
         }
         //  only when status is specified
         else if(req.params.year == 'null' && req.params.month == 'null' && req.params.lead_status != 99){
-            console.log("4 cond")
             totalCount = await db.query('SELECT count(*) FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND LEAD_ASSIGNED_TO.current_status = $2', [
                 req.user_id, req.params.lead_status
             ]);
