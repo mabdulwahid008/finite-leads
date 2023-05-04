@@ -82,6 +82,40 @@ router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res
     }
 })
 
+
+// for RE Agent dashborad stats
+router.get('/agent/dashboard/:year/:month', authorization, realEstateAutorization, async(req, res)=>{
+    try {
+        const [thisMonth, toMonth] = getTimePeriod(req.params.year, req.params.month)
+
+        const leads = await db.query('SELECT * FROM lead_assigned_to WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
+            req.user_id, thisMonth, toMonth
+        ])
+        let accepted, rejected, followUp, onContract, listed, sold, neutral
+        if(leads.rows.length > 0){
+            accepted = leads.rows.filter((lead)=> lead.current_status == 0)
+            rejected = leads.rows.filter((lead)=> lead.current_status == 1)
+            listed = leads.rows.filter((lead)=> lead.current_status == 2)
+            sold = leads.rows.filter((lead)=> lead.current_status == 3)
+            followUp = leads.rows.filter((lead)=> lead.current_status == 4)
+            onContract = leads.rows.filter((lead)=> lead.current_status == 5)
+            neutral = leads.rows.filter((lead)=> lead.current_status == 99)
+        }
+        return res.status(200).json({
+            accepted : accepted.length,
+            rejected : rejected.length,
+            listed : listed.length,
+            sold : sold.length,
+            followUp : followUp.length,
+            onContract : onContract.length,
+            neutral : neutral.length,
+        })
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ message: 'Server Error' });
+    }
+})
+
 // RE agent to get his leads which are assigned to him
 router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEstateAutorization, async(req, res) => {
     try {

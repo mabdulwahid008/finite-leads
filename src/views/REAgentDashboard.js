@@ -1,10 +1,42 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BsCardList, BsCheckCircle } from 'react-icons/bs'
 import { RxCrossCircled } from 'react-icons/rx'
 import { AiOutlineFileDone } from 'react-icons/ai'
 import { Card, CardBody, CardFooter, CardTitle, Col, Row } from 'reactstrap'
+import { toast } from 'react-toastify'
 
 function REAgentDashboard() {
+  const [acceptedLeads, setAcceptedLeads] = useState(0)
+  const [rejectedLeads, setRejectedLeads] = useState(0)
+  const [onContractLeads, setOnContractLeads] = useState(0)
+  const [listedLeads, setListedLeads] = useState(0)
+
+  const fetchMyLeads = async() => {
+  const date = new Date()
+  let year = date.getFullYear()
+  let month = date.getMonth()+1 <9 ? `0${date.getMonth()+1}` : date.getMonth()+1
+
+    const response = await fetch(`/lead/agent/dashboard/${year}/${month}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'Application/json',
+            token: localStorage.getItem('token')
+        }
+    })
+    const res = await response.json()
+    if(response.status === 200){
+      setAcceptedLeads(res.accepted)
+      setRejectedLeads(res.rejected)
+      setListedLeads(res.listed)
+      setOnContractLeads(res.onContract)
+    }
+    else
+        toast.error(res.message)
+}
+
+useEffect(()=>{
+  fetchMyLeads();
+}, [])
   return (
     <div className='content'>
       <Row>
@@ -20,7 +52,7 @@ function REAgentDashboard() {
                   <Col md="8" xs="7">
                     <div className="numbers">
                       <p className="card-category">This Month</p>
-                      <CardTitle tag="p">{}</CardTitle>
+                      <CardTitle tag="p">{acceptedLeads}</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -47,7 +79,7 @@ function REAgentDashboard() {
                   <Col md="8" xs="7">
                     <div className="numbers">
                       <p className="card-category">This Month</p>
-                      <CardTitle tag="p">{}</CardTitle>
+                      <CardTitle tag="p">{onContractLeads}</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -74,7 +106,7 @@ function REAgentDashboard() {
                   <Col md="8" xs="7">
                     <div className="numbers">
                       <p className="card-category">This Month</p>
-                      <CardTitle tag="p">{}</CardTitle>
+                      <CardTitle tag="p">{listedLeads}</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -101,7 +133,7 @@ function REAgentDashboard() {
                   <Col md="8" xs="7">
                     <div className="numbers">
                       <p className="card-category">This Month</p>
-                      <CardTitle tag="p">{} </CardTitle>
+                      <CardTitle tag="p">{rejectedLeads} </CardTitle>
                       <p />
                     </div>
                   </Col>
