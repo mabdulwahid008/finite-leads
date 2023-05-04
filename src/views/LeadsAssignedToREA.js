@@ -31,16 +31,19 @@ function LeadsAssignedToREA() {
     const [page, setPage] = useState(1)
 
     // for filtering leads
-    const [yearMonth, setYearMonth] = useState(thisMonth.split('-'))
     const [status, seStatus] = useState(leadStatus[0].value)
-
 
    
     const monthChange = (e) => {
-        let date = e.target.value.split('-')
-        setYearMonth(date)
-        setLeads(null)
-        fetchMyLeads(date[0], date[1])
+        if(e.target.value == ' '){
+            setLeads(null)
+            fetchMyLeads()
+        }
+        else{
+            let date = e.target.value.split('-')
+            setLeads(null)
+            fetchMyLeads(date[0], date[1])
+        }
     }
 
     const fetchMyLeads = async(year = null, month = null) => {
@@ -48,6 +51,11 @@ function LeadsAssignedToREA() {
         let lead_status = status 
         if(lead_status == 10)
             lead_status = 0
+
+        if(!month)
+            month = null
+        if(!year)
+            year = null
 
         const response = await fetch(`/lead/agent/leads/${year}/${month}/${lead_status}/${page}`, {
             method: 'GET',
@@ -88,7 +96,7 @@ function LeadsAssignedToREA() {
                     <div style={{display:'flex', gap:20}}>
                         <FormGroup style={{width: 200}}>
                             <label>Select Month</label>
-                            <Input type="month" defaultValue={thisMonth} onChange={monthChange}/>
+                            <Input type="month" onChange={monthChange}/>
                         </FormGroup>
                         <FormGroup style={{width: 200}}>
                             <label>Filter Category</label>

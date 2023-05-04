@@ -32,4 +32,12 @@ if((timeZone.month()+1) <= 9){
 let time = `${timeZone.hour()}:${timeZone.minute()}`
 
 
-module.exports = {date, dateWithoutTime, startDate, endDate, time}
+// for filtering leads
+const getTimePeriod = (year, month)=>{
+    const thisMonth = `${year}-${month}`
+    const toMonth = `${year}-${1+parseInt(month) <= 9 ? `0${1+parseInt(month)}` : `${1+parseInt(month)}`}`
+   return [thisMonth, toMonth]
+}
+
+
+module.exports = {date, dateWithoutTime, startDate, endDate, time, getTimePeriod}
