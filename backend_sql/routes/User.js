@@ -207,4 +207,18 @@ router.get('/', authorization, async(req, res)=> {
 })
 
 
+// user to get his data for my Profile component
+router.get('/profile/data', authorization, async(req, res) => {
+    try {
+        const data = await db.query('SELECT * FROM USERS WHERE _id = $1',[
+            req.user_id
+        ])
+        return res.status(200).json(data.rows[0])
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message:'Server Error'})
+    }
+})
+
+
 module.exports = router

@@ -212,7 +212,7 @@ function REAgentDashboard() {
               <CardBody style={{height:350, position:'relative'}}>
                   {!leads && <Loading />}
                   {leads && leads.length === 0 && <p>OOPS! No lead in a queue</p>}
-                  {leads && <>
+                  {leads && leads.length !== 0 && <>
                   <Table>
                     <thead>
                       <tr className='dahboard-table'>

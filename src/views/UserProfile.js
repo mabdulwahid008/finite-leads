@@ -16,7 +16,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 // reactstrap components
@@ -36,10 +36,18 @@ import {
 
 function UserProfile() {
 
+  const userRoles = [
+    { role: 0, value: 'Sales Agent'},
+    { role: 1, value: 'Marketing Agent'},
+    { role: 2, value: 'Real Estate Agent'},
+    { role: 3, value: 'Admin'},
+    { role: 5, value: 'Master'},
+  ]
+
   const [mydata, setMyData] = useState(null)
 
   const fetchMyProfile = async() => {
-    const response = fetch('', {
+    const response = await fetch('/user/profile/data', {
       method:'GET',
       headers:{
         'Content-Type':'Application/json',
@@ -47,18 +55,20 @@ function UserProfile() {
       }
     })
     const res = await response.json()
-    if(response.statua === 200){
+    if(response.status === 200){
       setMyData(res)
     }
     else
       toast.error(res.message)
   }
 
-  
+  useEffect(()=>{
+    fetchMyProfile()
+  }, [])
   return (
     <>
       <div className="content">
-        <Row>
+       {mydata &&  <Row>
           <Col md="4">
             <Card className="card-user">
               <div className="image">
@@ -67,17 +77,17 @@ function UserProfile() {
               <CardBody>
                 <div className="author">
                   <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                    <img
+                    <img style={{backgroundColor:'#f4f3ef'}}
                       alt="..."
                       className="avatar border-gray"
-                      src={require("assets/img/profile.jpg")}
+                      src={require("assets/img/profile.png")}
                     />
-                    <h5 className="username">User Name</h5>
+                    <h5 className="username">{mydata.name}</h5>
                   </a>
-                  <p className="description">Real Estate Agent</p>
+                  <p className="description">{userRoles.filter((role) => role.role == mydata.role)[0].value}</p>
                 </div>
                 <p className="description text-center">
-                  I like the way you work it <br />
+                  We like the way you work it <br />
                 </p>
               </CardBody>
               <CardFooter>
@@ -217,32 +227,16 @@ function UserProfile() {
                         <Input defaultValue="Finite Lead" disabled placeholder="Company"type="text"/>
                       </FormGroup>
                     </Col>
-                    <Col className="px-1" md="3">
+                    <Col className="px-1" md="4">
                       <FormGroup>
-                        <label>Username</label>
-                        <Input defaultValue="michael23" placeholder="Username" type="text"/>
+                        <label htmlFor="exampleInputEmail1">Email address</label>
+                        <Input disabled defaultValue={mydata.email} placeholder="Username" type="email"/>
                       </FormGroup>
                     </Col>
-                    <Col className="pl-1" md="4">
+                    <Col className="pl-1" md="3">
                       <FormGroup>
-                        <label htmlFor="exampleInputEmail1">
-                          Email address
-                        </label>
-                        <Input placeholder="Email" type="email" />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-1" md="6">
-                      <FormGroup>
-                        <label>First Name</label>
-                        <Input defaultValue="Chet" placeholder="Company" type="text" />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-1" md="6">
-                      <FormGroup>
-                        <label>Last Name</label>
-                        <Input defaultValue="Faker" placeholder="Last Name" type="text" />
+                        <label>Phone</label>
+                        <Input disabled defaultValue={mydata.phone} type="text" />
                       </FormGroup>
                     </Col>
                   </Row>
@@ -250,7 +244,7 @@ function UserProfile() {
                     <Col md="12">
                       <FormGroup>
                         <label>Address</label>
-                        <Input defaultValue="Melbourne, Australia" placeholder="Home Address" type="text" />
+                        <Input disabled defaultValue={mydata.address} type="text" />
                       </FormGroup>
                     </Col>
                   </Row>
@@ -258,40 +252,66 @@ function UserProfile() {
                     <Col className="pr-1" md="4">
                       <FormGroup>
                         <label>City</label>
-                        <Input defaultValue="Melbourne" placeholder="City" type="text"/>
+                        <Input disabled defaultValue={mydata.city} type="text"/>
                       </FormGroup>
                     </Col>
                     <Col className="px-1" md="4">
                       <FormGroup>
                         <label>Country</label>
-                        <Input defaultValue="Australia" placeholder="Country" type="text"/>
+                        <Input disabled defaultValue={mydata.country} type="text"/>
                       </FormGroup>
                     </Col>
                     <Col className="pl-1" md="4">
                       <FormGroup>
-                        <label>Postal Code</label>
-                        <Input placeholder="ZIP Code" type="number" />
+                        <label>Zip Code</label>
+                        <Input disabled defaultValue={mydata.zip_code} type="number" />
                       </FormGroup>
                     </Col>
                   </Row>
                   <Row>
-                    <Col md="12">
+                    <Col className="pr-1" md="5">
                       <FormGroup>
-                        <label>About Me</label>
-                        <Input type="textarea" defaultValue="Oh so, your weak rhyme You doubt I'll bother, reading into it"/>
+                        <label>Brokerage Name</label>
+                        <Input disabled defaultValue={mydata.brokerage_name} type="text" />
+                      </FormGroup>
+                    </Col>
+                    <Col className="px-1" md="4">
+                      <FormGroup>
+                        <label>Broker Name</label>
+                        <Input disabled defaultValue={mydata.broker_name} type="text" />
+                      </FormGroup>
+                    </Col>
+                    <Col className="pl-1" md="3">
+                      <FormGroup>
+                        <label>Office Phone</label>
+                        <Input disabled defaultValue={mydata.office_phone} type="text" />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="pr-1" md="6">
+                      <FormGroup>
+                        <label>Old Password</label>
+                        <Input type="text" />
+                      </FormGroup>
+                    </Col>
+                    <Col className="pl-1" md="6">
+                      <FormGroup>
+                        <label>New Password</label>
+                        <Input type="text" />
                       </FormGroup>
                     </Col>
                   </Row>
                   <Row>
                     <div className="update ml-auto mr-auto">
-                      <Button> Update Profile</Button>
+                      <Button> Update Password</Button>
                     </div>
                   </Row>
                 </Form>
               </CardBody>
             </Card>
           </Col>
-        </Row>
+        </Row>}
       </div>
     </>
   );
