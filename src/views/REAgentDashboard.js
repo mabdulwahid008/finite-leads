@@ -6,12 +6,31 @@ import { Button, Card, CardBody, CardFooter, CardHeader, CardTitle, Col, Row, Ta
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 import Loading from 'components/Loading/Loading'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Pie } from 'react-chartjs-2'
+
+ChartJS.register(ArcElement, Tooltip, Legend)
 
 function REAgentDashboard() {
-  const [acceptedLeads, setAcceptedLeads] = useState(0)
   const [rejectedLeads, setRejectedLeads] = useState(0)
+  const [acceptedLeads, setAcceptedLeads] = useState(0)
+  const [followUpLeads, setFollowUpLeads] = useState(0)
   const [onContractLeads, setOnContractLeads] = useState(0)
   const [listedLeads, setListedLeads] = useState(0)
+  const [soldLeads, setSoldLeads] = useState(0)
+  
+  // const [pieChartdata, setPieChartData] = useState(null)
+
+  const data = {
+    labels: ['Rejected', 'Accepted', 'Follow Uo', 'On Contract', 'Listed', 'Sold', 'New'],
+    datasets : [
+      {
+        data: [rejectedLeads, acceptedLeads, followUpLeads, onContractLeads, listedLeads, soldLeads, 1],
+        backgroundColor: ['#ff7f7f', '#7fff7f', '#ffff7f', '#7fbfff', '#bf7fff', '#ffbf7f', '#d3d3d3']
+      }
+    ]
+  }
+  const pieChartOptions = {}
 
 
   const [leads, setLeads] = useState(null)
@@ -38,6 +57,9 @@ function REAgentDashboard() {
       setRejectedLeads(res.rejected)
       setListedLeads(res.listed)
       setOnContractLeads(res.onContract)
+      setFollowUpLeads(res.followUp)
+      setSoldLeads(res.sold)
+      
     }
     else
         toast.error(res.message)
@@ -182,7 +204,7 @@ function REAgentDashboard() {
           </Col>
         </Row>
         <Row>
-          <Col md="6">
+          <Col md="8">
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">New Leads</CardTitle>
@@ -227,6 +249,16 @@ function REAgentDashboard() {
                         </div>
                     </div>
                   </>}
+              </CardBody>
+            </Card>
+          </Col>
+          <Col md="4">
+            <Card>
+              <CardHeader>
+                <CardTitle tag="h4">Leads Statistics</CardTitle>
+              </CardHeader>
+              <CardBody style={{height:350}}>
+                      {data && <Pie data={data} options={pieChartOptions}></Pie>}
               </CardBody>
             </Card>
           </Col>

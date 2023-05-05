@@ -29,6 +29,7 @@ import EditUser from "views/EditUser";
 import Dashboard from "views/Dashboard";
 import LeadsAssignedToREA from "views/LeadsAssignedToREA";
 import REAgentDashboard from "views/REAgentDashboard";
+import UserProfile from "views/UserProfile";
 
 var routes = [
   {
@@ -99,7 +100,7 @@ var routes = [
   {
     path: "/leads",
     name: "Leads",
-    icon: "nc-icon nc-chart-bar-32",
+    icon: "nc-icon nc-diamond",
     component: LeadListing,
     layout: "/admin",
     role: [3,5]
@@ -107,7 +108,7 @@ var routes = [
   {
     path: "/lead-details/:_id",
     name: "Lead Details ",
-    icon: "nc-icon nc-chart-bar-32",
+    icon: "nc-iconnc-diamond",
     component: LeadDetail,
     layout: "/admin",
     role: [2,3,5],
@@ -116,10 +117,18 @@ var routes = [
   {
     path: "/my-leads",
     name: "My Leads",
-    icon: "nc-icon nc-chart-bar-32",
+    icon: "nc-icon nc-diamond",
     component: LeadsAssignedToREA,
     layout: "/admin",
     role: [2], 
+  },
+  {
+    path: "/my-profile",
+    name: "My Profile",
+    icon: "nc-icon nc-badge",
+    component: UserProfile,
+    layout: "/admin",
+    role: [0,2,3,5], 
   },
   // {
   //   path: "/icons",
@@ -127,7 +136,7 @@ var routes = [
   //   icon: "nc-icon nc-diamond",
   //   component: Icons,
   //   layout: "/admin",
-  //   role : [0,3,5]
+  //   role : [0,2,3,5]
   // },
 //   {
 //     path: "/maps",
@@ -173,4 +182,6 @@ var routes = [
 //     layout: "/admin"
 //   }
 ];
+
+
 export default routes;

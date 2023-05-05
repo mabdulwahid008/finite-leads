@@ -105,14 +105,14 @@ function LeadsAssignedToREA() {
                     <Table>
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>State</th>
-                                <th>Beds & Baths</th>
-                                <th>Lead Type</th>
-                                <th>Wroking Outside</th>
-                                <th>Assigned on</th>
-                                <th>Status</th>
+                                <th style={{width:'2%'}}>#</th>
+                                <th style={{width:'12%'}}>First Name</th>
+                                <th style={{width:'10%'}}>Lead Type</th>
+                                <th style={{width:'15%'}}>Wroking Outside</th>
+                                <th style={{width:'18%'}}>Address</th>
+                                <th style={{width:'10%'}}>State</th>
+                                <th style={{width:'15%'}}>Assigned on</th>
+                                <th style={{width:'0%'}}>Status</th>
                                 <th className='actions'>View</th>
                             </tr>
                         </thead>
@@ -121,10 +121,10 @@ function LeadsAssignedToREA() {
                                 return <tr key={index}>
                                     <td>{index+1}</td>
                                     <td>{lead.fname}</td>
-                                    <td>{lead.state}</td>
-                                    <td>{lead.beds} * {lead.baths}</td>
                                     <td>{lead.lead_type == 0 ? 'Seller' : 'Buyer'}</td>
                                     <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>
+                                    <td>{lead.address}</td>
+                                    <td>{lead.state}</td>
                                     <td>{lead.assigned_on}</td>
                                     <td>
                                         <span style={{padding:'2px 5px 4px', borderRadius:'10px', color:'black' ,backgroundColor:`${lead.current_status == 99 ? '' :lead.color }`}}>

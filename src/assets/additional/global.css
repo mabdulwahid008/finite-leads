@@ -8,6 +8,11 @@
     --warningColor: #fccf71
 }
 
+.username{
+    font-weight: 600;
+    color: var(--logoColor) !important;
+}
+
 .btn{
     background-color: var(--logoColor) !important;
 }
