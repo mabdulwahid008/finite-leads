@@ -83,6 +83,14 @@ textarea:read-only{
     color: var(--primaryColor);
 }
 
+.dahboard-table > td,
+.dahboard-table > th{
+    font-size: 12px !important;
+}
+.dahboard-table > button {
+    font-size: 10px;
+}
+
 .comments-box{
     background-color: #efefef;
     padding: 10px;

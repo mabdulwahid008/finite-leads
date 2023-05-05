@@ -116,6 +116,28 @@ router.get('/agent/dashboard/:year/:month', authorization, realEstateAutorizatio
     }
 })
 
+// for RE Agent dahboard leads which are not given any status
+router.get('/agent/dahboard-leads/:page', authorization, realEstateAutorization, async(req, res) => {
+    try {
+        const record = 1;
+        const page = parseInt(req.params.page) ;
+        const offset = (page - 1) * record;
+
+        const totalCount = await db.query('SELECT count(*) FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND LEAD_ASSIGNED_TO.current_status = $2', [
+                    req.user_id,  99
+                ]);
+        const leads = await db.query('SELECT count(leads._id), leads._id, fname, current_status, working_status, lead_type, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND LEAD_ASSIGNED_TO.current_status = $2 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on ORDER BY create_at DESC LIMIT $3 OFFSET $4', [
+                    req.user_id, '99', record, offset
+                ]);
+
+        const totalRows = totalCount.rows[0].count;
+        return res.status(200).json({ data: leads.rows, totalRows });
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ message: 'Server Error' });
+    }
+})
+
 // RE agent to get his leads which are assigned to him
 router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEstateAutorization, async(req, res) => {
     try {

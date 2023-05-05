@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { BsCardList, BsCheckCircle } from 'react-icons/bs'
+import { BsCardList, BsCheckCircle, BsEye } from 'react-icons/bs'
 import { RxCrossCircled } from 'react-icons/rx'
 import { AiOutlineFileDone } from 'react-icons/ai'
-import { Card, CardBody, CardFooter, CardTitle, Col, Row } from 'reactstrap'
+import { Button, Card, CardBody, CardFooter, CardHeader, CardTitle, Col, Row, Table } from 'reactstrap'
 import { toast } from 'react-toastify'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min'
+import Loading from 'components/Loading/Loading'
 
 function REAgentDashboard() {
   const [acceptedLeads, setAcceptedLeads] = useState(0)
@@ -11,7 +13,14 @@ function REAgentDashboard() {
   const [onContractLeads, setOnContractLeads] = useState(0)
   const [listedLeads, setListedLeads] = useState(0)
 
-  const fetchMyLeads = async() => {
+
+  const [leads, setLeads] = useState(null)
+  const [totalRecord, setTotalRecord] = useState(0)
+  const [page, setPage] = useState(1)
+
+
+
+  const fetchMyLeadsStatus = async() => { 
   const date = new Date()
   let year = date.getFullYear()
   let month = date.getMonth()+1 <9 ? `0${date.getMonth()+1}` : date.getMonth()+1
@@ -32,14 +41,38 @@ function REAgentDashboard() {
     }
     else
         toast.error(res.message)
-}
+  }
 
-useEffect(()=>{
-  fetchMyLeads();
-}, [])
+  const fetchMyNotSatusLeads = async() => {
+    const response = await fetch(`/lead/agent/dahboard-leads/${page}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'Application/json',
+            token: localStorage.getItem('token')
+        }
+    })
+    const res = await response.json()
+    if(response.status === 200){
+      console.log(res);
+      setLeads(res.data)
+      setTotalRecord(res.totalRows)
+    }
+    else
+        toast.error(res.message)
+  }
+
+  useEffect(()=>{
+    setLeads(null)
+    fetchMyNotSatusLeads()
+  }, [page])
+
+  useEffect(()=>{
+    fetchMyLeadsStatus()
+    fetchMyNotSatusLeads();
+  }, [])
   return (
     <div className='content'>
-      <Row>
+        <Row>
           <Col lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
@@ -145,6 +178,56 @@ useEffect(()=>{
                   Rejected Leads
                 </div>
               </CardFooter>
+            </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md="6">
+            <Card>
+              <CardHeader>
+                <CardTitle tag="h4">New Leads</CardTitle>
+              </CardHeader>
+              <CardBody style={{height:350, position:'relative'}}>
+                  {!leads && <Loading />}
+                  {leads && leads.length === 0 && <p>OOPS! No lead in a queue</p>}
+                  {leads && <>
+                  <Table>
+                    <thead>
+                      <tr className='dahboard-table'>
+                        <th>#</th>
+                        <th style={{width:'20%'}}>First Name</th>
+                        <th>Lead Type</th>
+                        <th>Working Outside</th>
+                        <th>Assigned On</th>
+                        <th className='text-right'>View</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {leads.map((lead, index)=>{
+                        return <tr key={index} className='dahboard-table'>
+                          <td>{index+1}</td>
+                          <td>{lead.fname}</td>
+                          <td>{lead.lead_type == 0 ? 'Seller' : 'Buyer'}</td>
+                          <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>
+                          <td>{lead.assigned_on}</td>
+                          <div className='actions'>
+                              <Link to={`lead-details/${lead._id}`}><BsEye/></Link>
+                          </div>
+                        </tr>
+                      })}
+                    </tbody>
+                  </Table>
+                  <div style={{display:'flex', justifyContent:'space-between', width:'100%', alignItems:'center', position:'absolute', bottom:0}}>
+                        <div className='dahboard-table'>
+                            <Button className='next-prev' disabled={page === 1 ? true : false} onClick={()=>{if(page !== 1) setPage(page-1)}}>Prev</Button>
+                            <Button className='next-prev' disabled={totalRecord > 0 && page < Math.ceil(totalRecord / 1) ? false : true} onClick={()=>{if(totalRecord > 0 && page < Math.ceil(totalRecord / 1)) setPage(page+1)}}>Next</Button>
+                        </div>
+                        <div>
+                            <p className='text-muted' style={{fontSize:'12px', marginRight:30}}>Page: {page} / Total Leads: {totalRecord}</p>
+                        </div>
+                    </div>
+                  </>}
+              </CardBody>
             </Card>
           </Col>
         </Row>
