@@ -35,6 +35,36 @@ router.get('/', authorization, masterOrAdminAuthorization, async(req, res) => {
     }
 })
 
+// for RE Agnet to view single lead
+router.get('/my-leads/:_id', authorization, realEstateAutorization, async(req, res) => {
+    try {
+        const leads = await db.query('SELECT * FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE lead_id = $1 AND realEstateAgent_id = $2',[
+            req.params._id, req.user_id
+        ])
+        return res.status(200).json(leads.rows)
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+router.get('/notfication', authorization, realEstateAutorization, async(req, res) => {
+    try {
+        const leads = await db.query('SELECT _id,fname, address, viewed, create_at FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 ORDER BY create_at DESC', [
+         req.user_id
+        ])
+        
+        let notViewd = [];
+        if(leads.rows.length > 0)
+             notViewd = leads.rows.filter((lead) => lead.viewed === false)
+
+        return res.status(200).json({notViewd: notViewd.length, leads: leads.rows.reverse()})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
 // get single lead by id
 router.get('/:_id', authorization, async(req, res) => {
     try {

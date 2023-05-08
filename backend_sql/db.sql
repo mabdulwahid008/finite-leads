@@ -103,6 +103,7 @@ CREATE TABLE LEAD_ASSIGNED_TO(
     realEstateAgent_id INT NOT NULL,
     create_at VARCHAR(15) NOT NULL,
     current_status INT DEFAULT 99,
+    viewed BOOLEAN DEFAULT FALSE
     FOREIGN KEY (lead_id) REFERENCES Leads(_id) ON DELETE CASCADE,
     FOREIGN KEY (realEstateAgent_id) REFERENCES Users(_id) ON DELETE CASCADE
 )

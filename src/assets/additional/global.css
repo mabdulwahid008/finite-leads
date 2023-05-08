@@ -123,6 +123,28 @@ input[type="number"]::-webkit-outer-spin-button {
     cursor: pointer;
     text-decoration: underline;
 }
+
+.notification {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding:5px 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.notification > div > p {
+    padding: 0px !important;
+    margin: 0px !important;
+    line-height: 12px;
+}
+.notification:hover {
+    background-color: #66615B !important;
+    color: white;
+} 
+.notification > a > svg{
+    color: var(--blackColor);
+    cursor: pointer;
+}
 /* .sidebar .sidebar-wrapper li.active>a:not([data-toggle=collapse]):before,
 .sidebar .sidebar-wrapper li.active>a:not([data-toggle=collapse]):after{
     right: 45px !important;

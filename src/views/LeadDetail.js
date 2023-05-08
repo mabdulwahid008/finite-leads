@@ -17,7 +17,15 @@ function LeadDetail() {
 
   // API Calling
   const fetchlead = async () => {
-    const response = await fetch(`/lead/${_id}`,{
+    let url;
+    // for RE agent
+    if(localStorage.getItem('userRole') == 2)
+      url = `/lead/my-leads/${_id}`
+    // for admin
+    else
+      url = `/lead/${_id}`
+
+    const response = await fetch(url,{
       method: 'GET',
       headers:{
         'Content-Type' : 'Application/json',
@@ -25,8 +33,9 @@ function LeadDetail() {
       }
     })
     const res = await response.json()
-    if(response.status === 200)
-      setLead(res)
+    if(response.status === 200){
+        setLead(res[0])
+    }
     else
       toast.error(res.message)
   }

@@ -17,7 +17,9 @@
 
 */
 import React from "react";
+import { BsEye } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   Collapse,
   Navbar,
@@ -97,6 +99,35 @@ function Header(props) {
       setColor("transparent");
     }
   };
+
+  const [count, setCount] = React.useState(0)
+  const [notfication, setNotification] = React.useState([])
+
+  const getNotification = async() => {
+    const response = await fetch('/lead/notfication',{
+      method:'GET',
+      headers:{
+        'Content-Type':'Application/json',
+        token: localStorage.getItem('token')
+      },
+    })
+    const res = await response.json()
+    if(response.status === 200){
+      setCount(res.notViewd)
+      if(res.leads.length > notfication.length){
+        setNotification(res.leads)
+      }
+    }
+    else 
+      toast.error(res.message)
+  }
+
+  React.useEffect(()=>{
+    getNotification()
+    console.log(count);
+    console.log(notfication);
+  })
+
   React.useEffect(() => {
     window.addEventListener("resize", updateColor.bind(this));
   });
@@ -174,29 +205,35 @@ function Header(props) {
               <DropdownToggle caret nav>
                 <i className="nc-icon nc-bell-55" />
                 <p>
-                  <span className="d-lg-none d-md-block">Some Actions</span>
+                  <span className="d-lg-none d-md-block">Notifications</span>
                 </p>
               </DropdownToggle>
               <DropdownMenu right>
-                <DropdownItem tag="a">Action</DropdownItem>
-                <DropdownItem tag="a">Another Action</DropdownItem>
-                <DropdownItem tag="a">Something else here</DropdownItem>
+                {notfication.map((lead)=>{
+                  return <div className="notification" key={lead._id} style={{backgroundColor: `${lead.viewed === false ? '#f2f3ef': '#fff'}`}}>
+                    <div>
+                        <p>{lead.fname}</p><br/>
+                        <p style={{fontSize:10}}>{lead.address}</p>
+                    </div>
+                    <Link to={`lead-details/${lead._id}`}><BsEye/></Link>
+                  </div>
+                })}
               </DropdownMenu>
             </Dropdown>
             <NavItem>
               <Link to="/my-profile">
                 <img  style={{marginTop:10,height:30, width:30, objectFit:'cover', borderRadius:50, border:'1px solid #25242293',}}
-                src={localStorage.getItem('profileImage')? `http://localhost:5000/${localStorage.getItem('profileImage')}` : require("assets/img/profile.png")}/>
+                src={localStorage.getItem('profileImage') !== "null"? `http://localhost:5000/${localStorage.getItem('profileImage')}` : require("assets/img/profile.png")}/>
               </Link>
             </NavItem>
-            <NavItem>
+            {/* <NavItem>
               <Link to="#" className="nav-link btn-rotate">
                 <i className="nc-icon nc-button-power" onClick={()=>{localStorage.removeItem('token'); localStorage.removeItem('userLoggedIn'); window.location.reload(true)}}/>
                 <p>
                   <span className="d-lg-none d-md-block">LogOut</span>
                 </p>
               </Link>
-            </NavItem>
+            </NavItem> */}
           </Nav>
         </Collapse>
       </Container>
