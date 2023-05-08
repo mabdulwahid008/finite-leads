@@ -1,6 +1,6 @@
 import ImageUpload from "components/imageUpload/ImageUpload";
 import React, { useEffect, useState } from "react";
-import { BsEyeSlash } from "react-icons/bs";
+import { BsEyeSlash, BsCamera } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { Button, Card, CardHeader, CardBody, CardFooter, CardTitle, FormGroup, Form, Input, Row, Col } from "reactstrap";
 
@@ -43,8 +43,9 @@ function UserProfile() {
     const res = await response.json()
     if(response.status === 200){
       toast.success(res.message)
+      document.getElementById('old_pass').value = ""
+      document.getElementById('new_pass').value = ""
       setPassword({old_pass:'', new_pass:''})
-      setRefresh(!refresh)
     }
     else
       toast.error(res.message)
@@ -83,14 +84,15 @@ function UserProfile() {
               </div>
               <CardBody>
                 <div className="author">
-                  <a style={{cursor:'pointer'}} onClick={() => setImageUploadPopup(true)}>
+                  <a style={{position:'relative'}}>
                     <img style={{backgroundColor:'#f4f3ef'}}
                       alt="..."
                       className="avatar border-gray"
-                      src={require("assets/img/profile.png")}
+                      src={mydata.profile_image ? `http://localhost:5000/${mydata.profile_image}` : require("assets/img/profile.png")}
                     />
-                    <h5 className="username">{mydata.name}</h5>
+                    <BsCamera onClick={() => setImageUploadPopup(true)} style={{position:'absolute', background:'#252422', color:"#51cbce", cursor:'pointer', padding:'5px 7px', borderRadius:20, fontSize:30, top:30, right: 5}}/>
                   </a>
+                    <h5 className="username">{mydata.name}</h5>
                   <p className="description">{userRoles.filter((role) => role.role == mydata.role)[0].value}</p>
                 </div>
                 <p className="description text-center">
@@ -99,7 +101,10 @@ function UserProfile() {
               </CardBody>
               <CardFooter>
                 <hr />
-                <div className="button-container">
+                  <p className="logout" onClick={()=>{localStorage.clear(); window.location.reload(true)}}>
+                    <i className="nc-icon nc-button-power" />
+                   Log Out</p>
+                {/* <div className="button-container">
                   <Row>
                     <Col className="ml-auto" lg="3" md="6" xs="6">
                       <h5>
@@ -120,7 +125,7 @@ function UserProfile() {
                       </h5>
                     </Col>
                   </Row>
-                </div>
+                </div> */}
               </CardFooter>
             </Card>
             {/* <Card>
@@ -333,7 +338,7 @@ function UserProfile() {
             </Card>
           </Col>
         </Row>}
-        {imageUploadPopup && <ImageUpload setImageUploadPopup={setImageUploadPopup} setRefresh={setRefresh}/>}
+        {imageUploadPopup && <ImageUpload setImageUploadPopup={setImageUploadPopup} setRefresh={setRefresh} profile_image={mydata.profile_image}/>}
       </div>
     </>
   );

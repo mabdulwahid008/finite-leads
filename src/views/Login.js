@@ -28,6 +28,7 @@ function Login() {
             localStorage.setItem('token', res.token)
             localStorage.setItem('userRole', res.role)
             localStorage.setItem('user', res.userId)
+            localStorage.setItem('profileImage', res.profile_image)
             window.location.reload(true)
         }
         else{

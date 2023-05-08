@@ -111,7 +111,7 @@ function Header(props) {
   }, [location]);
   return (
     // add or remove classes depending if we are on full-screen-maps page or not
-    <Navbar style={{zIndex:0}}
+    <Navbar style={{zIndex:1}}
       color={
         props.location.pathname.indexOf("full-screen-maps") !== -1
           ? "dark"
@@ -165,7 +165,7 @@ function Header(props) {
                   <span className="d-lg-none d-md-block">Stats</span>
                 </p>
               </Link>
-            </NavItem>
+            </NavItem> */}
             <Dropdown
               nav
               isOpen={dropdownOpen}
@@ -182,7 +182,13 @@ function Header(props) {
                 <DropdownItem tag="a">Another Action</DropdownItem>
                 <DropdownItem tag="a">Something else here</DropdownItem>
               </DropdownMenu>
-            </Dropdown> */}
+            </Dropdown>
+            <NavItem>
+              <Link to="/my-profile">
+                <img  style={{marginTop:10,height:30, width:30, objectFit:'cover', borderRadius:50, border:'1px solid #25242293',}}
+                src={localStorage.getItem('profileImage')? `http://localhost:5000/${localStorage.getItem('profileImage')}` : require("assets/img/profile.png")}/>
+              </Link>
+            </NavItem>
             <NavItem>
               <Link to="#" className="nav-link btn-rotate">
                 <i className="nc-icon nc-button-power" onClick={()=>{localStorage.removeItem('token'); localStorage.removeItem('userLoggedIn'); window.location.reload(true)}}/>

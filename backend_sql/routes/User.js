@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 const authorization = require('../middleware/authorization')
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization')
 const authorizationn = require('../middleware/authorizationn');
+const uploadProfle = require('../middleware/uploadProfle');
 
 
 // login 
@@ -33,7 +34,7 @@ router.post('/login', async(req, res) => {
         }
 
         const token = jwt.sign(payload, process.env.SECERET_KEY)
-        return res.status(200).json({token: token, role: user.rows[0].role, userId: user.rows[0]._id})
+        return res.status(200).json({token: token, role: user.rows[0].role, userId: user.rows[0]._id, profile_image: user.rows[0].profile_image})
     } catch (error) {
         console.log(error.message);
         res.status(500).json({message: "Server Error"})
@@ -219,6 +220,7 @@ router.get('/profile/data', authorization, async(req, res) => {
     }
 })
 
+// user to change his password
 router.patch('/update-pass', authorization, async(req, res) => {
     const { old_pass, new_pass } = req.body
     try {
@@ -236,6 +238,19 @@ router.patch('/update-pass', authorization, async(req, res) => {
         ])
 
         return res.status(200).json({message: "Password Updated"})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message:'Server Error'})
+    }
+})
+
+// user to upload his profile
+router.patch('/upload-profile', authorization, uploadProfle.single('image'), async(req, res) => {
+    try {
+        await db.query('UPDATE users SET profile_image = $1 WHERE _id = $2', [
+            req.file.path, req.user_id
+        ])
+        return res.status(200).json({message: 'Profile image updated'})
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message:'Server Error'})

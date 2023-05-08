@@ -2,10 +2,11 @@ import React, { useRef, useState } from 'react'
 import { RxCross1 } from 'react-icons/rx'
 import { Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input } from 'reactstrap'
 import img from '../../assets/img/profile.png'
+import { toast } from 'react-toastify'
 
-function ImageUpload({ setImageUploadPopup, setRefresh }) {
+function ImageUpload({ setImageUploadPopup, setRefresh, profile_image }) {
   const ref = useRef()
-  const [profile, setProfile] = useState(img)
+  const [profile, setProfile] = useState(profile_image? `http://localhost:5000/${profile_image}` : img)
   const [image, setImage] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -25,11 +26,29 @@ function ImageUpload({ setImageUploadPopup, setRefresh }) {
     })
   }
 
-  const uploadProfile = async ( e ) => {
-    e.prevenDefault()
+  const uploadProfile = async (e) => {
+    e.preventDefault()
     setLoading(true)
 
-    // setRefresh(true)
+    const fd = new FormData();
+    fd.append('image', image);
+    const response = await fetch('/user/upload-profile',{
+        method:'PATCH',
+        headers:{
+            'Conten-Type': 'Application/json',
+            token: localStorage.getItem('token')
+        },
+        body: fd
+    })
+    const res = await response.json();
+    if(response.status === 200){
+        toast.success(res.message)
+        setRefresh(true)
+        setImageUploadPopup(false)
+    }
+    else
+        toast.error(res.message)
+
     setLoading(false)
   }
 
@@ -38,18 +57,20 @@ function ImageUpload({ setImageUploadPopup, setRefresh }) {
         <div className='overlay'></div>
         <Card style={{width:'30%'}} className='card-popup'>
             <CardHeader>
-                <CardTitle tag="h4">Upload Image</CardTitle>
+                <CardTitle tag="h4">Upload Image
+                <p>2MB max image size</p>
+                </CardTitle>
                 <RxCross1 onClick={()=>{setImageUploadPopup(false)}}/>
             </CardHeader>
             <CardBody>
               <Form onSubmit={uploadProfile} style={{display:'flex',flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
-                <FormGroup>
-                  <label htmlFor="file-input" style={{marginTop:-20}}>
-                    <img src={profile} style={{height: 300, objectFit:'cover', cursor:'pointer', backgroundColor:'white'}}/>
+                <FormGroup style={{display:'flex',flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+                  <label htmlFor="file-input" style={{marginTop:-20, marginBottom:-20}}>
+                    <img src={profile} style={{height: 250, objectFit:'cover', cursor:'pointer', backgroundColor:'white'}}/>
                   </label>
-                  <input id="file-input" type="file" accept='image/jpg,image/png,image/jpeg' onChange={onChange} style={{opacity:0}}/>
+                  <input required id="file-input" type="file" accept='image/jpg,image/png,image/jpeg' onChange={onChange} style={{opacity:0}}/>
                 </FormGroup>
-                <Button style={{marginTop:-30}} disabled={loading? true : false}>{loading ? "Please Wait" : "Upload Profile Image"}</Button>
+                <Button style={{marginTop:-5}} disabled={loading? true : false}>{loading ? "Please Wait" : "Upload Profile Image"}</Button>
               </Form>
             </CardBody>
         </Card>

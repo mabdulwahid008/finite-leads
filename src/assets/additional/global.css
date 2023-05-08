@@ -111,6 +111,18 @@ input[type="number"]::-webkit-outer-spin-button {
 .main-panel{
     width: calc(100% - 200px) !important;
 }
+.logout{
+    line-height: 0;
+    padding: 0px !important;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.logout:hover{
+    color: var(--primaryColor);
+    cursor: pointer;
+    text-decoration: underline;
+}
 /* .sidebar .sidebar-wrapper li.active>a:not([data-toggle=collapse]):before,
 .sidebar .sidebar-wrapper li.active>a:not([data-toggle=collapse]):after{
     right: 45px !important;
