@@ -206,7 +206,6 @@ router.get('/', authorization, async(req, res)=> {
     }
 })
 
-
 // user to get his data for my Profile component
 router.get('/profile/data', authorization, async(req, res) => {
     try {
@@ -214,6 +213,29 @@ router.get('/profile/data', authorization, async(req, res) => {
             req.user_id
         ])
         return res.status(200).json(data.rows[0])
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message:'Server Error'})
+    }
+})
+
+router.patch('/update-pass', authorization, async(req, res) => {
+    const { old_pass, new_pass } = req.body
+    try {
+        const user = await db.query('SELECT password FROM USERS WHERE _id = $1', [req.user_id])
+        const comparePass = await bcrypt.compare(old_pass, user.rows[0].password)
+
+        if(!comparePass)
+            return res.status(401).json({message: "Old Password is incorrect"})
+        
+        const salt = bcrypt.genSaltSync(10)
+        const encryptedPass = bcrypt.hashSync(new_pass, salt)
+
+        await db.query('UPDATE users SET password = $1 WHERE _id = $2',[
+            encryptedPass, req.user_id
+        ])
+
+        return res.status(200).json({message: "Password Updated"})
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message:'Server Error'})

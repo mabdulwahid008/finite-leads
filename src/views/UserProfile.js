@@ -1,38 +1,8 @@
-/*!
-
-=========================================================
-* Paper Dashboard React - v1.3.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-* Licensed under MIT (https://github.com/creativetimofficial/paper-dashboard-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
+import ImageUpload from "components/imageUpload/ImageUpload";
 import React, { useEffect, useState } from "react";
+import { BsEyeSlash } from "react-icons/bs";
 import { toast } from "react-toastify";
-
-// reactstrap components
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  CardTitle,
-  FormGroup,
-  Form,
-  Input,
-  Row,
-  Col
-} from "reactstrap";
+import { Button, Card, CardHeader, CardBody, CardFooter, CardTitle, FormGroup, Form, Input, Row, Col } from "reactstrap";
 
 function UserProfile() {
 
@@ -45,6 +15,42 @@ function UserProfile() {
   ]
 
   const [mydata, setMyData] = useState(null)
+
+  // for updating new pass
+  const [password, setPassword] = useState({old_pass:'', new_pass:''})
+  const [loading, setLoading] = useState(false)
+
+  const [refresh, setRefresh] = useState(false)
+
+  const [imageUploadPopup, setImageUploadPopup] = useState(false)
+
+  const onChangePassword = ( e ) => {
+    setPassword({...password, [e.target.name]: e.target.value})
+  } 
+
+  const submitChangePassword = async( e ) => {
+    e.preventDefault()
+    setLoading(true)
+
+    const response = await fetch('/user/update-pass', {
+      method:'PATCH',
+      headers:{
+        'Content-Type': 'Application/json',
+        token: localStorage.getItem('token')
+      },
+      body: JSON.stringify(password)
+    })
+    const res = await response.json()
+    if(response.status === 200){
+      toast.success(res.message)
+      setPassword({old_pass:'', new_pass:''})
+      setRefresh(!refresh)
+    }
+    else
+      toast.error(res.message)
+
+    setLoading(false)
+  }
 
   const fetchMyProfile = async() => {
     const response = await fetch('/user/profile/data', {
@@ -63,8 +69,9 @@ function UserProfile() {
   }
 
   useEffect(()=>{
+    setRefresh(false)
     fetchMyProfile()
-  }, [])
+  }, [refresh])
   return (
     <>
       <div className="content">
@@ -76,7 +83,7 @@ function UserProfile() {
               </div>
               <CardBody>
                 <div className="author">
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                  <a style={{cursor:'pointer'}} onClick={() => setImageUploadPopup(true)}>
                     <img style={{backgroundColor:'#f4f3ef'}}
                       alt="..."
                       className="avatar border-gray"
@@ -116,7 +123,7 @@ function UserProfile() {
                 </div>
               </CardFooter>
             </Card>
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle tag="h4">Team Members</CardTitle>
               </CardHeader>
@@ -211,7 +218,7 @@ function UserProfile() {
                   </li>
                 </ul>
               </CardBody>
-            </Card>
+            </Card> */}
           </Col>
           <Col md="8">
             <Card className="card-user">
@@ -219,7 +226,7 @@ function UserProfile() {
                 <CardTitle tag="h5">Edit Profile</CardTitle>
               </CardHeader>
               <CardBody>
-                <Form>
+                <Form onSubmit={submitChangePassword}>
                   <Row>
                     <Col className="pr-1" md="5">
                       <FormGroup>
@@ -248,6 +255,7 @@ function UserProfile() {
                       </FormGroup>
                     </Col>
                   </Row>
+                  {localStorage.getItem('userRole') == 2 && <>
                   <Row>
                     <Col className="pr-1" md="4">
                       <FormGroup>
@@ -288,23 +296,36 @@ function UserProfile() {
                       </FormGroup>
                     </Col>
                   </Row>
+                  </>}
                   <Row>
                     <Col className="pr-1" md="6">
-                      <FormGroup>
+                      <FormGroup style={{position:'relative'}}>
                         <label>Old Password</label>
-                        <Input type="text" />
+                        <Input defaultValue={password.old_pass} id="old_pass" type="password" name="old_pass" required onChange={onChangePassword}/>
+                        <BsEyeSlash style={{position:'absolute', cursor:'pointer', fontSize:18, top:35, right:10}}
+                        onClick={()=>{
+                          const element = document.getElementById("old_pass")
+                          element.type = element.type === "password" ? "text" : "password"
+                        }}
+                        />
                       </FormGroup>
                     </Col>
                     <Col className="pl-1" md="6">
-                      <FormGroup>
+                      <FormGroup style={{position:'relative'}}>
                         <label>New Password</label>
-                        <Input type="text" />
+                        <Input defaultValue={password.new_pass} id="new_pass" type="password" name="new_pass" required onChange={onChangePassword}/>
+                        <BsEyeSlash style={{position:'absolute', cursor:'pointer', fontSize:18, top:35, right:10}}
+                        onClick={()=>{
+                          const element = document.getElementById("new_pass")
+                          element.type = element.type === "password" ? "text" : "password"
+                        }}
+                        />
                       </FormGroup>
                     </Col>
                   </Row>
                   <Row>
                     <div className="update ml-auto mr-auto">
-                      <Button> Update Password</Button>
+                      <Button disabled={loading ? true : false}>{loading ? "Please Wait" :  "Update Password"}</Button>
                     </div>
                   </Row>
                 </Form>
@@ -312,6 +333,7 @@ function UserProfile() {
             </Card>
           </Col>
         </Row>}
+        {imageUploadPopup && <ImageUpload setImageUploadPopup={setImageUploadPopup} setRefresh={setRefresh}/>}
       </div>
     </>
   );

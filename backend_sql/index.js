@@ -14,6 +14,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use(express.static(path.join(__dirname, "client/build")))
+app.use('/profileImages',express.static('profileImages'))
 
 app.use('/user', require('./routes/User'))
 app.use('/sale', require('./routes/Sales'))
