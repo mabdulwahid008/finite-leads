@@ -55,7 +55,6 @@ function Dashboard(props) {
             return (
               <Route
                 path={prop.path}
-                // path={prop.layout + prop.path}
                 component={prop.component}
                 key={key}
               />
@@ -64,7 +63,7 @@ function Dashboard(props) {
         </Switch>
         <Footer fluid />
       </div>
-    </div>
+    </div> 
   );
 }
 

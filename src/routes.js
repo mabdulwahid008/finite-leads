@@ -110,7 +110,6 @@ var routes = [
     name: "Lead Details ",
     icon: "nc-iconnc-diamond",
     component: LeadDetail,
-    layout: "/admin",
     role: [2,3,5],
     child: true,
   },
@@ -119,7 +118,6 @@ var routes = [
     name: "My Leads",
     icon: "nc-icon nc-diamond",
     component: LeadsAssignedToREA,
-    layout: "/admin",
     role: [2], 
   },
   {
@@ -127,7 +125,6 @@ var routes = [
     name: "My Profile",
     icon: "nc-icon nc-badge",
     component: UserProfile,
-    layout: "/admin",
     role: [0,2,3,5], 
   },
   // {

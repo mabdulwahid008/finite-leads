@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Paper Dashboard React - v1.3.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-* Licensed under MIT (https://github.com/creativetimofficial/paper-dashboard-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 import { BsEye } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
@@ -77,16 +59,7 @@ function Header(props) {
     return brandName;
   };
   
-  // const getBrand = () => {
-  //   let brandName = "Default Brand";
-  //   routes.map((prop, key) => {
-  //     if (window.location.href.indexOf(prop.path) !== -1) {
-  //       brandName = prop.name;
-  //     }
-  //     return null;
-  //   });
-  //   return brandName;
-  // };
+  
   const openSidebar = () => {
     document.documentElement.classList.toggle("nav-open");
     sidebarToggle.current.classList.toggle("toggled");
@@ -124,8 +97,6 @@ function Header(props) {
 
   React.useEffect(()=>{
     getNotification()
-    console.log(count);
-    console.log(notfication);
   })
 
   React.useEffect(() => {
@@ -202,7 +173,8 @@ function Header(props) {
               isOpen={dropdownOpen}
               toggle={(e) => dropdownToggle(e)}
             >
-              <DropdownToggle caret nav>
+              <DropdownToggle caret nav style={{position:'relative'}}>
+                <p style={{position:'absolute', top:0, left:0, zIndex:1, background:'#51cbce', color:'#252422', padding:'0px 7px', borderRadius:20, fontSize:12}}>{count}</p>
                 <i className="nc-icon nc-bell-55" />
                 <p>
                   <span className="d-lg-none d-md-block">Notifications</span>
@@ -215,7 +187,7 @@ function Header(props) {
                         <p>{lead.fname}</p><br/>
                         <p style={{fontSize:10}}>{lead.address}</p>
                     </div>
-                    <Link to={`lead-details/${lead._id}`}><BsEye/></Link>
+                    <Link to={`/lead-details/${lead._id}`}><BsEye/></Link>
                   </div>
                 })}
               </DropdownMenu>

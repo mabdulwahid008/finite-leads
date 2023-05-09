@@ -41,8 +41,9 @@ function LeadDetail() {
   }
 
   useEffect(()=>{
+    setLead(null)
     fetchlead()
-  },[])
+  },[_id])
   return (
     <div className='content'>
         <Row>
