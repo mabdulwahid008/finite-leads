@@ -12,8 +12,7 @@ function LeadDetail() {
 
   // lead data after fetching API
   const [lead, setLead] = useState(null)
-  // for showing map for assign based on input[type = "checkbox"]
-  const [isChecked, setIsChecked] = useState(false)
+  const [notFound, setNotFound] = useState(false)
 
   // API Calling
   const fetchlead = async () => {
@@ -36,11 +35,14 @@ function LeadDetail() {
     if(response.status === 200){
         setLead(res[0])
     }
+    else if (response.status === 404)
+      setNotFound(true)
     else
       toast.error(res.message)
   }
 
   useEffect(()=>{
+    setNotFound(false)
     setLead(null)
     fetchlead()
   },[_id])
@@ -49,8 +51,8 @@ function LeadDetail() {
         <Row>
             <Col md='12'>
                 <Card>
-                  {!lead && <Loading />}
-                  {lead && <>
+                  {!lead && !notFound && <Loading />}
+                  {lead && !notFound && <>
                      <CardHeader>
                        <CardTitle tag='h4'>
                           {lead.lead_type == 0 ? 'Seller' : 'Buyer'} Lead
@@ -111,6 +113,9 @@ function LeadDetail() {
                         </div>
                       </CardBody>
                   </>}
+                  {!lead && notFound && <CardHeader>
+                      <CardTitle tag="h4">OOPS! Lead Not Found</CardTitle>
+                    </CardHeader>}
                 </Card>
             </Col>
         </Row>
@@ -118,7 +123,7 @@ function LeadDetail() {
         {/* Comments */}
         <Row>
           <Col md="12 mt-1">
-             {lead && <CommentOnLead lead_id={lead._id}/>}
+             {lead && !notFound && <CommentOnLead lead_id={lead._id}/>}
           </Col>
         </Row>
 
@@ -126,9 +131,11 @@ function LeadDetail() {
         {/* Map */}
         {localStorage.getItem('userRole') != 2 && <Row>
           <Col md="12 mt-1">
-                {lead && <LeadMap lead_id={lead._id} street={lead.address} zipcode={lead.zip_code} state={lead.state}/>}
+                {lead && !notFound && <LeadMap lead_id={lead._id} street={lead.address} zipcode={lead.zip_code} state={lead.state}/>}
           </Col>
         </Row>}
+
+        
 
     </div>
   )

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BsEye } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -76,28 +76,34 @@ function Header(props) {
   const [count, setCount] = React.useState(0)
   const [notfication, setNotification] = React.useState([])
 
-  const getNotification = async() => {
+  const getNotification = () => {
+    setInterval(async()=>{
     const response = await fetch('/lead/notfication',{
       method:'GET',
       headers:{
         'Content-Type':'Application/json',
         token: localStorage.getItem('token')
       },
-    })
-    const res = await response.json()
-    if(response.status === 200){
-      setCount(res.notViewd)
-      if(res.leads.length > notfication.length){
-        setNotification(res.leads)
+      })
+      const res = await response.json()
+      if(response.status === 200){
+        setCount(res.notViewd)
+        if(res.leads.length > notfication.length){
+          setNotification(res.leads)
+        }
       }
-    }
-    else 
-      toast.error(res.message)
+      else 
+        toast.error(res.message)
+  }, 2000)  
+
   }
 
-  React.useEffect(()=>{
-    getNotification()
-  })
+  useEffect(()=>{
+    // setInterval(() => {
+      getNotification()
+    // }, 1000)
+    
+  }, [])
 
   React.useEffect(() => {
     window.addEventListener("resize", updateColor.bind(this));
@@ -174,13 +180,13 @@ function Header(props) {
               toggle={(e) => dropdownToggle(e)}
             >
               <DropdownToggle caret nav style={{position:'relative'}}>
-                <p style={{position:'absolute', top:0, left:0, zIndex:1, background:'#51cbce', color:'#252422', padding:'0px 7px', borderRadius:20, fontSize:12}}>{count}</p>
+                {count > 0 && <p style={{position:'absolute', top:0, left:0, zIndex:1, background:'#51cbce', color:'#252422', padding:'0px 7px', borderRadius:20, fontSize:12}}>{count}</p>}
                 <i className="nc-icon nc-bell-55" />
                 <p>
                   <span className="d-lg-none d-md-block">Notifications</span>
                 </p>
               </DropdownToggle>
-              <DropdownMenu right>
+              {notfication.length > 0 && <DropdownMenu right>
                 {notfication.map((lead)=>{
                   return <div className="notification" key={lead._id} style={{backgroundColor: `${lead.viewed === false ? '#f2f3ef': '#fff'}`}}>
                     <div>
@@ -190,7 +196,7 @@ function Header(props) {
                     <Link to={`/lead-details/${lead._id}`}><BsEye/></Link>
                   </div>
                 })}
-              </DropdownMenu>
+              </DropdownMenu>}
             </Dropdown>
             <NavItem>
               <Link to="/my-profile">

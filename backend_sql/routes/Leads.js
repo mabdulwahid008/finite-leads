@@ -41,6 +41,16 @@ router.get('/my-leads/:_id', authorization, realEstateAutorization, async(req, r
         const leads = await db.query('SELECT * FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE lead_id = $1 AND realEstateAgent_id = $2',[
             req.params._id, req.user_id
         ])
+        // restricting user to not check other leads which are not assigned to him, other logic is on frontend
+        if(leads.rows.length === 0)
+            return res.status(404).json({})
+
+        // if assigned lead found then updating viewed status
+        if(!leads.rows[0].viewed)
+        await db.query('UPDATE lead_assigned_to SET viewed = $1 WHERE lead_id = $2 AND realEstateAgent_id = $3',[
+            true, req.params._id, req.user_id
+        ]) 
+           
         return res.status(200).json(leads.rows)
     } catch (error) {
         console.log(error.message);
