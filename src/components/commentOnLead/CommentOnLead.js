@@ -210,7 +210,7 @@ function CommentOnLead({ lead_id }) {
                 {comments && comments.length > 0 && comments.map((comment)=>{
                     return <FormGroup key={comment.lead_id} style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
                         <img src={`${comment.profile_image ? `http://localhost:5000/${comment.profile_image}` : require('../../assets/img/profile.png')}`} style={{width:50, height:50, borderRadius:50, border:'1px solid #25242293'}}/>
-                        <div style={{display:'flex', flexDirection:'column', width:'95%'}}>
+                        <div style={{display:'flex', flexDirection:'column', width:'95%', padding:'0px 5px'}}>
                             <div className='comment-header'>
                                 <label>{comment.name}</label>
                                 <label>{comment.lead_status}</label>
