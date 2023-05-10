@@ -32,6 +32,7 @@ function LeadDetail() {
       }
     })
     const res = await response.json()
+
     if(response.status === 200){
         setLead(res[0])
     }
@@ -40,6 +41,7 @@ function LeadDetail() {
     else
       toast.error(res.message)
   }
+
 
   useEffect(()=>{
     setNotFound(false)

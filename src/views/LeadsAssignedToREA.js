@@ -138,13 +138,13 @@ function LeadsAssignedToREA() {
                             })}
                         </tbody>
                     </Table>
-                    <div style={{display:'flex', justifyContent:'space-between'}}>
-                        <div>
+                    <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+                        <div className='dahboard-table'>
                             <Button className='next-prev' disabled={page === 1 ? true : false} onClick={()=>{if(page !== 1) setPage(page-1)}}>Prev</Button>
                             <Button className='next-prev' disabled={totalRecord > 0 && page < Math.ceil(totalRecord / 1) ? false : true} onClick={()=>{if(totalRecord > 0 && page < Math.ceil(totalRecord / 1)) setPage(page+1)}}>Next</Button>
                         </div>
                         <div>
-                            <p>Page: {page} / Total Leads: {totalRecord}</p>
+                            <p  className='text-muted' style={{fontSize:12}}>Page: {page} / Total Leads: {totalRecord}</p>
                         </div>
                     </div>
                     </>}

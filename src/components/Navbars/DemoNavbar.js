@@ -90,6 +90,7 @@ function Header(props) {
         setCount(res.notViewd)
         if(res.leads.length > notfication.length){
           setNotification(res.leads)
+          // toast.success("New lead assined.")
         }
       }
       else 
@@ -99,10 +100,8 @@ function Header(props) {
   }
 
   useEffect(()=>{
-    // setInterval(() => {
-      getNotification()
-    // }, 1000)
-    
+    if(localStorage.getItem('userRole') == 2)
+          getNotification() 
   }, [])
 
   React.useEffect(() => {
@@ -118,7 +117,6 @@ function Header(props) {
     }
   }, [location]);
   return (
-    // add or remove classes depending if we are on full-screen-maps page or not
     <Navbar style={{zIndex:1}}
       color={
         props.location.pathname.indexOf("full-screen-maps") !== -1
@@ -174,7 +172,7 @@ function Header(props) {
                 </p>
               </Link>
             </NavItem> */}
-            <Dropdown
+           {localStorage.getItem('userRole') == 2 && <Dropdown
               nav
               isOpen={dropdownOpen}
               toggle={(e) => dropdownToggle(e)}
@@ -197,7 +195,7 @@ function Header(props) {
                   </div>
                 })}
               </DropdownMenu>}
-            </Dropdown>
+            </Dropdown>}
             <NavItem>
               <Link to="/my-profile">
                 <img  style={{marginTop:10,height:30, width:30, objectFit:'cover', borderRadius:50, border:'1px solid #25242293',}}

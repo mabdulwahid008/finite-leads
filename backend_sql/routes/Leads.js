@@ -79,7 +79,7 @@ router.get('/notfication', authorization, realEstateAutorization, async(req, res
 router.get('/:_id', authorization, async(req, res) => {
     try {
         const leads = await db.query('SELECT * FROM leads WHERE _id = $1', [req.params._id])
-        return res.status(200).json(leads.rows[0])
+        return res.status(200).json(leads.rows)
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
@@ -121,7 +121,6 @@ router.post('/assign', authorization, masterOrAdminAuthorization, async(req, res
         return res.status(500).json({message: 'Server Error'})
     }
 })
-
 
 // for RE Agent dashborad stats
 router.get('/agent/dashboard/:year/:month', authorization, realEstateAutorization, async(req, res)=>{
@@ -200,10 +199,10 @@ router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEs
         else if(req.params.year != 'null'  && req.params.month != 'null' && req.params.lead_status != 99){
                 const [thisMonth, toMonth] = getTimePeriod(req.params.year, req.params.month)
 
-                totalCount = await db.query('SELECT count(*) FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4', [
+                totalCount = await db.query('SELECT count(*) FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4', [
                     req.user_id, thisMonth, toMonth, req.params.lead_status
                 ]);
-                leads = await db.query('SELECT count(leads._id), leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on ORDER BY create_at DESC LIMIT $5 OFFSET $6', [
+                leads = await db.query('SELECT count(leads._id), leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3 AND LEAD_ASSIGNED_TO.current_status = $4 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on ORDER BY create_at DESC LIMIT $5 OFFSET $6', [
                     req.user_id, thisMonth, toMonth, req.params.lead_status, record, offset
                 ]);
         }
@@ -219,10 +218,10 @@ router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEs
         }
         //  only when status is specified
         else if(req.params.year == 'null' && req.params.month == 'null' && req.params.lead_status != 99){
-            totalCount = await db.query('SELECT count(*) FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND LEAD_ASSIGNED_TO.current_status = $2', [
+            totalCount = await db.query('SELECT count(*) FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND LEAD_ASSIGNED_TO.current_status = $2', [
                 req.user_id, req.params.lead_status
             ]);
-            leads = await db.query('SELECT count(leads._id), leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id INNER JOIN LEAD_COMMENTS ON LEADS._id = LEAD_COMMENTS.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND LEAD_ASSIGNED_TO.current_status = $2 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on ORDER BY create_at DESC LIMIT $3 OFFSET $4', [
+            leads = await db.query('SELECT count(leads._id), leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, create_at as assigned_on FROM LEADS INNER JOIN LEAD_ASSIGNED_TO ON LEADS._id = LEAD_ASSIGNED_TO.lead_id WHERE LEAD_ASSIGNED_TO.realEstateAgent_id = $1 AND LEAD_ASSIGNED_TO.current_status = $2 GROUP BY leads._id, fname, lname, current_status, working_status, lead_type, address, state, zip_code, phone, recording_link, beds, baths, additional_info, assigned_on ORDER BY create_at DESC LIMIT $3 OFFSET $4', [
                 req.user_id, req.params.lead_status, record, offset
             ]);
         }
