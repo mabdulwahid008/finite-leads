@@ -300,11 +300,17 @@ router.post('/comment', authorization, realEstateAutorization, async(req, res) =
 })
 
 // for addmin to get cooments of lead of all real estate agents
-router.get('/comments/:_id', authorization, masterOrAdminAuthorization, async(req, res) => {
+router.get('/comments/:_id/:agent_id', authorization, masterOrAdminAuthorization, async(req, res) => {
     try {
-        const comments = await db.query('SELECT lead_id, content, lead_status, name, profile_image FROM LEAD_COMMENTS INNER JOIN USERS ON LEAD_COMMENTS.realEstateAgent_id = USERS._id WHERE lead_id = $1',[
-            req.params._id
-        ])
+        let comments;
+        if(req.params.agent_id == 'null')
+            comments = await db.query('SELECT lead_id, content, lead_status, name, profile_image FROM LEAD_COMMENTS INNER JOIN USERS ON LEAD_COMMENTS.realEstateAgent_id = USERS._id WHERE lead_id = $1',[
+                req.params._id
+            ])
+        else
+            comments = await db.query('SELECT lead_id, content, lead_status, name, profile_image FROM LEAD_COMMENTS INNER JOIN USERS ON LEAD_COMMENTS.realEstateAgent_id = USERS._id WHERE lead_id = $1 AND realEstateAgent_id = $2',[
+                req.params._id, req.params.agent_id
+            ])
         return res.status(200).json(comments.rows)
     } catch (error) {
         console.log(error.message);
@@ -315,9 +321,13 @@ router.get('/comments/:_id', authorization, masterOrAdminAuthorization, async(re
 // for admin to check whose thus lead assigned to and for filtering comments
 router.get('/assined/:_id', authorization, masterOrAdminAuthorization, async(req, res) => {
     try {
-        
+        const agents = await db.query('SELECT  _id, name FROM lead_assigned_to INNER JOIN USERS ON lead_assigned_to.realEstateAgent_id = USERS._id WHERE lead_id = $1 GROUP BY _id, realEstateAgent_id ORDER BY realEstateAgent_id DESC',[
+            req.params._id
+        ])
+        return res.status(200).json(agents.rows)
     } catch (error) {
-        
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})        
     }
 })
 

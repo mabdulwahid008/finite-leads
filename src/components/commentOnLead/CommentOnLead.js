@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input } from 'reactstrap'
+import ReactSelect from 'react-select'
+import { reactStyles } from 'assets/additional/reactStyles'
 
 function CommentOnLead({ lead_id }) {
 
@@ -11,6 +13,8 @@ function CommentOnLead({ lead_id }) {
 
     // for Admin to Read
     const [comments, setComments] = useState(null) 
+    const [agentsWhomLeadAssignedTo, setAgentsWhomLeadAssignedTo] = useState(null) 
+    const [selectedAgent, setSelectedAgent] = useState(null) 
 
     const onChange = (e) => {
         setComment({...comment, [e.target.name]: e.target.value})
@@ -84,7 +88,7 @@ function CommentOnLead({ lead_id }) {
     ]
 
     const fetchComments = async() => {
-        const response = await fetch(`/lead/comments/${lead_id}`, {
+        const response = await fetch(`/lead/comments/${lead_id}/${selectedAgent}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -103,13 +107,42 @@ function CommentOnLead({ lead_id }) {
             toast.error(res.message)
     }
 
+
+    const getAgentsWhomLeadAssignedTo = async () => {
+        const response = await fetch(`/lead/assined/${lead_id}`, {
+            method:'GET',
+            headers:{
+                'Content_Type': 'Application/json',
+                token:localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            if(res.length > 0){
+                let arr = [{value:null, label: 'All'}]
+                for (let i = 0; i < res.length; i++) {
+                    let obj = {
+                        value: res[i]._id,
+                        label: res[i].name
+                    }
+                    arr.push(obj)
+                }
+                setAgentsWhomLeadAssignedTo(arr)
+            }
+        }
+        else
+            toast.error(res.message)
+    }
+
     useEffect(()=>{
         if(localStorage.getItem('userRole') == 2)
             checkIsHerejectAlready()
             
-        if(localStorage.getItem('userRole') != 2)
+        if(localStorage.getItem('userRole') != 2){
             fetchComments()
-    }, [comment])
+            getAgentsWhomLeadAssignedTo()
+        }
+    }, [comment, selectedAgent])
 
   return (
     <>
@@ -164,13 +197,17 @@ function CommentOnLead({ lead_id }) {
       </Card>}
 
     {/* for reading */}
-    {comments && comments.length > 0 && <Card>
+    {agentsWhomLeadAssignedTo &&  <Card>
         <CardHeader>
             <CardTitle tag="h4">Comments By RE Agents</CardTitle>
+           <FormGroup style={{width:200}}>
+                <label>Filter by RE Agents</label>
+                {<ReactSelect styles={reactStyles} options={agentsWhomLeadAssignedTo} onChange={(option)=>setSelectedAgent(option.value)}/>}
+           </FormGroup>
         </CardHeader>
         <CardBody>
             <div className='comments-box'>
-                {comments.map((comment)=>{
+                {comments && comments.length > 0 && comments.map((comment)=>{
                     return <FormGroup key={comment.lead_id} style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
                         <img src={`${comment.profile_image ? `http://localhost:5000/${comment.profile_image}` : require('../../assets/img/profile.png')}`} style={{width:50, height:50, borderRadius:50, border:'1px solid #25242293'}}/>
                         <div style={{display:'flex', flexDirection:'column', width:'95%'}}>
@@ -178,7 +215,7 @@ function CommentOnLead({ lead_id }) {
                                 <label>{comment.name}</label>
                                 <label>{comment.lead_status}</label>
                             </div>
-                            <textarea value={comment.content} readOnly style={{height:70}}></textarea>
+                            <textarea value={comment.content} readOnly id='commented'></textarea>
                         </div>
                     </FormGroup>
                 })}

@@ -92,6 +92,9 @@ textarea:read-only{
 }
 
 .comments-box{
+    max-height: 300px;
+    overflow: auto;
+    margin-bottom: 10px;
     /* background-color: #efefef; */
     /* padding: 10px; */
     /* border-radius: 10px; */
@@ -106,6 +109,6 @@ textarea:read-only{
 }
 
 #commented{
-    min-height: 40px !important;
+    height: 50px !important;
     max-height: auto !important;
 }
