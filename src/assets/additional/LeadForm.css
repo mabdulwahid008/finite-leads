@@ -92,14 +92,17 @@ textarea:read-only{
 }
 
 .comments-box{
-    background-color: #efefef;
-    padding: 10px;
-    border-radius: 10px;
+    /* background-color: #efefef; */
+    /* padding: 10px; */
+    /* border-radius: 10px; */
 }
 .comment-header{
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+.comment-header ~ textarea{
+    background-color: #efefef; 
 }
 
 #commented{

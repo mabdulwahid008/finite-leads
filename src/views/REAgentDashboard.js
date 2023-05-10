@@ -75,7 +75,6 @@ function REAgentDashboard() {
     })
     const res = await response.json()
     if(response.status === 200){
-      console.log(res);
       setLeads(res.data)
       setTotalRecord(res.totalRows)
     }

@@ -11,8 +11,8 @@ const router = express.Router();
 router.post('/', async(req, res) => {
     const { lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName } = req.body;
     try {
-        await db.query('INSERT INTO leads(lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14 )',[
-            lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName
+        await db.query('INSERT INTO leads(lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName, created_on) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',[
+            lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName, dateWithoutTime
         ])
         return res.status(200).json({message: 'Lead added successfully.'})
     } catch (error) {
@@ -23,12 +23,34 @@ router.post('/', async(req, res) => {
 
 // for getting leads
 router.get('/', authorization, masterOrAdminAuthorization, async(req, res) => {
+    const { year, month, page } = req.query
     try {
-        const leads = await db.query('SELECT * FROM leads')
-        return res.status(200).json(leads.rows.sort(function(a, b) {
-            if (a._id !== b._id) 
-                return b._id - a._id 
-            }))
+        const record = 1;
+        const pagee = parseInt(page) ;
+        const offset = (pagee - 1) * record;
+            
+        let leads;
+        let totalCount;
+        // default call
+        if(year == 'null' && month == 'null'){
+            totalCount = await db.query('Select count(*) FROM leads')
+            leads = await db.query('SELECT * FROM leads ORDER BY _id DESC LIMIT $1 OFFSET $2',[
+                record, offset
+            ])
+        }
+        // time period is specified
+        else if(year != 'null' && month != 'null'){
+            const [thisMonth, toMonth] = getTimePeriod(year, month)
+            totalCount = await db.query('Select count(*) FROM leads WHERE created_on >= $1 AND created_on <= $2',[
+                thisMonth, toMonth
+            ])
+            leads = await db.query('SELECT * FROM leads WHERE created_on >= $1 AND created_on <= $2 ORDER BY _id DESC LIMIT $3 OFFSET $4',[
+                thisMonth, toMonth, record, offset
+            ])
+        }
+        else{}
+
+        return res.status(200).json({leads: leads.rows, totalRows: totalCount.rows[0].count})
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
@@ -58,6 +80,7 @@ router.get('/my-leads/:_id', authorization, realEstateAutorization, async(req, r
     }
 })
 
+// for Re Agent to get notifications 
 router.get('/notfication', authorization, realEstateAutorization, async(req, res) => {
     try {
         const leads = await db.query('SELECT _id,fname, address, viewed, create_at FROM leads INNER JOIN lead_assigned_to ON leads._id = lead_assigned_to.lead_id WHERE realEstateAgent_id = $1 ORDER BY create_at DESC', [
@@ -75,10 +98,13 @@ router.get('/notfication', authorization, realEstateAutorization, async(req, res
     }
 })
 
-// get single lead by id
-router.get('/:_id', authorization, async(req, res) => {
+// get single lead by id admin
+router.get('/:_id', authorization, masterOrAdminAuthorization, async(req, res) => {
     try {
         const leads = await db.query('SELECT * FROM leads WHERE _id = $1', [req.params._id])
+        if(leads.rows.length === 0)
+            return res.status(404).json({})
+        
         return res.status(200).json(leads.rows)
     } catch (error) {
         console.log(error.message);
@@ -130,8 +156,8 @@ router.get('/agent/dashboard/:year/:month', authorization, realEstateAutorizatio
         const leads = await db.query('SELECT * FROM lead_assigned_to WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
             req.user_id, thisMonth, toMonth
         ])
-        let accepted, rejected, followUp, onContract, listed, sold, neutral
-        if(leads.rows.length > 0){
+        let accepted = [], rejected = [], followUp = [], onContract = [], listed = [], sold = [], neutral = []
+        if(leads.rows && leads.rows.length > 0){
             accepted = leads.rows.filter((lead)=> lead.current_status == 0)
             rejected = leads.rows.filter((lead)=> lead.current_status == 1)
             listed = leads.rows.filter((lead)=> lead.current_status == 2)
@@ -276,7 +302,7 @@ router.post('/comment', authorization, realEstateAutorization, async(req, res) =
 // for addmin to get cooments of lead of all real estate agents
 router.get('/comments/:_id', authorization, masterOrAdminAuthorization, async(req, res) => {
     try {
-        const comments = await db.query('SELECT lead_id, content, lead_status, name FROM LEAD_COMMENTS INNER JOIN USERS ON LEAD_COMMENTS.realEstateAgent_id = USERS._id WHERE lead_id = $1',[
+        const comments = await db.query('SELECT lead_id, content, lead_status, name, profile_image FROM LEAD_COMMENTS INNER JOIN USERS ON LEAD_COMMENTS.realEstateAgent_id = USERS._id WHERE lead_id = $1',[
             req.params._id
         ])
         return res.status(200).json(comments.rows)

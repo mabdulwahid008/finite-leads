@@ -95,7 +95,8 @@ CREATE TABLE LEADS(
     baths FLOAT NOT NULL,
     price VARCHAR(100) NOT NULL,
     additional_info VARCHAR(500),
-    agentName VARCHAR(100) NOT NULL
+    agentName VARCHAR(100) NOT NULL,
+    created_on VARCHAR(10) NOT NULL
 )
 
 CREATE TABLE LEAD_ASSIGNED_TO(

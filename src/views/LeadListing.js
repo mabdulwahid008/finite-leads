@@ -1,16 +1,33 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { Card, CardBody, CardHeader, CardTitle, Col, Row, Table } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row, Table } from 'reactstrap'
 import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
 import { Link } from 'react-router-dom'
 
 function LeadListing() {
     const [leads, setLeads] = useState(null)
+    const [yearMonth, setYearMonth] = useState([null, null])
+
+    // pagination
+    const [totalRecord, setTotalRecord] = useState(null)
+    const [page, setPage] = useState(1)
+
+    const monthChange = (e) => {
+        if(e.target.value == ''){
+            setLeads(null)
+            setYearMonth([null, null])
+        }
+        else{
+            let date = e.target.value.split('-')
+            setYearMonth([date[0], date[1]])
+            setLeads(null)
+        }
+    }
 
     
     const fetchLeads = async() => {
-        const response = await fetch('/lead',{
+        const response = await fetch(`/lead?year=${yearMonth[0]}&month=${yearMonth[1]}&page=${page}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -18,15 +35,18 @@ function LeadListing() {
             }
         })
         const res = await response.json()
-        if(response.status === 200)
-            setLeads(res)
+        if(response.status === 200){
+            setLeads(res.leads)
+            setTotalRecord(res.totalRows)
+        }
         else
             toast.error(res.message)
     }
 
     useEffect(() => {
-      fetchLeads()
-    }, [])
+        setLeads(null)
+        fetchLeads()
+    }, [page, yearMonth])
     
   return (
     <div className='content'>
@@ -37,9 +57,14 @@ function LeadListing() {
                         <CardTitle tag='h4'>Leads</CardTitle>
                     </CardHeader>
                     <CardBody>
+                        <FormGroup style={{width: 200}}>
+                            <label>Select Month</label>
+                            <Input type="month" onChange={monthChange}/>
+                        </FormGroup>
                         {!leads && <Loading />}
                         {leads && leads.length === 0 && <p>No Leads yet</p>}
-                        {leads && leads.length !== 0 && <Table>
+                        {leads && leads.length !== 0 && <>
+                        <Table>
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -68,7 +93,17 @@ function LeadListing() {
                                     </tr>
                                 })}
                             </tbody>
-                        </Table>}
+                        </Table>
+                        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+                            <div className='dahboard-table'>
+                                <Button className='next-prev' disabled={page === 1 ? true : false} onClick={()=>{if(page !== 1) setPage(page-1)}}>Prev</Button>
+                                <Button className='next-prev' disabled={totalRecord > 0 && page < Math.ceil(totalRecord / 1) ? false : true} onClick={()=>{if(totalRecord > 0 && page < Math.ceil(totalRecord / 1)) setPage(page+1)}}>Next</Button>
+                            </div>
+                            <div>
+                                <p  className='text-muted' style={{fontSize:12}}>Page: {page} / Total Leads: {totalRecord}</p>
+                            </div>
+                        </div>
+                        </>}
                     </CardBody>
                 </Card>
             </Col>

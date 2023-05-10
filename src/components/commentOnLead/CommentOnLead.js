@@ -148,12 +148,15 @@ function CommentOnLead({ lead_id }) {
             </Form>}
             {myComments && myComments.length > 0 && <div className='comments-box mt-2'>
                 {myComments.map((comment)=> {
-                    return <FormGroup key={comment._id} style={{display:'flex', flexDirection:'column'}}>
-                        <div className='comment-header'>
-                            <label>You:</label>
-                            <label>{comment.lead_status}</label>
+                    return <FormGroup key={comment._id} style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                        <img src={`${localStorage.getItem('profileImage') != 'null' ? `http://localhost:5000/${comment.profile_image}` : require('../../assets/img/profile.png')}`} style={{width:50, height:50, borderRadius:50, border:'1px solid #25242293'}}/>
+                        <div style={{display:'flex', flexDirection:'column', width:'95%'}}>
+                            <div className='comment-header'>
+                                <label>You:</label>
+                                <label>{comment.lead_status}</label>
+                            </div>
+                            <textarea value={comment.content} readOnly id='commented'></textarea>
                         </div>
-                        <textarea value={comment.content} readOnly id='commented'></textarea>
                     </FormGroup>    
                 })}
             </div>}
@@ -163,17 +166,20 @@ function CommentOnLead({ lead_id }) {
     {/* for reading */}
     {comments && comments.length > 0 && <Card>
         <CardHeader>
-            <CardTitle tag="h4">Comments By RE Agent</CardTitle>
+            <CardTitle tag="h4">Comments By RE Agents</CardTitle>
         </CardHeader>
         <CardBody>
             <div className='comments-box'>
                 {comments.map((comment)=>{
-                    return <FormGroup key={comment.lead_id} style={{display:'flex', flexDirection:'column'}}>
-                        <div className='comment-header'>
-                            <label>{comment.name}</label>
-                            <label>{comment.lead_status}</label>
+                    return <FormGroup key={comment.lead_id} style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                        <img src={`${comment.profile_image ? `http://localhost:5000/${comment.profile_image}` : require('../../assets/img/profile.png')}`} style={{width:50, height:50, borderRadius:50, border:'1px solid #25242293'}}/>
+                        <div style={{display:'flex', flexDirection:'column', width:'95%'}}>
+                            <div className='comment-header'>
+                                <label>{comment.name}</label>
+                                <label>{comment.lead_status}</label>
+                            </div>
+                            <textarea value={comment.content} readOnly style={{height:70}}></textarea>
                         </div>
-                        <textarea value={comment.content} readOnly style={{height:70}}></textarea>
                     </FormGroup>
                 })}
             </div>
