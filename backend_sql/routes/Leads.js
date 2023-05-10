@@ -312,4 +312,13 @@ router.get('/comments/:_id', authorization, masterOrAdminAuthorization, async(re
     }
 })
 
+// for admin to check whose thus lead assigned to and for filtering comments
+router.get('/assined/:_id', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+})
+
 module.exports = router
