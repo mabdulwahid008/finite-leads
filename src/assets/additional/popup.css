@@ -32,7 +32,11 @@
 .add-user-popup{
     width: 60%;
 }
-
+.add-areas-popup{
+    top: -20% !important;
+    left: -30%;
+    width: 50% !important;
+}
 
 /* group detail popup */
 .group-details{

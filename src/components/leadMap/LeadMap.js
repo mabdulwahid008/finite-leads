@@ -131,6 +131,21 @@ function LeadMap({lead_id, street, zipcode, state}) {
       marker.bindPopup(reAgents[i].name.split(' ')[0]);
     }
   }
+
+  const getServiceAreas = async(id) => {
+    const response = await fetch(`/user/service-areas/${id}`,{
+      method:'GET',
+      headers:{
+        'Content-Type': 'Apllication/json',
+        token: localStorage.getItem('token')
+      }
+    })
+    const res = await response.json()
+    if(response.status === 200)
+          return res;
+    else
+        return null
+  }
   
   const handleMarkerClick = async(agentId, lat, long) => {
     // removing areas of previous selected agent
@@ -153,22 +168,21 @@ function LeadMap({lead_id, street, zipcode, state}) {
     // for assigning lead for assign lead btn
     setSelectedAgent(agent[0])
     
+    // get agents service areas
+    const areas = await getServiceAreas(agentId)
+
     // for agent areas 
     let circles = []
 
-    let areas = agent[0].service_areas.split(' | ')
+    if(areas)
+        for (let i = 0; i < areas.length; i++) {
+          let newCircle = L.circle([areas[i].lat, areas[i].long], {
+            radius: agent[0].service_radius * 1609.34, 
+            color: 'red'
+          }).addTo(map.current);
+          circles.push(newCircle)
+        }
 
-    for (let i = 0; i < areas.length; i++) {
-      let area = areas[i].split(',')
-      let lat = parseFloat(area[0].replace('[', ''))
-      let long = parseFloat(area[1].replace(']', ''))
-
-      let newCircle = L.circle([lat, long], {
-        radius: agent[0].service_radius * 1609.34, 
-        color: 'red'
-      }).addTo(map.current);
-      circles.push(newCircle)
-    }
     agentAreasCircleRef.current = circles
   }
 

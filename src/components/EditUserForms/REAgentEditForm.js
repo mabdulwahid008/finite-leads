@@ -1,5 +1,6 @@
 import { reactStyles } from 'assets/additional/reactStyles'
 import Loading from 'components/Loading/Loading'
+import AddREAgentAreas from 'components/addREAgentAreas/AddREAgentAreas'
 import React, { useEffect, useState } from 'react'
 import ReactSelect from 'react-select'
 import { toast } from 'react-toastify'
@@ -8,6 +9,8 @@ import { Button, Col, Form, FormGroup, Input, Row } from 'reactstrap'
 function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading}) {
     // reperesentative options
     const [repOptions, setRepOptions] = useState(null)
+
+    const [areasPopup, setAreasPopup] = useState(false)
 
     // for RE Form's rep
     const fetchUsers = async() =>{
@@ -39,7 +42,9 @@ function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading})
   return (
     <>
     {!repOptions && <Loading/>}
-    {repOptions && <Form onSubmit={onSubmitEditAgentData}>
+    {repOptions && <>
+    <Button className='add-areas-btn' onClick={()=>setAreasPopup(true)}>Add Areas</Button>
+    <Form onSubmit={onSubmitEditAgentData} style={{position:'relative'}}>
         <Row>
             <Col className='pr-1' md='6'>
                 <FormGroup>
@@ -148,8 +153,10 @@ function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading})
                 </FormGroup>
             </Col>
         </Row>
-        <Button disabled={loading? true : false}>{`${loading? "Please Wait":"Update"}`}</Button>
-    </Form>}
+        <Button type='submit' disabled={loading? true : false}>{`${loading? "Please Wait":"Update"}`}</Button>
+    </Form>
+    </>}
+    {areasPopup && <AddREAgentAreas setAreasPopup={setAreasPopup} areas={agentData.service_areas}/>}
     </>
   )
 }

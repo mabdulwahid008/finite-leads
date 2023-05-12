@@ -258,4 +258,39 @@ router.patch('/upload-profile', authorization, uploadProfle.single('image'), asy
 })
 
 
+// get Service Areas of RE AGENT 
+router.get('/service-areas/:id', authorization, async(req, res) => {
+    try {
+        const areas = await db.query('SELECT lat, long FROM SERVICE_AREAS WHERE realEstateAgent_id = $1', [
+            req.params.id
+        ]) 
+        return res.status(200).json(areas.rows)
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'}) 
+    }
+})
+
+// admin to update service areas of RE agent
+router.patch('/service-areas', authorization, masterOrAdminAuthorization, async(req, res) => {
+    const { agentId, areas } = req.body
+    try {
+        // removing pervious areas
+        await db.query('DELETE FROM SERVICE_AREAS WHERE realEstateAgent_id = $1',[
+            agentId
+        ])
+        // updating new areas which arw modified on frontend
+        for (let i = 0; i < areas.length; i++) {
+            await db.query('INSERT INTO SERVICE_AREAS(lat, long, realEstateAgent_id) VALUES ($1, $2, $3)',[
+                areas[i].lat, areas[i].long, agentId
+            ])
+        }
+        return res.status(200).json({message: 'Service Areas Updated'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+
 module.exports = router
