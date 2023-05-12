@@ -1,34 +1,31 @@
+import Loading from 'components/Loading/Loading'
 import React, { useEffect, useState } from 'react'
 import { AiOutlinePlusCircle } from 'react-icons/ai'
 import { FaTrash } from 'react-icons/fa'
 import { RxCross1 } from 'react-icons/rx'
+import { toast } from 'react-toastify'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row } from 'reactstrap'
 
-function AddREAgentAreas({ setAreasPopup, areas }) {
-    const [serviceAreas, setServiceAreas] = useState([])
+function AddREAgentAreas({ setAreasPopup, agentId }) {
+    const [serviceAreas, setServiceAreas] = useState(null)
     const [refresh, setRefresh] = useState(false)
     const [loading, setLoading] = useState(false)
     const [newArea, setNewArea] = useState({lat:'', long:''})
 
-    
-    let areasArr = []
-
-    useEffect(()=>{
-        if(areas){
-            const area = areas.split(' | ')
-            for (let i = 0; i < area.length; i++) {
-                let obj = {
-                    lat: area[i].split(', ')[0].replace('[', ''),
-                    long: area[i].split(', ')[1].replace(']', '')
-                }
-                areasArr.push(obj)
-            }
-            setServiceAreas(areasArr)
-        }
-    }, [])
-
-    useEffect(()=>{
-    }, [refresh])
+    const getServiceAreas = async() => {
+        const response = await fetch(`/user/service-areas/${agentId}`,{
+          method:'GET',
+          headers:{
+            'Content-Type': 'Apllication/json',
+            token: localStorage.getItem('token')
+          }
+        })
+        const res = await response.json()
+        if(response.status === 200)
+              setServiceAreas(res)
+        else
+            return null
+    }
 
     const addNewArea = (e) => {
         e.preventDefault()
@@ -50,15 +47,40 @@ function AddREAgentAreas({ setAreasPopup, areas }) {
         setAreasPopup(false)
     }
 
-    const updateAreas = () => {
+    const updateAreas = async() => {
         setLoading(true)
-        let areas = ''
-        for (let i = 0; i < serviceAreas.length; i++) {
-            areas += `[${serviceAreas[i].lat}, ${serviceAreas[i].long}] | `
+        let data = {
+            agentId: agentId,
+            areas: serviceAreas
         }
-        console.log(areas);
+        const response = await fetch(`/user/service-areas`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            },
+            body: JSON.stringify(data)
+          })
+
+          const res = await response.json()
+          if(response.status === 200){
+                setAreasPopup(false)
+                toast.success(res.message)
+            }
+          else
+              toast.error(res.message)
+
         setLoading(false)
     }
+
+    
+    useEffect(()=>{
+        getServiceAreas()
+    }, [])
+
+    useEffect(()=>{
+    }, [refresh])
+
   return (
     <div className='popup'> 
       <div className='overlay'></div>
@@ -68,7 +90,9 @@ function AddREAgentAreas({ setAreasPopup, areas }) {
                 <RxCross1 onClick={closePopup}/>
             </CardHeader>
             <CardBody>
-            {serviceAreas.length > 0 && <div style={{maxHeight:150, overflow:'auto', marginBottom:30}}>
+            {!serviceAreas && <Loading />}
+            {serviceAreas && serviceAreas.length === 0 && <p>Agent have no any service area.</p>}
+            {serviceAreas && serviceAreas.length > 0 && <div style={{maxHeight:150, overflow:'auto', marginBottom:30}}>
                 {serviceAreas.map((area, index)=>{
                 return  <Row style={{width:'99%', position:'relative', marginBottom:5}} key={index}>
                                 <Col className='pr-1' md="6">

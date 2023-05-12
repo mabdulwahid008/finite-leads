@@ -272,7 +272,7 @@ router.get('/service-areas/:id', authorization, async(req, res) => {
 })
 
 // admin to update service areas of RE agent
-router.patch('/service-areas', authorization, masterOrAdminAuthorization, async(req, res) => {
+router.post('/service-areas', authorization, masterOrAdminAuthorization, async(req, res) => {
     const { agentId, areas } = req.body
     try {
         // removing pervious areas

@@ -156,7 +156,7 @@ function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading})
         <Button type='submit' disabled={loading? true : false}>{`${loading? "Please Wait":"Update"}`}</Button>
     </Form>
     </>}
-    {areasPopup && <AddREAgentAreas setAreasPopup={setAreasPopup} areas={agentData.service_areas}/>}
+    {areasPopup && <AddREAgentAreas setAreasPopup={setAreasPopup} agentId={agentData._id}/>}
     </>
   )
 }
