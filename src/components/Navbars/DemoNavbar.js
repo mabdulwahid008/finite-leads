@@ -185,13 +185,13 @@ function Header(props) {
                 </p>
               </DropdownToggle>
               {notfication.length > 0 && <DropdownMenu right>
-                {notfication.map((lead)=>{
+                {notfication.reverse().map((lead)=>{
                   return <div className="notification" key={lead._id} style={{backgroundColor: `${lead.viewed === false ? '#f2f3ef': '#fff'}`}}>
                     <div>
                         <p>{lead.fname}</p><br/>
                         <p style={{fontSize:10}}>{lead.address}</p>
                     </div>
-                    <Link to={`/lead-details/${lead._id}`}><BsEye/></Link>
+                    <Link to={`/lead-details/${lead._id}`}><BsEye onClick={()=>setDropdownOpen(false)}/></Link>
                   </div>
                 })}
               </DropdownMenu>}

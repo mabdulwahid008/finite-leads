@@ -37,7 +37,7 @@ function SaleAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading
                 <ReactSelect options={userRoles} defaultValue={agentRole} onChange={(option)=> agentData.role = option.value}/>
             </FormGroup> */}
                     
-            <Button color='primary' disabled={loading? true: false}>{loading?'Please Wait' :'Update'}</Button>
+            <Button disabled={loading? true: false}>{loading?'Please Wait' :'Update'}</Button>
     </Form>
   )
 }

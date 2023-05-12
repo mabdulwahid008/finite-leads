@@ -265,7 +265,7 @@ router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEs
 // and sending back agents comment
 router.get('/comment/:id', authorization, realEstateAutorization, async(req, res) => {
     try {
-        const lead = await db.query('SELECT * FROM LEAD_COMMENTS WHERE lead_id = $1 AND realEstateAgent_id = $2',[
+        const lead = await db.query('SELECT LEAD_COMMENTS._id, lead_id, content, lead_status, realEstateAgent_id, profile_image FROM LEAD_COMMENTS INNER JOIN users ON LEAD_COMMENTS.realEstateAgent_id = users._id WHERE lead_id = $1 AND realEstateAgent_id = $2',[
             req.params.id, req.user_id
         ])
         if(lead.rows.length > 0){

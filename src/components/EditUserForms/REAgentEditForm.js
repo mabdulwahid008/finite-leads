@@ -41,13 +41,13 @@ function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading})
     {!repOptions && <Loading/>}
     {repOptions && <Form onSubmit={onSubmitEditAgentData}>
         <Row>
-            <Col md='6'>
+            <Col className='pr-1' md='6'>
                 <FormGroup>
                     <label>First Name</label>
                     <Input type='text' defaultValue={agentData.fname} name='fname' required onChange={onChange} />
                 </FormGroup>
             </Col>
-            <Col md='6'>
+            <Col className='pl-1' md='6'>
                 <FormGroup>
                     <label>Last Name</label>
                     <Input type='text' defaultValue={agentData.lname} name='lname' required onChange={onChange} />
@@ -55,13 +55,13 @@ function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading})
             </Col>
         </Row>
         <Row>
-            <Col md='6'>
+            <Col className='pr-1' md='6'>
                 <FormGroup>
                     <label>Email</label>
                     <Input type='email' defaultValue={agentData.email} name='email' required onChange={onChange} />
                 </FormGroup>
             </Col>
-            <Col md='6'>
+            <Col className='pl-1' md='6'>
                 <FormGroup>
                     <label>Phone</label>
                     <Input type='number' defaultValue={agentData.phone} name='phone' required onChange={onChange} />
@@ -69,19 +69,19 @@ function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading})
             </Col>
         </Row>
         <Row>
-            <Col md='6'>
+            <Col className='pr-1' md='6'>
                 <FormGroup>
                     <label>Brokerage Name</label>
                     <Input type='text' defaultValue={agentData.brokerage_name} name='brokerage_name' required onChange={onChange} />
                 </FormGroup>
             </Col>
-            <Col md='3'>
+            <Col className='px-1' md='3'>
                 <FormGroup>
                     <label>Broker Name</label>
                     <Input type='text' defaultValue={agentData.broker_name} name='broker_name' required onChange={onChange} />
                 </FormGroup>
             </Col>
-            <Col md='3'>
+            <Col className='pl-1' md='3'>
                 <FormGroup>
                     <label>Office Phone</label>
                     <Input type='text' defaultValue={agentData.office_phone} name='office_phone' required onChange={onChange} />
@@ -89,19 +89,19 @@ function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading})
             </Col>
         </Row>
         <Row>
-            <Col md='6'>
+            <Col className='pr-1' md='6'>
                 <FormGroup>
                     <label>Address</label>
                     <Input type='text' defaultValue={agentData.address} name='address' required onChange={onChange} />
                 </FormGroup>
             </Col>
-            <Col md='3'>
+            <Col className='px-1' md='3'>
                 <FormGroup>
                     <label>City</label>
                     <Input type='text' defaultValue={agentData.city} name='city' required onChange={onChange} />
                 </FormGroup>
             </Col>
-            <Col md='3'>
+            <Col className='pl-1' md='3'>
                 <FormGroup>
                     <label>Zip Code</label>
                     <Input type='text' defaultValue={agentData.zip_code} name='zip_code' required onChange={onChange} />
@@ -109,25 +109,25 @@ function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading})
             </Col>
         </Row>
         <Row>
-            <Col md='3'>
+            <Col className='pr-1' md='3'>
                 <FormGroup>
                     <label>Country</label>
                     <Input type='text' defaultValue={agentData.country} name='country' required onChange={onChange} />
                 </FormGroup>
             </Col>
-            <Col md='3'>
+            <Col className='px-1' md='3'>
                 <FormGroup>
                     <label>State</label>
                     <Input type='text' defaultValue={agentData.state} name='state' required onChange={onChange} />
                 </FormGroup>
             </Col>
-            <Col md='3'>
+            <Col className='px-1' md='3'>
                 <FormGroup>
                     <label>RE License No</label>
                     <Input type='text' defaultValue={agentData.re_license_no} name='re_license_no' required onChange={onChange} />
                 </FormGroup>
             </Col>
-            <Col md='3'>
+            <Col className='pl-1' md='3'>
                 <FormGroup>
                     <label>Service Radius (miles)</label>
                     <Input type='number' defaultValue={agentData.service_radius} name='service_radius' required onChange={onChange} />
@@ -135,20 +135,20 @@ function REAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading})
             </Col>
         </Row>
         <Row>
-            <Col mdd='6'>
+            {/* <Col className='pr-1' mdd='6'>
                 <FormGroup>
-                    <label>Service Areas in [lat, long] only (use | after one area's [lat,long])</label>
+                    <label>Service Areas in [lat, long]</label>
                     <Input type='text' defaultValue={agentData.service_areas} placeholder='[lat, long] | [lat, long] | ...' name="service_areas" onChange={onChange} />
                 </FormGroup>
-            </Col>
-            <Col md='6'>
+            </Col> */}
+            <Col className='pr-1' md='6'>
                 <FormGroup>
                     <label>Repersentative</label>
                     <ReactSelect styles={reactStyles} options={repOptions} defaultValue={repOptions.filter((option)=> option.value == agentData.rep)} onChange={(option)=>{agentData.rep = option.value}}/>
                 </FormGroup>
             </Col>
         </Row>
-        <Button color='primary' disabled={loading? true : false}>{`${loading? "Please Wait":"Update"}`}</Button>
+        <Button disabled={loading? true : false}>{`${loading? "Please Wait":"Update"}`}</Button>
     </Form>}
     </>
   )

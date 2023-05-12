@@ -18,6 +18,7 @@ function REAgentDashboard() {
   const [onContractLeads, setOnContractLeads] = useState(0)
   const [listedLeads, setListedLeads] = useState(0)
   const [soldLeads, setSoldLeads] = useState(0)
+  const [newLeads, setNewLeads] = useState(0)
   
   // const [pieChartdata, setPieChartData] = useState(null)
 
@@ -25,7 +26,7 @@ function REAgentDashboard() {
     labels: ['Rejected', 'Accepted', 'Follow Uo', 'On Contract', 'Listed', 'Sold', 'New'],
     datasets : [
       {
-        data: [rejectedLeads, acceptedLeads, followUpLeads, onContractLeads, listedLeads, soldLeads, 1],
+        data: [rejectedLeads, acceptedLeads, followUpLeads, onContractLeads, listedLeads, soldLeads, newLeads],
         backgroundColor: ['#ff7f7f', '#7fff7f', '#ffff7f', '#7fbfff', '#bf7fff', '#ffbf7f', '#d3d3d3']
       }
     ]
@@ -59,6 +60,7 @@ function REAgentDashboard() {
       setOnContractLeads(res.onContract)
       setFollowUpLeads(res.followUp)
       setSoldLeads(res.sold)
+      setNewLeads(res.neutral)
       
     }
     else

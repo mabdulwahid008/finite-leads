@@ -67,25 +67,27 @@ function LeadListing() {
                         <Table>
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>First Name</th>
-                                    <th>State</th>
-                                    <th>Beds & Baths</th>
-                                    <th>Lead Type</th>
-                                    <th>Wroking Outside</th>
-                                    <th>Agent</th>
+                                    <th style={{width:'2%'}}>#</th>
+                                    <th style={{width:'12%'}}>First Name</th>
+                                    <th style={{width:'10%'}}>Lead Type</th>
+                                    <th style={{width:'15%'}}>Working Outside</th>
+                                    <th style={{width:'18%'}}>Address</th>
+                                    <th style={{width:'10%'}}>State</th>
+                                    <th style={{width:'15%'}}>Created_on</th>
+                                    <th style={{width:'15%'}}>Agent</th>
                                     <th className='actions'>View</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody> 
                                 {leads.map((lead, index) => {
                                     return <tr key={index}>
                                         <td>{index+1}</td>
                                         <td>{lead.fname}</td>
-                                        <td>{lead.state}</td>
-                                        <td>{lead.beds} - {lead.baths}</td>
                                         <td>{lead.lead_type == 0 ? 'Seller' : 'Buyer'}</td>
                                         <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>
+                                        <td>{lead.address}</td>
+                                        <td>{lead.state}</td>
+                                        <td>{lead.created_on}</td>
                                         <td>{lead.agentname}</td>
                                         <div className='actions'>
                                             <Link to={`lead-details/${lead._id}`}><BsEye/></Link>

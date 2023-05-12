@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, CardBody, CardHeader, CardTitle, Col, Form, FormGroup, Input, Row } from 'reactstrap'
+import { Card, CardBody, CardHeader, CardTitle, Col, Row } from 'reactstrap'
 import { toast } from 'react-toastify'
-import ReactSelect from 'react-select'
 import Loading from '../components/Loading/Loading'
 import { useParams } from 'react-router-dom'
 import SaleAgentEditForm from 'components/EditUserForms/SaleAgentEditForm'
@@ -15,26 +14,13 @@ function EditUser({  }) {
     const [agentData, setAgentData] = useState(null)
     const [loading, setLoading] = useState(false)
 
-    // const [agentRole, setAgentRole] = useState(null)
-
-    // const userRoles = [
-    //     {value: 0, label: 'Sales Agent'},
-    //     {value: 1, label: 'Markeing Agent'},
-    //     {value: 2, label: 'Real Estate Agent'},
-    //     {value: 3, label: 'Admin'},
-    // ]
-
-    // const findAgentRole = () => {
-    //     if(agentData.role == 0)
-    //         setAgentRole({value: 0, label: 'Sales Agent'})
-    //     else if(agentData.role == 1)
-    //         setAgentRole({value: 1, label: 'Markeing Agent'})
-    //     else if(agentData.role == 2)
-    //         setAgentRole({value: 2, label: 'Real Estate Agent'})
-    //     else if(agentData.role == 3)
-    //         setAgentRole({value: 3, label: 'Admin'})
-    //     else{}
-    // } 
+    const userRoles = [
+        { role: 0, value: 'Sales Agent'},
+        { role: 1, value: 'Marketing Agent'},
+        { role: 2, value: 'Real Estate Agent'},
+        { role: 3, value: 'Admin'},
+        { role: 5, value: 'Master'},
+    ]
     
     const onChange = (e) => {
         setAgentData({...agentData, [e.target.name]: e.target.value})
@@ -96,14 +82,38 @@ function EditUser({  }) {
     useEffect(()=>{
         if(!refreash)
             fetchUserToBeUpdate()
-        // if(agentData)
-            // findAgentRole();
     }, [refreash])
       
   return (
    <div className='content'>
     <Row>
-        <Col md='12'>
+        <Col md="4">
+        <Card className="card-user">
+              <div className="image">
+                <img alt="..." src={require("assets/img/damir-bosnjak.jpg")} />
+              </div>
+              <CardBody>
+                {!agentData && <Loading />}
+               {agentData && <>
+               <div className="author">
+                  <a style={{position:'relative'}}>
+                    <img style={{backgroundColor:'#f4f3ef'}}
+                      alt="..."
+                      className="avatar border-gray"
+                      src={agentData.profile_image ? `http://localhost:5000/${agentData.profile_image}` : require("assets/img/profile.png")}
+                    />
+                  </a>
+                    <h5 className="username">{agentData.name}</h5>
+                  <p className="description">{userRoles.filter((role) => role.role == agentData.role)[0].value}</p>
+                </div>
+                <p className="description text-center">
+                  We like the way you work it <br />
+                </p>
+                </>}
+              </CardBody>
+            </Card>
+        </Col>
+        <Col md='8'>
         <Card>
             <CardHeader>
                 <CardTitle tag="h5">Edit User's Data</CardTitle>
