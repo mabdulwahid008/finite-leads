@@ -207,7 +207,7 @@ function AdminDashboard() {
               <Col md="8" xs="7">
                 <div className="numbers">
                   <p className="card-category">Today</p>
-                  <CardTitle tag="p">{dailyLeads} Rs</CardTitle>
+                  <CardTitle tag="p">{dailyLeads}</CardTitle>
                   <p />
                 </div>
               </Col>
@@ -261,7 +261,7 @@ function AdminDashboard() {
               <Col md="8" xs="7">
                 <div className="numbers">
                   <p className="card-category">This Month</p>
-                  <CardTitle tag="p">{monthlyLeads} Rs</CardTitle>
+                  <CardTitle tag="p">{monthlyLeads}</CardTitle>
                   <p />
                 </div>
               </Col>

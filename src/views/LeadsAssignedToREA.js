@@ -119,7 +119,7 @@ function LeadsAssignedToREA() {
                         <tbody>
                             {leads.map((lead, index)=> {
                                 return <tr key={index}>
-                                    <td>{page-1 === 0? '': page-1}{index+1}</td>
+                                    <td>{page-1 === 0? '': page-1}{index+1 === 10? 0 : index+1}</td>
                                     <td>{lead.fname}</td>
                                     <td>{lead.lead_type == 0 ? 'Seller' : 'Buyer'}</td>
                                     <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>

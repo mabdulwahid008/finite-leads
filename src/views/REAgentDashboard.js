@@ -176,7 +176,7 @@ function REAgentDashboard() {
               </CardFooter>
             </Card>
           </Col>
-          <Col className='prl-1' lg="3" md="6" sm="6">
+          <Col className='pl-1' lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
                 <Row>
@@ -205,7 +205,7 @@ function REAgentDashboard() {
           </Col>
         </Row>
         <Row>
-          <Col md="8">
+          <Col className='pr-1' md="8">
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">New Leads</CardTitle>
@@ -253,7 +253,7 @@ function REAgentDashboard() {
               </CardBody>
             </Card>
           </Col>
-          <Col md="4">
+          <Col className='pl-1' md="4">
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Leads Statistics</CardTitle>
