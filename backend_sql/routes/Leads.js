@@ -3,8 +3,10 @@ const db = require('../db');
 const authorization = require('../middleware/authorization');
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization');
 const realEstateAutorization = require('../middleware/realEstateAutorization');
-const { dateWithoutTime, getTimePeriod } = require('../date');
+const { dateWithoutTime, getTimePeriod, startDate, endDate } = require('../date');
 const router = express.Router();
+const moment = require('moment-timezone')
+
 
 
 // for form - lead posting
@@ -338,13 +340,30 @@ router.get('/dashboard/stats', authorization, masterOrAdminAuthorization, async(
         const todayLeads = await db.query('SELECT count(*) FROM LEADS WHERE created_on = $1',[
             dateWithoutTime
         ])
-        const monthlyLeads = await db.query('SELECT count(*) FROM LEADS WHERE created_on = $1',[
-            dateWithoutTime.substring(dateWithoutTime.length-3, 0)
+        const monthlyLeads = await db.query('SELECT count(*) FROM LEADS WHERE created_on >= $1 AND created_on < $2',[
+            startDate, endDate
         ])
+
+        const date = moment.tz(Date.now(), "America/Los_Angeles");
+        let startOfMonth = ''
+        let endOfMonth = ''
+        const data = []
+
+        for (let i = 1; i <= date.month()+1; i++) {
+            startOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-01`
+            endOfMonth = `${date.year()}-${i <= 9 ? `0${i}`: `${i}`}-31`
+
+            const leads = await db.query('SELECT * FROM Leads WHERE created_on >= $1 AND created_on < $2',[
+                startOfMonth, endOfMonth
+            ])
+
+            data.push(leads.rows.length)
+        }
 
         return res.status(200).json({
             dailyLeads : todayLeads.rows[0].count,
             monthlyLeads : monthlyLeads.rows[0].count,
+            chartData:  data
         })
     } catch (error) {
         console.log(error.message);

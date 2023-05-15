@@ -28,13 +28,15 @@ function AdminDashboard() {
 
     
     //for stats data comming form api
-    const [arr, setArr] = useState([0, 0, 0, 0, 0, 0, 0, 0])
+    const [saleStats, setSaleStats] = useState([0, 0, 0, 0, 0, 0, 0, 0])
+    const [leadsStats, setLeadStatus] = useState([0, 0, 0, 0, 0, 0, 0, 0])
 
     const stats = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
         datasets: [
             {
-                data: arr,
+                data: saleStats,
+                label: ' Sales',
                 fill: false,
                 borderColor: "#fbc658",
                 backgroundColor: "transparent",
@@ -45,7 +47,8 @@ function AdminDashboard() {
                 tension: 0.4
             },
             {
-                data: [0, 5, 9, 20],
+                data: leadsStats,
+                label:' Leads',
                 fill: false,
                 borderColor: "#51cbce",
                 backgroundColor: "transparent",
@@ -58,7 +61,6 @@ function AdminDashboard() {
         ]
     }
 
-    // for admin or master 
     const calculateStats = () => {
         if(sales){
                 const date = moment.tz(Date.now(), "America/Los_Angeles");
@@ -86,7 +88,6 @@ function AdminDashboard() {
             }
     }
 
-    // for admin or master 
     const fetchSales = async() => {
 
     const date = moment.tz(Date.now(), "America/Los_Angeles");
@@ -117,6 +118,24 @@ function AdminDashboard() {
         toast.error(res.message)
     }
 
+    const fetchLeadsStatus = async() => {
+      const response = await fetch(`/lead/dashboard/stats`,{
+        method: 'GET',
+        headers: {
+            'Content-Type' : 'Application/json',
+            token: localStorage.getItem('token')
+        }
+      })
+      const res = await response.json()
+        if(response.status === 200){
+          setDailyLeads(res.dailyLeads)
+          setMonthlyLeads(res.monthlyLeads)
+          setLeadStatus(res.chartData)
+        }
+        else
+          toast.error(res.message)
+    }
+
     const fetchStats = async() => {
         const response = await fetch(`/sale/stats`,{
             method : 'GET',
@@ -127,7 +146,7 @@ function AdminDashboard() {
         })
         const res = await response.json();
         if(response.status === 200){
-            setArr(res.data)
+            setSaleStats(res.data)
           }
         else{
             toast.error(res.message)
@@ -136,6 +155,7 @@ function AdminDashboard() {
     }
 
     useEffect(()=>{
+        fetchLeadsStatus()
         fetchStats()
         fetchSales()
     }, [])
@@ -261,18 +281,15 @@ function AdminDashboard() {
         <Card className="card-chart">
           <CardHeader>
             <CardTitle tag="h5">Statistics</CardTitle>
-            <p className="card-category">Monthly Sales Stats</p>
+            <p className="card-category">Monthly Sales & Leads Stats</p>
           </CardHeader>
           <CardBody>
               <Line data={stats} options={dashboardNASDAQChart.options} width={400} height={100}/>
           </CardBody>
           <CardFooter>
             <div className="chart-legend">
-              <i className="fa fa-circle text-warning" /> Sales
-            </div>
-            <hr />
-            <div className="card-stats">
-              Sales Stats
+              <i className="fa fa-circle text-warning" /> Sales  
+              <i style={{marginLeft:10}} className="fa fa-circle text-primary" /> Leads
             </div>
           </CardFooter>
         </Card>

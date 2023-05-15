@@ -26,8 +26,7 @@ function SalesAgentDashboard() {
     const [monthlySales, setMonthlySales] = useState(0)
 
     //for stats data comming form api
-    const [arr, setArr] = useState([0, 0, 0, 0, 0, 0, 0, 0],)
-    const [data, setData] = useState(null)
+    const [arr, setArr] = useState([0, 0, 0, 0, 0, 0, 0, 0])
 
 
     const stats = {
