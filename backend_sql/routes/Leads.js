@@ -331,4 +331,25 @@ router.get('/assined/:_id', authorization, masterOrAdminAuthorization, async(req
     }
 })
 
+
+// for admin dashboard
+router.get('/dashboard/stats', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        const todayLeads = await db.query('SELECT count(*) FROM LEADS WHERE created_on = $1',[
+            dateWithoutTime
+        ])
+        const monthlyLeads = await db.query('SELECT count(*) FROM LEADS WHERE created_on = $1',[
+            dateWithoutTime.substring(dateWithoutTime.length-3, 0)
+        ])
+
+        return res.status(200).json({
+            dailyLeads : todayLeads.rows[0].count,
+            monthlyLeads : monthlyLeads.rows[0].count,
+        })
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
 module.exports = router

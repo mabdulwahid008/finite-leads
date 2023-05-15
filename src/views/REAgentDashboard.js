@@ -96,7 +96,7 @@ function REAgentDashboard() {
   return (
     <div className='content'>
         <Row>
-          <Col lg="3" md="6" sm="6">
+          <Col className='pr-1' lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
                 <Row>
@@ -122,7 +122,7 @@ function REAgentDashboard() {
               </CardFooter>
             </Card>
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col className='px-1' lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
                 <Row>
@@ -149,7 +149,7 @@ function REAgentDashboard() {
               </CardFooter>
             </Card>
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col className='px-1' lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
                 <Row>
@@ -176,7 +176,7 @@ function REAgentDashboard() {
               </CardFooter>
             </Card>
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col className='prl-1' lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
                 <Row>

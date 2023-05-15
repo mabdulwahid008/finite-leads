@@ -31,13 +31,14 @@ import LeadsAssignedToREA from "views/LeadsAssignedToREA";
 import REAgentDashboard from "views/REAgentDashboard";
 import UserProfile from "views/UserProfile";
 import SalesAgentDashboard from "views/SalesAgentDashboard";
+import AdminDashboard from "views/AdminDashboard";
 
 var routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
     icon: "nc-icon nc-bank",
-    component: Dashboard,
+    component: AdminDashboard,
     layout: "/admin",
     role: [3,5]
   },
