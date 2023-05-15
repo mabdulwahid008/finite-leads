@@ -30,6 +30,7 @@ import Dashboard from "views/Dashboard";
 import LeadsAssignedToREA from "views/LeadsAssignedToREA";
 import REAgentDashboard from "views/REAgentDashboard";
 import UserProfile from "views/UserProfile";
+import SalesAgentDashboard from "views/SalesAgentDashboard";
 
 var routes = [
   {
@@ -38,7 +39,15 @@ var routes = [
     icon: "nc-icon nc-bank",
     component: Dashboard,
     layout: "/admin",
-    role: [0,3,5]
+    role: [3,5]
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: "nc-icon nc-bank",
+    component: SalesAgentDashboard,
+    layout: "/admin",
+    role: [0]
   },
   {
     path: "/dashboard",
@@ -89,14 +98,14 @@ var routes = [
     layout: "/admin",
     role: [0,3,5],
   },
-  {
-    path: "/Messages",
-    name: "Messages",
-    icon: "nc-icon nc-send",
-    component: ChatBox,
-    layout: "/admin",
-    role: [0,3,5],
-  },
+  // {
+  //   path: "/Messages",
+  //   name: "Messages",
+  //   icon: "nc-icon nc-send",
+  //   component: ChatBox,
+  //   layout: "/admin",
+  //   role: [0,3,5],
+  // },
   {
     path: "/leads",
     name: "Leads",
