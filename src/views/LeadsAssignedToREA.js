@@ -119,7 +119,7 @@ function LeadsAssignedToREA() {
                         <tbody>
                             {leads.map((lead, index)=> {
                                 return <tr key={index}>
-                                    <td>{index+1}</td>
+                                    <td>{page-1 === 0? '': page-1}{index+1}</td>
                                     <td>{lead.fname}</td>
                                     <td>{lead.lead_type == 0 ? 'Seller' : 'Buyer'}</td>
                                     <td>{lead.working_status == 0 ? 'No' : 'Yes'}</td>
@@ -141,7 +141,7 @@ function LeadsAssignedToREA() {
                     <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
                         <div className='dahboard-table'>
                             <Button className='next-prev' disabled={page === 1 ? true : false} onClick={()=>{if(page !== 1) setPage(page-1)}}>Prev</Button>
-                            <Button className='next-prev' disabled={totalRecord > 0 && page < Math.ceil(totalRecord / 1) ? false : true} onClick={()=>{if(totalRecord > 0 && page < Math.ceil(totalRecord / 1)) setPage(page+1)}}>Next</Button>
+                            <Button className='next-prev' disabled={totalRecord > 0 && page < Math.ceil(totalRecord / 10) ? false : true} onClick={()=>{if(totalRecord > 0 && page < Math.ceil(totalRecord / 1)) setPage(page+1)}}>Next</Button>
                         </div>
                         <div>
                             <p  className='text-muted' style={{fontSize:12}}>Page: {page} / Total Leads: {totalRecord}</p>
