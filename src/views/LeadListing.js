@@ -4,6 +4,7 @@ import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, R
 import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
 import { Link } from 'react-router-dom'
+import REAgentLeadStats from 'components/reAgentLeadStats/REAgentLeadStats'
 
 function LeadListing() {
     const [leads, setLeads] = useState(null)
@@ -110,6 +111,8 @@ function LeadListing() {
                 </Card>
             </Col>
         </Row>
+
+        <REAgentLeadStats />
     </div>
   )
 }

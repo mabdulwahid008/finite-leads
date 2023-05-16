@@ -209,7 +209,7 @@ router.get('/agent/dahboard-leads/:page', authorization, realEstateAutorization,
 router.get('/agent/leads/:year/:month/:lead_status/:page', authorization, realEstateAutorization, async(req, res) => {
     try {
         const record = 10;
-        const page = parseInt(req.params.page) ;
+        const page = parseInt(req.params.page);
         const offset = (page - 1) * record;
             
         let leads;
@@ -369,5 +369,123 @@ router.get('/dashboard/stats', authorization, masterOrAdminAuthorization, async(
         return res.status(500).json({message: 'Server Error'})
     }
 })
+
+// for admin to view agent stats
+router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, async(req, res) => {
+        const { from, to, page, agent_id, lead_count } = req.query
+        // default call
+        // from = null
+        // toMonth = null
+        // page = 1
+        // agent_id = null
+        // leads_count = null
+    try {
+        const record = 1;
+        const pagee = parseInt(page) ;
+        const offset = (pagee - 1) * record;
+
+        let agents;
+        let leads;
+        let totalAgentCount = await db.query('SELECT count(*) FROM USERS WHERE role = 2 AND active = 1');
+        
+        // default calll
+        // sending all data of this month
+         
+        if(lead_count == 'null'){
+            if(from == 'null' && to == 'null' && agent_id == 'null'){
+                agents = await db.query('SELECT _id, name, state FROM USERS WHERE role = 2 AND active = 1 ORDER BY _id DESC LIMIT $1 OFFSET $2',[
+                    record, offset
+                ])
+                
+                // sending leads data of this month
+                const date = moment.tz(Date.now(), "America/Los_Angeles");
+                let startOfMonth = `${date.year()}-${date.month+1 <= 9 ? `0${date.month+1}` : date.month+1}`
+                let endOfMonth = `${date.year()}-${date.month+2 <= 9 ? `0${date.month+2}` : date.month+2}`
+
+                for (let i = 0; i < agents.rows.length; i++) {
+                    leads = await db.query('Select current_status FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
+                        agents.rows[i]._id, startOfMonth, endOfMonth
+                    ])
+                    agents.rows[i].totalLeads = leads.rows.length
+                    const rejectedLeads = leads.rows.filter((lead)=> lead.current_status === 1)
+                    agents.rows[i].rejectedLeads = rejectedLeads.length
+                }
+            }
+            // when time is specified and agent is not
+            else if (from != 'null' && to != 'null' && agent_id == 'null'){
+                agents = await db.query('SELECT _id, name, state FROM USERS WHERE role = 2 AND active = 1 ORDER BY _id DESC LIMIT $1 OFFSET $2',[
+                    record, offset
+                ])
+
+                // sending data of specified
+                for (let i = 0; i < agents.rows.length; i++) {
+                    leads = await db.query('Select current_status FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
+                        agents.rows[i]._id, from, to
+                    ])
+                    agents.rows[i].totalLeads = leads.rows.length
+                    const rejectedLeads = leads.rows.filter((lead)=> lead.current_status === 1)
+                    agents.rows[i].rejectedLeads = rejectedLeads.length
+                }
+            }
+            // when time and agent are specified 
+            else if (from != 'null' && to != 'null' && agent_id != 'null'){
+                totalAgentCount.rows[0].count = 1
+                agents = await db.query('SELECT _id, name, state FROM USERS WHERE role = 2 AND active = 1 AND _id = $1',[
+                    agent_id
+                ])
+
+                // sending data of specified
+                for (let i = 0; i < agents.rows.length; i++) {
+                    leads = await db.query('Select current_status FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
+                        agents.rows[i]._id, from, to
+                    ])
+                    agents.rows[i].totalLeads = leads.rows.length
+                    const rejectedLeads = leads.rows.filter((lead)=> lead.current_status === 1)
+                    agents.rows[i].rejectedLeads = rejectedLeads.length
+                }
+
+            }
+            else {}
+        }
+        if(lead_count != 'null'){
+
+            agents = await db.query(`SELECT _id, name, state
+                                        FROM Users
+                                        JOIN (
+                                            SELECT realEstateAgent_id, COUNT(*) AS lead_count
+                                            FROM LEAD_ASSIGNED_TO
+                                            GROUP BY realEstateAgent_id
+                                            HAVING COUNT(*) = 2
+                                        ) AS LAT ON LAT.realEstateAgent_id = Users._id
+                                        LIMIT = 1 OFFSET = 1`,[
+                                            lead_count, record, offset
+                                        ])
+            for (let i = 0; i < agents.rows.length; i++) {
+                //  // sending leads data of this month
+                //  const date = moment.tz(Date.now(), "America/Los_Angeles");
+                //  let startOfMonth = `${date.year()}-${date.month+1 <= 9 ? `0${date.month+1}` : date.month+1}`
+                //  let endOfMonth = `${date.year()}-${date.month+2 <= 9 ? `0${date.month+2}` : date.month+2}`
+ 
+                //  for (let i = 0; i < agents.rows.length; i++) {
+                //      leads = await db.query('Select current_status FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
+                //          agents.rows[i]._id, startOfMonth, endOfMonth
+                //      ])
+                //      agents.rows[i].totalLeads = leads.rows.length
+                //      const rejectedLeads = leads.rows.filter((lead)=> lead.current_status === 1)
+                //      agents.rows[i].rejectedLeads = rejectedLeads.length
+                //  }
+            }
+        }
+
+        return res.status(200).json({
+            totalAgents: totalAgentCount.rows[0].count, 
+            data:agents.rows
+        })
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
 
 module.exports = router

@@ -34,9 +34,22 @@
     font-size: 10px !important;
 }
 
+/* additional */
 
 thead{
     color: var(--logoColor) !important
+}
+th, td{
+    font-size: 12px !important;
+}
+.card-title{
+    font-size: 22px !important;
+}
+label{
+    font-size: 11px !important;
+}
+p, input{
+    font-size: 12px !important;
 }
 
 .card-header{
@@ -45,6 +58,28 @@ thead{
     justify-content: space-between;
     align-items: center;
 }
+
+.nav-link{
+    padding: 5px !important;
+}
+.nav-link > i {
+    font-size: 22px !important;
+}
+.nav-link > p {
+    font-size: 12px !important;
+}
+.card-category{
+    font-size: 12px !important;
+    padding: 0px 0px 10px !important;
+}
+div.stats{
+    font-size: 12px ;
+}
+.card-chart > .card-header > .card-category{
+    padding: 10px 0px !important;
+}
+
+/* --------------- */
 
 /* for cross icon */
 .card-header > svg{
@@ -106,10 +141,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .sidebar .sidebar-wrapper,
 .sidebar{
-    width: 200px !important;
+    width: 180px !important;
 }
 .main-panel{
-    width: calc(100% - 200px) !important;
+    width: calc(100% - 180px) !important;
 }
 .logout{
     line-height: 0;
