@@ -20,6 +20,9 @@ router.post('/login', async(req, res) => {
 
         if(user.rows.length === 0)
             return res.status(401).json({message: "Email is incorrect"})
+
+        if(user.rows[0].active == 0)
+            return res.status(401).json({message: "You are not user of this system anymore"})
         
         const comparePass = await bcrypt.compare(password, user.rows[0].password)
 
@@ -111,22 +114,38 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res) => 
 
 })
 
-// get all users 
+// get users by role
 router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res) => {
     try {
         let users = []
         if(req.params.role != 99)
-            users = await db.query('SELECT _id, name, email, phone, address, state, zip_code, service_areas, service_radius, created_at, role FROM users WHERE role != 5 AND role = $1',[
+            users = await db.query('SELECT _id, name, email, phone, address, state, zip_code, service_areas, service_radius, active, created_at, role FROM users WHERE role != 5 AND role = $1 AND active = 1 ORDER BY _id DESC',[
                 req.params.role
             ])
         else
-            users = await db.query('SELECT _id, name, email, phone, address, created_at, role FROM users WHERE role != 5')
+            users = await db.query('SELECT _id, name, email, phone, address, active, created_at, role FROM users WHERE role != 5 AND active = 1 ORDER BY _id DESC')
 
         users = users.rows.filter((user) => user._id != req.user_id)
-        return res.status(200).json(users.sort(function(a, b) {
-            if (a._id !== b._id) {
-                return b._id - a._id 
-            }}))    
+        return res.status(200).json(users)    
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Server Error"})
+    }
+})
+
+// get users for admin listing section
+router.get('/listing/:role', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        let users = []
+        if(req.params.role != 99)
+            users = await db.query('SELECT _id, name, email, phone, address, state, zip_code, service_areas, service_radius, active, created_at, role FROM users WHERE role != 5 AND role = $1 ORDER BY _id DESC',[
+                req.params.role
+            ])
+        else
+            users = await db.query('SELECT _id, name, email, phone, address, active, created_at, role FROM users WHERE role != 5 ORDER BY _id DESC')
+
+        users = users.rows.filter((user) => user._id != req.user_id)
+        return res.status(200).json(users)    
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Server Error"})
@@ -166,8 +185,8 @@ router.post('/getdetails', async(req, res)=> {
     }
 })
 
-// delete user
-router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+// deactivate user
+router.patch('/deactivate/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
     try {
         let user = await db.query('SELECT * FROM users WHERE _id = $1',[
             req.params.id
@@ -176,16 +195,36 @@ router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)
             return res.status(404).json({message: 'User Not Fount'})
 
         if(req.user_role === 3 && user.rows[0].role >= 3)
-            return res.status(401).json({message: 'You can\'t delete users of this role'})
+            return res.status(401).json({message: 'You can\'t deactivate users of this role'})
         
-        // await db.query('DELETE FROM users WHERE _id = $1', [
-        //     req.params.id
-        // ])
         await db.query('UPDATE USERS SET active = $1 WHERE _id = $2',[
             0, req.params.id
         ])
 
-        return res.status(200).json({message: 'User deleted successfully'})
+        return res.status(200).json({message: 'User deactivated successfully'})
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({message: "Server Error"})
+    }
+})
+
+// activate user
+router.patch('/activate/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        let user = await db.query('SELECT * FROM users WHERE _id = $1',[
+            req.params.id
+        ])
+        if(user.rows.length === 0)
+            return res.status(404).json({message: 'User Not Fount'})
+
+        if(req.user_role === 3 && user.rows[0].role >= 3)
+            return res.status(401).json({message: 'You can\'t activate users of this role'})
+        
+        await db.query('UPDATE USERS SET active = $1 WHERE _id = $2',[
+            1, req.params.id
+        ])
+
+        return res.status(200).json({message: 'User activated successfully'})
     } catch (error) {
         console.log(error.message);
         res.status(500).json({message: "Server Error"})

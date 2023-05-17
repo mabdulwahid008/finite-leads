@@ -1,19 +1,23 @@
 import React, { useState, useEffect }  from 'react'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, Row, Table, FormGroup } from 'reactstrap'
 import { FaRegEdit, FaTrash } from "react-icons/fa";
-import DeletePopup from 'components/deleteUserPopup/DeletePopup';
 import { toast } from 'react-toastify';
 import AddUser from 'components/addUser/AddUser';
 import Loading from '../components/Loading/Loading'
 import ReactSelect from 'react-select'
 import { Link } from 'react-router-dom';
+import { reactStyles } from 'assets/additional/reactStyles';
+import { AiOutlinePoweroff } from 'react-icons/ai';
+import DeactivatePopup from 'components/DeactivatePopup/DeactivatePopup';
+import ActivateUserPopup from 'components/ActivateUserPopup/ActivateUserPopup';
 
 function Users() {
     const [saleAgents, setSaleAgents] = useState(null)
     let userRole = 99
 
-    const [deletePopup, setDeletePopup] = useState(false)
-    const [agentToBeDeleted, setAgentToBeDeleted] = useState(null)
+    const [deactivePopup, setDeactivePopup] = useState(false)
+    const [activePopup, setActivePopup] = useState(false)
+    const [agentToBeDeactiveOrActive, setAgentToBeDeactiveOrActive] = useState(null)
 
     const [addNewAgent, setAddNewAgent] = useState(false)
 
@@ -47,9 +51,10 @@ function Users() {
             fetchUsers()
         }
     }
-    const onSubmitDeleteAgent = async() => {
-        const response = await fetch(`/user/${agentToBeDeleted._id}`,{
-            method: 'DELETE',
+
+    const onSubmitDeactiveAgent = async() => {
+        const response = await fetch(`/user/deactivate/${agentToBeDeactiveOrActive._id}`,{
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'Application/json',
                 token: localStorage.getItem('token')
@@ -58,7 +63,26 @@ function Users() {
         const res = await response.json()
         if(response.status === 200){
             toast.success(res.message)
-            setDeletePopup(false)
+            setDeactivePopup(false)
+            setRefresh(true)
+        }
+        else{
+            toast.error(res.message)
+        }
+    }
+
+    const onSubmitActiveAgent = async() => {
+        const response = await fetch(`/user/activate/${agentToBeDeactiveOrActive._id}`,{
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            toast.success(res.message)
+            setActivePopup(false)
             setRefresh(true)
         }
         else{
@@ -67,7 +91,7 @@ function Users() {
     }
 
     const fetchUsers = async() => {
-        const response = await fetch(`/user/${userRole}`,{
+        const response = await fetch(`/user/listing/${userRole}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -103,7 +127,7 @@ function Users() {
                             <Button onClick={()=> setAddNewAgent(true)}>Add New</Button>
                         </div>
                         <div style={{width:`${onMobile? '100%' : '20%'}` }}>
-                            <ReactSelect options={userRoles} defaultValue={defaultUserRole} placeholder="Filter by role" onChange={(role)=>{filterUsers(role); setDefaultUserRole(role)}}/>
+                            <ReactSelect styles={reactStyles} options={userRoles} defaultValue={defaultUserRole} placeholder="Filter by role" onChange={(role)=>{filterUsers(role); setDefaultUserRole(role)}}/>
                         </div>
                     </CardHeader>
                     <CardBody>
@@ -120,7 +144,7 @@ function Users() {
                             </thead>
                             <tbody>
                                 {saleAgents.map((agent, index)=>{
-                                    return <tr key={index}>
+                                    return <tr key={index} style={{backgroundColor:`${agent.active == 0 ? '#f1926e' : ''}`}}>
                                         <td>{index+1}</td>
                                         <td>{agent.name}</td>
                                         <td>{agent.phone}</td>
@@ -128,7 +152,7 @@ function Users() {
                                         <td>{agent.address}</td>
                                         <div className='actions'>
                                             <Link to={`edit-user/${agent._id}`}><FaRegEdit /></Link>
-                                            <FaTrash onClick={()=> {setDeletePopup(true); setAgentToBeDeleted(agent)}}/>
+                                           <AiOutlinePoweroff onClick={()=> {agent.active == 1 ?setDeactivePopup(true) : setActivePopup(true); setAgentToBeDeactiveOrActive(agent)}}/>
                                         </div>
                                     </tr>
                                 })}
@@ -139,7 +163,8 @@ function Users() {
             </Col>
         </Row>
         {addNewAgent && <AddUser setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents} setRefresh={setRefresh}/>}
-        {deletePopup && <DeletePopup setDeletePopup={setDeletePopup} agentToBeDeleted={agentToBeDeleted} setAgentToBeDeleted={setAgentToBeDeleted} onSubmitDeleteAgent={onSubmitDeleteAgent}/>}
+        {deactivePopup && <DeactivatePopup setDeactivePopup={setDeactivePopup} agentToBeDeactiveOrActive={agentToBeDeactiveOrActive} setAgentToBeDeactiveOrActive={setAgentToBeDeactiveOrActive} onSubmitDeactiveAgent={onSubmitDeactiveAgent}/>}
+        {activePopup && <ActivateUserPopup setActivePopup={setActivePopup} agentToBeDeactiveOrActive={agentToBeDeactiveOrActive} setAgentToBeDeactiveOrActive={setAgentToBeDeactiveOrActive} onSubmitActiveAgent={onSubmitActiveAgent}/>}
     </div>
   )
 }

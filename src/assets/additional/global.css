@@ -23,6 +23,10 @@
 .btn-danger{
     background-color: var(--dangerColor) !important;
 }
+.btn-success{
+    background-color: var(--successColor) !important;
+}
+
 
 .active,
 .active > a > i{
