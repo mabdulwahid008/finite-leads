@@ -46,6 +46,11 @@ function REAgentLeadStats() {
     }
 
     const handleTimePeriod = ( e ) => {
+        if(lead_count){
+            setLead_count(null)
+            setData([])
+            document.getElementById('range').value = -1
+        }
         if(e.target.name == 'from'){
             if(e.target.value == '')
                 setFrom(null)
@@ -61,6 +66,7 @@ function REAgentLeadStats() {
     }
     
     const handleLeadConunt = (e)=> {
+        setPage(1)
         if(e.target.value == -1) 
             setLead_count(null); 
         else 
@@ -135,7 +141,7 @@ function REAgentLeadStats() {
                                 <Col className='pl-1' md='12'>
                                     <FormGroup>
                                         <label>Filter By Lead Count: {lead_count ? lead_count : ''}</label>
-                                        <Input type='range' defaultValue={-1} min={-1} max={10} onChange={handleLeadConunt}/>
+                                        <Input id='range' type='range' defaultValue={-1} min={-1} max={10} onChange={handleLeadConunt}/>
                                     </FormGroup>
                                 </Col>
                             </Row>
@@ -146,7 +152,7 @@ function REAgentLeadStats() {
                 <CardBody>
                     {!data && <Loading />}
                     {data?.length === 0 && <p>No data found</p>}
-                    {data && <>
+                    {data?.length > 0 && <>
                     <Table>
                         <thead>
                             <tr>
