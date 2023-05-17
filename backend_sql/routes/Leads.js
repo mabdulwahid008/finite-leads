@@ -387,6 +387,11 @@ router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, as
         let agents;
         let leads;
         let totalAgentCount;
+
+        // sending leads data of this month
+        const date = moment.tz(Date.now(), "America/Los_Angeles");
+        let startOfMonth = `${date.year()}-${date.month()+1 <= 9 ? `0${date.month()+1}` : date.month()+1}`
+        let endOfMonth = `${date.year()}-${date.month()+2 <= 9 ? `0${date.month()+2}` : date.month()+2}`
         
         // default calll
         // sending all data of this month
@@ -394,14 +399,9 @@ router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, as
             totalAgentCount = await db.query('SELECT count(*) FROM USERS WHERE role = 2 AND active = 1');
         
             if(from == 'null' && to == 'null' && agent_id == 'null'){
-                agents = await db.query('SELECT _id, name, state FROM USERS WHERE role = 2 AND active = 1 ORDER BY _id DESC LIMIT $1 OFFSET $2',[
+                agents = await db.query('SELECT _id, name, state, address FROM USERS WHERE role = 2 AND active = 1 ORDER BY _id DESC LIMIT $1 OFFSET $2',[
                     record, offset
                 ])
-                
-                // sending leads data of this month
-                const date = moment.tz(Date.now(), "America/Los_Angeles");
-                let startOfMonth = `${date.year()}-${date.month()+1 <= 9 ? `0${date.month()+1}` : date.month()+1}`
-                let endOfMonth = `${date.year()}-${date.month()+2 <= 9 ? `0${date.month()+2}` : date.month()+2}`
                 
                 for (let i = 0; i < agents.rows.length; i++) {
                     leads = await db.query('Select current_status FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
@@ -410,11 +410,13 @@ router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, as
                     agents.rows[i].totalLeads = leads.rows.length
                     const rejectedLeads = leads.rows.filter((lead)=> lead.current_status === 1)
                     agents.rows[i].rejectedLeads = rejectedLeads.length
+                    agents.rows[i].acceptedLeads = leads.rows.length - rejectedLeads.length
                 }
             }
-            // when time is specified and agent is not
+
+            // // when time is specified and agent is not
             else if (from != 'null' && to != 'null' && agent_id == 'null'){
-                agents = await db.query('SELECT _id, name, state FROM USERS WHERE role = 2 AND active = 1 ORDER BY _id DESC LIMIT $1 OFFSET $2',[
+                agents = await db.query('SELECT _id, name, state, address FROM USERS WHERE role = 2 AND active = 1 ORDER BY _id DESC LIMIT $1 OFFSET $2',[
                     record, offset
                 ])
 
@@ -426,12 +428,14 @@ router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, as
                     agents.rows[i].totalLeads = leads.rows.length
                     const rejectedLeads = leads.rows.filter((lead)=> lead.current_status === 1)
                     agents.rows[i].rejectedLeads = rejectedLeads.length
+                    agents.rows[i].acceptedLeads = leads.rows.length - rejectedLeads.length
                 }
             }
-            // when time and agent are specified 
+
+            // // when time and agent are specified 
             else if (from != 'null' && to != 'null' && agent_id != 'null'){
                 totalAgentCount.rows[0].count = 1
-                agents = await db.query('SELECT _id, name, state FROM USERS WHERE role = 2 AND active = 1 AND _id = $1',[
+                agents = await db.query('SELECT _id, name, state, address FROM USERS WHERE role = 2 AND active = 1 AND _id = $1',[
                     agent_id
                 ])
 
@@ -443,50 +447,50 @@ router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, as
                     agents.rows[i].totalLeads = leads.rows.length
                     const rejectedLeads = leads.rows.filter((lead)=> lead.current_status === 1)
                     agents.rows[i].rejectedLeads = rejectedLeads.length
+                    agents.rows[i].acceptedLeads = leads.rows.length - rejectedLeads.length
                 }
 
             }
             else {}
         }
 
-        if(lead_count != 'null'){
-            totalAgentCount = await db.query(`SELECT count(*)
-                                                FROM Users
-                                                        JOIN (
-                                                        SELECT realEstateAgent_id, COUNT(*) AS lead_count
-                                                        FROM LEAD_ASSIGNED_TO
-                                                        GROUP BY realEstateAgent_id
-                                                        HAVING COUNT(*) = ${lead_count}
-                                                    ) AS LAT ON LAT.realEstateAgent_id = Users._id
-                                                `)
+        // if(lead_count != 'null'){
+        //     totalAgentCount = await db.query(`SELECT count(*)
+        //                                         FROM Users
+        //                                                 JOIN (
+        //                                                 SELECT realEstateAgent_id, COUNT(*) AS lead_count
+        //                                                 FROM LEAD_ASSIGNED_TO 
+        //                                                 WHERE create_at >= ${startOfMonth} AND create_at < ${endOfMonth}
+        //                                                 GROUP BY realEstateAgent_id
+        //                                                 HAVING COUNT(*) = ${lead_count}
+        //                                             ) AS LAT ON LAT.realEstateAgent_id = Users._id
+        //                                         `)
 
-            agents = await db.query(`SELECT _id, name, state
-                                                FROM Users
-                                                        JOIN (
-                                                        SELECT realEstateAgent_id, COUNT(*) AS lead_count
-                                                        FROM LEAD_ASSIGNED_TO
-                                                        GROUP BY realEstateAgent_id
-                                                        HAVING COUNT(*) = ${lead_count}
-                                                    ) AS LAT ON LAT.realEstateAgent_id = Users._id
-                                                ORDER BY _id DESC LIMIT ${record} OFFSET ${offset}`)
+        //     agents = await db.query(`SELECT _id, name, state
+        //                                         FROM Users
+        //                                                 JOIN (
+        //                                                 SELECT realEstateAgent_id, COUNT(*) AS lead_count
+        //                                                 FROM LEAD_ASSIGNED_TO
+        //                                                 WHERE create_at >= ${startOfMonth} AND create_at < ${endOfMonth}
+        //                                                 GROUP BY realEstateAgent_id
+        //                                                 HAVING COUNT(*) = ${lead_count}
+        //                                             ) AS LAT ON LAT.realEstateAgent_id = Users._id
+        //                                         ORDER BY _id DESC LIMIT ${record} OFFSET ${offset}`)
 
 
-            for (let i = 0; i < agents.rows.length; i++) {
-                 // sending leads data of this month
-                 const date = moment.tz(Date.now(), "America/Los_Angeles");
-                 let startOfMonth = `${date.year()}-${date.month+1 <= 9 ? `0${date.month+1}` : date.month+1}`
-                 let endOfMonth = `${date.year()}-${date.month+2 <= 9 ? `0${date.month+2}` : date.month+2}`
- 
-                 for (let i = 0; i < agents.rows.length; i++) {
-                     leads = await db.query('Select current_status FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
-                         agents.rows[i]._id, startOfMonth, endOfMonth
-                     ])
-                     agents.rows[i].totalLeads = leads.rows.length
-                     const rejectedLeads = leads.rows.filter((lead)=> lead.current_status === 1)
-                     agents.rows[i].rejectedLeads = rejectedLeads.length
-                 }
-            }
-        }
+           
+
+        //     for (let i = 0; i < agents.rows.length; i++) {
+        //          for (let i = 0; i < agents.rows.length; i++) {
+        //              leads = await db.query('Select current_status FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1 AND create_at >= $2 AND create_at <= $3',[
+        //                  agents.rows[i]._id, startOfMonth, endOfMonth
+        //              ])
+        //              agents.rows[i].totalLeads = leads.rows.length
+        //              const rejectedLeads = leads.rows.filter((lead)=> lead.current_status === 1)
+        //              agents.rows[i].rejectedLeads = rejectedLeads.length
+        //          }
+        //     }
+        // }
 
         return res.status(200).json({
             totalAgents: totalAgentCount.rows[0].count, 

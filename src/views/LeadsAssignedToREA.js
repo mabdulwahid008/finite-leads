@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row, Table } from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
 import ReactSelect from 'react-select'
 import { reactStyles } from 'assets/additional/reactStyles'
+import { RxExternalLink } from 'react-icons/rx'
 
 const leadStatus =[
     { value: 99, label: 'All' },
@@ -132,7 +132,7 @@ function LeadsAssignedToREA() {
                                         </span>
                                     </td>
                                     <div className='actions'>
-                                        <Link to={`lead-details/${lead._id}`}><BsEye/></Link>
+                                        <Link to={`lead-details/${lead._id}`}><RxExternalLink/></Link>
                                     </div>
                                 </tr>
                             })}

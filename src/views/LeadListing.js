@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row, Table } from 'reactstrap'
-import { BsEye } from 'react-icons/bs'
 import Loading from 'components/Loading/Loading'
 import { Link } from 'react-router-dom'
 import REAgentLeadStats from 'components/reAgentLeadStats/REAgentLeadStats'
+import { RxExternalLink } from 'react-icons/rx'
 
 function LeadListing() {
     const [leads, setLeads] = useState(null)
@@ -91,7 +91,7 @@ function LeadListing() {
                                         <td>{lead.created_on}</td>
                                         <td>{lead.agentname}</td>
                                         <div className='actions'>
-                                            <Link to={`lead-details/${lead._id}`}><BsEye/></Link>
+                                            <Link to={`lead-details/${lead._id}`}><RxExternalLink/></Link>
                                         </div>
                                     </tr>
                                 })}
