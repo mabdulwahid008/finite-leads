@@ -504,9 +504,35 @@ router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, as
 })
 
 // for admin to view single agents stats 
-router.get('/listing/agent-stats/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+router.get('/agent-stats/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
     try {
-        
+        let data;
+        data = await db.query('SELECT name, address, state FROM USERS WHERE _id = $1', [req.params.id])
+        if(data.rows.length === 0)
+            return res.status(404).json({message:'User not found'})
+
+        let leads = await db.query(`SELECT _id, create_at as assigned_on, current_status, fname, lname, address, state 
+                                        FROM LEAD_ASSIGNED_TO 
+                                            INNER JOIN LEADS 
+                                            ON LEAD_ASSIGNED_TO.lead_id = LEADS._id
+                                            WHERE realEstateAgent_id = '${req.params.id}' ORDER BY create_at DESC`
+                                        )
+        if(leads.rows.length > 0){
+            const date = moment.tz(Date.now(), "America/Los_Angeles");
+            
+            data.rows[0].leads = []
+            
+            for (let i = date.month()+1; i > 0 ; i--) {
+                let month = `${date.year()}-${i <= 9 ? `0${i}` : i}`
+                let obj = {
+                    month: month,
+                    leads: leads.rows.filter((lead)=> lead.assigned_on.includes(month))
+                }
+                data.rows[0].leads.push(obj)
+            }                              
+        }
+        return res.status(200).json(data.rows[0])
+
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message:'Server Error'})
