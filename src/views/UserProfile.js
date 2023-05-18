@@ -1,8 +1,10 @@
+import Loading from "components/Loading/Loading";
 import ImageUpload from "components/imageUpload/ImageUpload";
 import React, { useEffect, useState } from "react";
 import { BsEyeSlash, BsCamera } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { Button, Card, CardHeader, CardBody, CardFooter, CardTitle, FormGroup, Form, Input, Row, Col } from "reactstrap";
+import axios from 'axios'
 
 function UserProfile() {
 
@@ -57,16 +59,19 @@ function UserProfile() {
     const response = await fetch('/user/profile/data', {
       method:'GET',
       headers:{
-        'Content-Type':'Application/json',
-        token:localStorage.getItem('token')
+        'Content-Type':'Apllication/json',
+        token: localStorage.getItem('token')
       }
     })
-    const res = await response.json()
+    let res = await response.json()
+    
     if(response.status === 200){
+      console.log(res);
       setMyData(res)
     }
     else
       toast.error(res.message)
+
   }
 
   useEffect(()=>{
@@ -76,6 +81,7 @@ function UserProfile() {
   return (
     <>
       <div className="content">
+        {!mydata && <Loading />}
        {mydata &&  <Row>
           <Col md="4">
             <Card className="card-user">

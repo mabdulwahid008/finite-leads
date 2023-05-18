@@ -10,6 +10,15 @@ const authorizationn = require('../middleware/authorizationn');
 const uploadProfle = require('../middleware/uploadProfle');
 
 
+// checking if user is gets deactivated if yes then removing token from localstorage 
+router.get('/authenticate', authorization, async(req, res) => {
+    try{
+
+    } catch (error){
+        console.log(error.message);
+    }
+})
+
 // login 
 router.post('/login', async(req, res) => {
     const { email, password } = req.body;
