@@ -522,14 +522,28 @@ router.get('/agent-stats/:id', authorization, masterOrAdminAuthorization, async(
             
             data.rows[0].leads = []
             
-            for (let i = date.month()+1; i > 0 ; i--) {
-                let month = `${date.year()}-${i <= 9 ? `0${i}` : i}`
-                let obj = {
-                    month: month,
-                    leads: leads.rows.filter((lead)=> lead.assigned_on.includes(month))
+            let year = date.year() // project deployed in year 2023 
+
+            for (let j = year; j >= 2023; j--) {
+                let startMonth;
+                if(j === year){ // if j = current year then from current month data will be cunsidered
+                    startMonth =  date.month()+1
                 }
-                data.rows[0].leads.push(obj)
-            }                              
+                else    // else j = past year then month will start from dec
+                    startMonth = 12
+
+                for (let i = startMonth; i > 0 ; i--) { // looping through the months of j which is year
+                    let month = `${j}-${i <= 9 ? `0${i}` : i}` // chaning month
+                    let monthlyLeads = leads.rows.filter((lead)=> lead.assigned_on.includes(month)) // filtering leads of month
+                    if(monthlyLeads.length > 0){ // if month has no leads then, not pushing into 
+                        let obj = {
+                            month: month,
+                            leads: monthlyLeads
+                        }
+                        data.rows[0].leads.push(obj)
+                    }
+                }  
+            }                            
         }
         return res.status(200).json(data.rows[0])
 
