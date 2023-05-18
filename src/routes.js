@@ -32,6 +32,7 @@ import REAgentDashboard from "views/REAgentDashboard";
 import UserProfile from "views/UserProfile";
 import SalesAgentDashboard from "views/SalesAgentDashboard";
 import AdminDashboard from "views/AdminDashboard";
+import REAgentStatsListing from "views/REAgentStatsListing";
 
 var routes = [
   {
@@ -137,6 +138,14 @@ var routes = [
     component: UserProfile,
     role: [0,2,3,5], 
   },
+  {
+    path: "/agent-stats/:id",
+    name: "RE Agent Stats",
+    component: REAgentStatsListing,
+    role: [3,5], 
+    child: true
+  },
+  
   // {
   //   path: "/icons",
   //   name: "Icons",

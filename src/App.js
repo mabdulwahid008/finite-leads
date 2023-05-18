@@ -11,6 +11,28 @@ function App() {
     const token = localStorage.getItem('token')
     const path = window.location.pathname
 
+    const authenticate = async() => {
+        const token = localStorage.getItem('token')
+        if(token){
+          const response = await fetch('/user/authenticate/user',{
+            method: 'GET',
+            headers: {
+              'Content-Type':'Apllication/json',
+              token: token,
+            }
+          })
+          if(response.status === 200){}
+          else{
+            localStorage.clear()
+            window.location.reload(true)
+          }
+        }
+      }
+
+      setInterval(() => {
+        authenticate()
+      }, 1000)
+
     useEffect(()=>{
         if(path == '/add-lead'){
         }

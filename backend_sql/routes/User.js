@@ -11,9 +11,15 @@ const uploadProfle = require('../middleware/uploadProfle');
 
 
 // checking if user is gets deactivated if yes then removing token from localstorage 
-router.get('/authenticate', authorization, async(req, res) => {
+router.get('/authenticate/user', authorization, async(req, res) => {
     try{
-
+        const user = await db.query('SELECT active FROM USERS WHERE _id = $1',[
+            req.user_id
+        ])
+        if(user.rows[0].active == 0)
+            return res.status(401).json({})
+        else
+            return res.status(200).json({})
     } catch (error){
         console.log(error.message);
     }

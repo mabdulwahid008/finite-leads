@@ -370,7 +370,7 @@ router.get('/dashboard/stats', authorization, masterOrAdminAuthorization, async(
     }
 })
 
-// for admin to view agent stats
+// for admin to view all agents stats 
 router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, async(req, res) => {
     const { from, to, page, agent_id, lead_count } = req.query
     // default call
@@ -500,6 +500,16 @@ router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, as
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+// for admin to view single agents stats 
+router.get('/listing/agent-stats/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message:'Server Error'})
     }
 })
 

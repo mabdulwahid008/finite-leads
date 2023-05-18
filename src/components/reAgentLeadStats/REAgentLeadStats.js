@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { Button, Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row, Table } from 'reactstrap'
 import ReactSelect from 'react-select'
 import { RxExternalLink } from 'react-icons/rx'
+import { Link } from 'react-router-dom/cjs/react-router-dom.min'
 
 function REAgentLeadStats() {
 
@@ -177,7 +178,7 @@ function REAgentLeadStats() {
                                             <td>{d.acceptedLeads}</td>
                                             <td>{d.rejectedLeads}</td>
                                             <div className='actions'>
-                                                <RxExternalLink/>
+                                                <Link to={`/agent-stats/${d._id}`}><RxExternalLink/></Link>
                                             </div>
                                        </tr>
                             })}
