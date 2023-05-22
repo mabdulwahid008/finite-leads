@@ -6,6 +6,7 @@ import { Card, CardBody, CardHeader, CardTitle, Col, FormGroup, Input, Row } fro
 import { RxExternalLink } from 'react-icons/rx'
 import LeadMap from 'components/leadMap/LeadMap'
 import CommentOnLead from 'components/commentOnLead/CommentOnLead'
+import Page404 from './Page404'
 
 function LeadDetail() {
   const { _id } = useParams()
@@ -115,10 +116,8 @@ function LeadDetail() {
                         </div>
                       </CardBody>
                   </>}
-                  {!lead && notFound && <CardHeader>
-                      <CardTitle tag="h4">OOPS! Lead Not Found</CardTitle>
-                    </CardHeader>}
                 </Card>
+                  {!lead && notFound && <Page404 error="Lead not found"/>}
             </Col>
         </Row>
           
