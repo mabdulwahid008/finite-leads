@@ -23,6 +23,11 @@ import {
 import routes from "routes.js";
 
 function Header(props) {
+  
+  // mobile responsive
+  const { innerWidth: width } = window;
+  const onMobile = width < 762 ? true : false;
+
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const [color, setColor] = React.useState("transparent");
@@ -40,7 +45,7 @@ function Header(props) {
     setDropdownOpen(!dropdownOpen);
   };
   const getBrand = () => {
-    let brandName = "Default Brand";
+    let brandName = "404";
     const currentRoute = routes.find((route) => {
       const routePath = route.path.split("/:")[0];
       return window.location.href.indexOf(routePath) !== -1;
@@ -53,7 +58,13 @@ function Header(props) {
           brandName = currentRoute.name;
         }
       } else {
-        brandName = currentRoute.name;
+        let check = currentRoute.role.some((role)=> role == localStorage.getItem('userRole'))
+        if(currentRoute.path == '/dashboard')
+          brandName = "Dashboard"
+        else if(!check)
+          brandName = "404"
+        else
+          brandName = currentRoute.name;
       }
     }
     return brandName;
@@ -198,8 +209,11 @@ function Header(props) {
             </Dropdown>}
             <NavItem>
               <Link to="/my-profile">
-                <img  style={{marginTop:10,height:30, width:30, objectFit:'cover', borderRadius:50, border:'1px solid #25242293',}}
+                <img  style={{marginTop:10,marginBottom:onMobile? 10 : 0, height:30, width:30, objectFit:'cover', borderRadius:50, border:'1px solid #25242293',}}
                 src={localStorage.getItem('profileImage') !== "null"? `http://localhost:5000/${localStorage.getItem('profileImage')}` : require("assets/img/profile.png")}/>
+                <p>
+                  <span className="d-lg-none d-md-block" style={{paddingLeft:10}}>PROFILE</span>
+                </p>
               </Link>
             </NavItem>
             {/* <NavItem>

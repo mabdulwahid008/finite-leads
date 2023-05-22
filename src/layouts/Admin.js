@@ -9,6 +9,7 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
 import io from 'socket.io-client'
+import Page404 from "views/Page404";
 
 var ps;
 
@@ -60,6 +61,7 @@ function Dashboard(props) {
               />
             );
           })}
+          <Route path='*' component={()=> <Page404 />} />
         </Switch>
         <Footer fluid />
       </div>
