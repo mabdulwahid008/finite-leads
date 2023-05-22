@@ -22,6 +22,10 @@ function UserProfile() {
   const [password, setPassword] = useState({old_pass:'', new_pass:''})
   const [loading, setLoading] = useState(false)
 
+  // mobile responsive
+  const { innerWidth: width } = window;
+  const onMobile = width < 762 ? true : false;
+
   const [refresh, setRefresh] = useState(false)
 
   const [imageUploadPopup, setImageUploadPopup] = useState(false)
@@ -239,19 +243,19 @@ function UserProfile() {
               <CardBody>
                 <Form onSubmit={submitChangePassword}>
                   <Row>
-                    <Col className="pr-1" md="5">
+                    <Col className={`${onMobile? '' : 'pr-1'}`} md="5">
                       <FormGroup>
                         <label>Company (disabled)</label>
                         <Input defaultValue="Finite Lead" disabled placeholder="Company"type="text"/>
                       </FormGroup>
                     </Col>
-                    <Col className="px-1" md="4">
+                    <Col className={`${onMobile? '' : 'px-1'}`} md="4">
                       <FormGroup>
                         <label htmlFor="exampleInputEmail1">Email address</label>
                         <Input disabled defaultValue={mydata.email} placeholder="Username" type="email"/>
                       </FormGroup>
                     </Col>
-                    <Col className="pl-1" md="3">
+                    <Col className={`${onMobile? '' : 'pl-1'}`} md="3">
                       <FormGroup>
                         <label>Phone</label>
                         <Input disabled defaultValue={mydata.phone} type="text" />
@@ -268,19 +272,19 @@ function UserProfile() {
                   </Row>
                   {localStorage.getItem('userRole') == 2 && <>
                   <Row>
-                    <Col className="pr-1" md="4">
+                    <Col className={`${onMobile? '' : 'pr-1'}`} md="4">
                       <FormGroup>
                         <label>City</label>
                         <Input disabled defaultValue={mydata.city} type="text"/>
                       </FormGroup>
                     </Col>
-                    <Col className="px-1" md="4">
+                    <Col className={`${onMobile? '' : 'px-1'}`} md="4">
                       <FormGroup>
                         <label>Country</label>
                         <Input disabled defaultValue={mydata.country} type="text"/>
                       </FormGroup>
                     </Col>
-                    <Col className="pl-1" md="4">
+                    <Col className={`${onMobile? '' : 'pl-1'}`} md="4">
                       <FormGroup>
                         <label>Zip Code</label>
                         <Input disabled defaultValue={mydata.zip_code} type="number" />
@@ -288,19 +292,19 @@ function UserProfile() {
                     </Col>
                   </Row>
                   <Row>
-                    <Col className="pr-1" md="5">
+                    <Col className={`${onMobile? '' : 'pr-1'}`} md="5">
                       <FormGroup>
                         <label>Brokerage Name</label>
                         <Input disabled defaultValue={mydata.brokerage_name} type="text" />
                       </FormGroup>
                     </Col>
-                    <Col className="px-1" md="4">
+                    <Col className={`${onMobile? '' : 'px-1'}`} md="4">
                       <FormGroup>
                         <label>Broker Name</label>
                         <Input disabled defaultValue={mydata.broker_name} type="text" />
                       </FormGroup>
                     </Col>
-                    <Col className="pl-1" md="3">
+                    <Col className={`${onMobile? '' : 'pl-1'}`} md="3">
                       <FormGroup>
                         <label>Office Phone</label>
                         <Input disabled defaultValue={mydata.office_phone} type="text" />
@@ -309,7 +313,7 @@ function UserProfile() {
                   </Row>
                   </>}
                   <Row>
-                    <Col className="pr-1" md="6">
+                    <Col className={`${onMobile? '' : 'pr-1'}`} md="6">
                       <FormGroup style={{position:'relative'}}>
                         <label>Old Password</label>
                         <Input defaultValue={password.old_pass} id="old_pass" type="password" name="old_pass" required onChange={onChangePassword}/>
@@ -321,7 +325,7 @@ function UserProfile() {
                         />
                       </FormGroup>
                     </Col>
-                    <Col className="pl-1" md="6">
+                    <Col className={`${onMobile? '' : 'pl-1'}`} md="6">
                       <FormGroup style={{position:'relative'}}>
                         <label>New Password</label>
                         <Input defaultValue={password.new_pass} id="new_pass" type="password" name="new_pass" required onChange={onChangePassword}/>

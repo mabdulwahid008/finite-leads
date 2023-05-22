@@ -34,6 +34,9 @@ function LeadsAssignedToREA() {
     const [status, seStatus] = useState(leadStatus[0].value)
     const [yearMonth, setYearMonth] = useState([null, null])
 
+    // mobile responsive
+    const { innerWidth: width } = window;
+    const onMobile = width < 762 ? true : false;
    
     const monthChange = (e) => {
         if(e.target.value == ''){
@@ -90,11 +93,11 @@ function LeadsAssignedToREA() {
                 </CardHeader>
                 <CardBody>
                     <div style={{display:'flex', gap:20}}>
-                        <FormGroup style={{width: 200}}>
+                        <FormGroup style={{width: onMobile? 100 : 200}}>
                             <label>Select Month</label>
                             <Input type="month" onChange={monthChange}/>
                         </FormGroup>
-                        <FormGroup style={{width: 200}}>
+                        <FormGroup style={{width: onMobile? 100 : 200}}>
                             <label>Filter Category</label>
                             <ReactSelect options={leadStatus} styles={reactStyles} onChange={(option) => {seStatus(option.value); setPage(1)}}/>
                         </FormGroup>
@@ -102,17 +105,17 @@ function LeadsAssignedToREA() {
                     {!leads && <Loading/>}
                     {leads && leads.length === 0 && <p>No leads found</p>}
                     {leads && leads.length !== 0 && <>
-                    <Table>
+                    <Table responsive={onMobile? true : false}>
                         <thead>
                             <tr>
                                 <th style={{width:'2%'}}>#</th>
                                 <th style={{width:'12%'}}>First Name</th>
                                 <th style={{width:'10%'}}>Lead Type</th>
                                 <th style={{width:'15%'}}>Wroking Outside</th>
-                                <th style={{width:'18%'}}>Address</th>
+                                <th style={{width:'20%'}}>Address</th>
                                 <th style={{width:'10%'}}>State</th>
                                 <th style={{width:'15%'}}>Assigned on</th>
-                                <th style={{width:'0%'}}>Status</th>
+                                <th style={{width:'10%'}}>Status</th>
                                 <th className='actions'>View</th>
                             </tr>
                         </thead>

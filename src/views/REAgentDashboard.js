@@ -20,7 +20,10 @@ function REAgentDashboard() {
   const [soldLeads, setSoldLeads] = useState(0)
   const [newLeads, setNewLeads] = useState(0)
   
-  // const [pieChartdata, setPieChartData] = useState(null)
+  // mobile responsive
+  const { innerWidth: width } = window;
+  const onMobile = width < 762 ? true : false;
+
 
   const data = {
     labels: ['Rejected', 'Accepted', 'Follow Uo', 'On Contract', 'Listed', 'Sold', 'New'],
@@ -96,7 +99,7 @@ function REAgentDashboard() {
   return (
     <div className='content'>
         <Row>
-          <Col className='pr-1' lg="3" md="6" sm="6">
+          <Col className={`${onMobile? '' : 'pr-1'}`} lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
                 <Row>
@@ -122,7 +125,7 @@ function REAgentDashboard() {
               </CardFooter>
             </Card>
           </Col>
-          <Col className='px-1' lg="3" md="6" sm="6">
+          <Col className={`${onMobile? '' : 'px-1'}`} lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
                 <Row>
@@ -149,7 +152,7 @@ function REAgentDashboard() {
               </CardFooter>
             </Card>
           </Col>
-          <Col className='px-1' lg="3" md="6" sm="6">
+          <Col className={`${onMobile? '' : 'px-1'}`} lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
                 <Row>
@@ -176,7 +179,7 @@ function REAgentDashboard() {
               </CardFooter>
             </Card>
           </Col>
-          <Col className='pl-1' lg="3" md="6" sm="6">
+          <Col className={`${onMobile? '' : 'pl-1'}`} lg="3" md="6" sm="6">
             <Card className="card-stats">
               <CardBody>
                 <Row>
@@ -205,7 +208,7 @@ function REAgentDashboard() {
           </Col>
         </Row>
         <Row>
-          <Col className='pr-1' md="8">
+          <Col className={`${onMobile? '' : 'pr-1'}`} md="8">
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">New Leads</CardTitle>
@@ -253,7 +256,7 @@ function REAgentDashboard() {
               </CardBody>
             </Card>
           </Col>
-          <Col className='pl-1' md="4">
+          <Col className={`${onMobile? '' : 'pl-1'}`} md="4">
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Leads Statistics</CardTitle>

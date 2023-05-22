@@ -25,6 +25,7 @@ backend/node_modules
 backend/.env
 
 backend_sql/node_modules
+backend_sql/profileImages/
 .env
 backend_sql/.env
 
