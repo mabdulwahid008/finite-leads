@@ -61,7 +61,7 @@ function Dashboard(props) {
               />
             );
           })}
-          <Route path='*' component={()=> <Page404 />} />
+          <Route path='/*' component={()=> <Page404 />} />
         </Switch>
         <Footer fluid />
       </div>

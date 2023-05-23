@@ -106,6 +106,8 @@ function REAgentLeadStats() {
 
     useEffect(()=>{
         fetchAgentStats()
+        if(from && to)        
+            setPage(1)
     }, [lead_count, page, from, to, agnet_id])
   return (
     <Row>
