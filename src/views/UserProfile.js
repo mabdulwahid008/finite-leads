@@ -34,6 +34,7 @@ function UserProfile() {
     setPassword({...password, [e.target.name]: e.target.value})
   } 
 
+  
   const submitChangePassword = async( e ) => {
     e.preventDefault()
     setLoading(true)
@@ -70,7 +71,6 @@ function UserProfile() {
     let res = await response.json()
     
     if(response.status === 200){
-      console.log(res);
       setMyData(res)
     }
     else
@@ -98,7 +98,7 @@ function UserProfile() {
                     <img style={{backgroundColor:'#f4f3ef'}}
                       alt="..."
                       className="avatar border-gray"
-                      src={mydata.profile_image ? `http://localhost:5000/${mydata.profile_image}` : require("assets/img/profile.png")}
+                      src={mydata.profile_image ? `${process.env.REACT_APP_IMAGE_URL}/${mydata.profile_image}` : require("assets/img/profile.png")}
                     />
                     <BsCamera onClick={() => setImageUploadPopup(true)} style={{position:'absolute', background:'#252422', color:"#51cbce", cursor:'pointer', padding:'5px 7px', borderRadius:20, fontSize:30, top:30, right: 5}}/>
                   </a>

@@ -29,3 +29,5 @@ backend_sql/profileImages/
 .env
 backend_sql/.env
 
+.env.development
+.env.production

@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.9bcae3a7.css",
-    "main.js": "/static/js/main.7195556a.js",
+    "main.js": "/static/js/main.7f29c8af.js",
     "static/media/damir-bosnjak.jpg": "/static/media/damir-bosnjak.efcaca50b633c2ba2ba9.jpg",
     "static/media/profile.png": "/static/media/profile.8b6266d119476c31acc2.png",
     "static/media/nucleo-icons.eot": "/static/media/nucleo-icons.bd42d77b9672555647d1.eot",
@@ -12,10 +12,10 @@
     "static/media/nucleo-icons.woff2": "/static/media/nucleo-icons.ec16bc4cc4526801004d.woff2",
     "index.html": "/index.html",
     "main.9bcae3a7.css.map": "/static/css/main.9bcae3a7.css.map",
-    "main.7195556a.js.map": "/static/js/main.7195556a.js.map"
+    "main.7f29c8af.js.map": "/static/js/main.7f29c8af.js.map"
   },
   "entrypoints": [
     "static/css/main.9bcae3a7.css",
-    "static/js/main.7195556a.js"
+    "static/js/main.7f29c8af.js"
   ]
 }

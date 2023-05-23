@@ -210,7 +210,7 @@ function Header(props) {
             <NavItem>
               <Link to="/my-profile">
                 <img  style={{marginTop:10,marginBottom:onMobile? 10 : 0, height:30, width:30, objectFit:'cover', borderRadius:50, border:'1px solid #25242293',}}
-                src={localStorage.getItem('profileImage') !== "null"? `http://localhost:5000/${localStorage.getItem('profileImage')}` : require("assets/img/profile.png")}/>
+                src={localStorage.getItem('profileImage') !== "null"? `${process.env.REACT_APP_IMAGE_URL}/${localStorage.getItem('profileImage')}` : require("assets/img/profile.png")}/>
                 <p>
                   <span className="d-lg-none d-md-block" style={{paddingLeft:10}}>PROFILE</span>
                 </p>

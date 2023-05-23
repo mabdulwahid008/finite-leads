@@ -100,7 +100,7 @@ function EditUser({  }) {
                     <img style={{backgroundColor:'#f4f3ef'}}
                       alt="..."
                       className="avatar border-gray"
-                      src={agentData.profile_image ? `http://localhost:5000/${agentData.profile_image}` : require("assets/img/profile.png")}
+                      src={agentData.profile_image ? `${process.env.REACT_APP_IMAGE_URL}/${agentData.profile_image}` : require("assets/img/profile.png")}
                     />
                   </a>
                     <h5 className="username">{agentData.name}</h5>
