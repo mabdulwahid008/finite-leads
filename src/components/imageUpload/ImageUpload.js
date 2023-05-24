@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 
 function ImageUpload({ setImageUploadPopup, setRefresh, profile_image }) {
   const ref = useRef()
-  const [profile, setProfile] = useState(profile_image? `http://localhost:5000/${profile_image}` : img)
+  const [profile, setProfile] = useState(profile_image? `${process.env.REACT_APP_IMAGE_URL}/${profile_image}` : img)
   const [image, setImage] = useState(null)
   const [loading, setLoading] = useState(false)
 
