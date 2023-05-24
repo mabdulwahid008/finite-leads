@@ -39,8 +39,11 @@ function EditUser({  }) {
             setLoading(false)
             return;
         }
-
-        agentData.name = `${agentData.fname} ${agentData.lname}`
+        if(agentData.role == 2)
+            agentData.name = `${agentData.fname} ${agentData.lname}`
+        else
+            agentData.name = agentData.fname
+        
         const response = await fetch(`/user`,{
             method: 'PATCH',
             headers: {
@@ -120,7 +123,7 @@ function EditUser({  }) {
             </CardHeader>
             <CardBody>
                 {!agentData && <Loading />}
-                {agentData && agentData.role == 0 && <SaleAgentEditForm agentData={agentData} onChange={onChange} onSubmitEditAgentData={onSubmitEditAgentData} loading={loading}/>}
+                {agentData && (agentData.role == 0 || agentData.role == 3) && <SaleAgentEditForm agentData={agentData} onChange={onChange} onSubmitEditAgentData={onSubmitEditAgentData} loading={loading}/>}
                 {agentData && agentData.role == 2 && <REAgentEditForm agentData={agentData} onChange={onChange} onSubmitEditAgentData={onSubmitEditAgentData} loading={loading}/>}
             </CardBody>
         </Card>

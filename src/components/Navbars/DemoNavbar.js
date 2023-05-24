@@ -58,12 +58,12 @@ function Header(props) {
           brandName = currentRoute.name;
         }
       } else {
-        let check = currentRoute.role.some((role)=> role == localStorage.getItem('userRole'))
-        if(currentRoute.path == '/dashboard')
-          brandName = "Dashboard"
-        else if(!check)
-          brandName = "404"
-        else
+        // let check = currentRoute.role.some((role)=> role == localStorage.getItem('userRole'))
+        // if(currentRoute.path == '/dashboard')
+        //   brandName = "Dashboard"
+        // else if(!check)
+        //   brandName = "404"
+        // else
           brandName = currentRoute.name;
       }
     }
@@ -156,7 +156,7 @@ function Header(props) {
               <span className="navbar-toggler-bar bar3" />
             </button>
           </div>
-          <NavbarBrand href="/">{getBrand()}</NavbarBrand>
+          <NavbarBrand href="/" id="brand-name">{getBrand()}</NavbarBrand>
         </div>
         <NavbarToggler onClick={toggle}>
           <span className="navbar-toggler-bar navbar-kebab" />

@@ -117,7 +117,7 @@ function LeadDetail() {
                       </CardBody>
                   </>}
                 </Card>
-                  {!lead && notFound && <Page404 error="Lead not found"/>}
+                  {!lead && notFound && <Page404 error="Lead not found" status="404"/>}
             </Col>
         </Row>
           

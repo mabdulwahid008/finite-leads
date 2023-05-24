@@ -8,6 +8,7 @@ const authorization = require('../middleware/authorization')
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization')
 const authorizationn = require('../middleware/authorizationn');
 const uploadProfle = require('../middleware/uploadProfle');
+const onlyMaster = require('../middleware/onlyMaster');
 
 
 // checking if user is gets deactivated if yes then removing token from localstorage 
@@ -72,8 +73,8 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
         const salt = bcrypt.genSaltSync(10)
         const encryptedPass = bcrypt.hashSync(password, salt)
 
-        // sale agent
-        if(role == 0){
+        // sale agent and Admin
+        if(role == 0 || role == 3){
             const createUser = await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at) VALUES($1, $2, $3, $4, $5, $6, $7)',[
                 name, phone, email, address, encryptedPass, role, date
             ])
@@ -201,7 +202,7 @@ router.post('/getdetails', async(req, res)=> {
 })
 
 // deactivate user
-router.patch('/deactivate/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+router.patch('/deactivate/:id', authorization, masterOrAdminAuthorization, onlyMaster, async(req, res) => {
     try {
         let user = await db.query('SELECT * FROM users WHERE _id = $1',[
             req.params.id
@@ -224,7 +225,7 @@ router.patch('/deactivate/:id', authorization, masterOrAdminAuthorization, async
 })
 
 // activate user
-router.patch('/activate/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+router.patch('/activate/:id', authorization, masterOrAdminAuthorization, onlyMaster, async(req, res) => {
     try {
         let user = await db.query('SELECT * FROM users WHERE _id = $1',[
             req.params.id

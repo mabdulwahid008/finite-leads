@@ -8,7 +8,7 @@ function SaleAgentEditForm({ agentData, onChange, onSubmitEditAgentData, loading
                 <Col md='6'>
                     <FormGroup>
                         <label>Name</label>
-                        <Input type='text' name='name' defaultValue={agentData.name} required onChange={onChange}/>
+                        <Input type='text' name='fname' defaultValue={agentData.name} required onChange={onChange}/>
                     </FormGroup>
                 </Col>
                 <Col md='6'>

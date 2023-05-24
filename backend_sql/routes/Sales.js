@@ -6,6 +6,7 @@ const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthoriza
 const router = express.Router()
 const moment = require('moment-timezone')
 const authorizationn = require('../middleware/authorizationn');
+const onlyMaster = require('../middleware/onlyMaster');
 
 
 // user to get his own sales
@@ -136,7 +137,7 @@ router.patch('/', authorization, masterOrAdminAuthorization, async(req, res)=> {
 })
 
 // delete sale
-router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)=>{
+router.delete('/:id', authorization, masterOrAdminAuthorization, onlyMaster, async(req, res)=>{
     try {
         // getting user and that day 
         const saleData = await db.query('SELECT create_at, user_id FROM sales WHERE _id = $1',[

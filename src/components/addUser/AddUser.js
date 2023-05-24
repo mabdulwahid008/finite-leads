@@ -214,8 +214,8 @@ function AddUser({ setAddNewAgent, setRefresh }) {
                     <label>Assign Role</label>
                     <ReactSelect styles={reactStyles} defaultValue={{value: 0, label: 'Sales Agent'}} options={userRoles} required onChange={onFormChange}/>
                 </FormGroup>
-                {/* for Sale Agents */}
-                {formType == 0 && <Form onSubmit={addNewSaleAgent}>
+                {/* for Sale Agents and admins */}
+                {(formType === 0 || formType === 3) && <Form onSubmit={addNewSaleAgent}>
                     <FormGroup>
                         <label>Name</label>
                         <Input type='text' name='fname' required onChange={onChange}/>
