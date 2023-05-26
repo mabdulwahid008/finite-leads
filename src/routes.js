@@ -33,6 +33,7 @@ import UserProfile from "views/UserProfile";
 import SalesAgentDashboard from "views/SalesAgentDashboard";
 import AdminDashboard from "views/AdminDashboard";
 import REAgentStatsListing from "views/REAgentStatsListing";
+import Announcement from "views/Announcement";
 
 var routes = [
   {
@@ -145,15 +146,22 @@ var routes = [
     role: [3,5], 
     child: true
   },
-  
-  // {
-  //   path: "/icons",
-  //   name: "Icons",
-  //   icon: "nc-icon nc-diamond",
-  //   component: Icons,
-  //   layout: "/admin",
-  //   role : [0,2,3,5]
-  // },
+  {
+    path: "/icons",
+    name: "Icons",
+    icon: "nc-icon nc-diamond",
+    component: Icons,
+    layout: "/admin",
+    role : [0,2,3,5]
+  },
+  {
+    path: "/announcement",
+    name: "Announcements",
+    icon: "nc-icon nc-bell-55",
+    component: Announcement,
+    layout: "/admin",
+    role : [3,5]
+  },
 //   {
 //     path: "/maps",
 //     name: "Maps",
