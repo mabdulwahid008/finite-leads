@@ -7,8 +7,8 @@ const jwt = require('jsonwebtoken')
 const authorization = require('../middleware/authorization')
 const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthorization')
 const authorizationn = require('../middleware/authorizationn');
-const uploadProfle = require('../middleware/uploadProfle');
 const onlyMaster = require('../middleware/onlyMaster');
+const imageUpload = require('../middleware/uploadProfle');
 
 
 // checking if user is gets deactivated if yes then removing token from localstorage 
@@ -300,7 +300,7 @@ router.patch('/update-pass', authorization, async(req, res) => {
 })
 
 // user to upload his profile
-router.patch('/upload-profile', authorization, uploadProfle.single('image'), async(req, res) => {
+router.patch('/upload-profile', authorization, imageUpload.single('image'), async(req, res) => {
     try {
         await db.query('UPDATE users SET profile_image = $1 WHERE _id = $2', [
             req.file.path, req.user_id

@@ -124,3 +124,10 @@ CREATE TABLE LEAD_COMMENTS(
     FOREIGN KEY (lead_id) REFERENCES Leads(_id) ON DELETE CASCADE,
     FOREIGN KEY (realEstateAgent_id) REFERENCES Users(_id) ON DELETE SET NULL
 )
+
+CREATE TABLE ANNOUNCEMENTS(
+    _id SERIAL PRIMARY KEY, 
+    image VARCHAR(150),
+    for_user_role INT NOT NULL,
+    created_at VARCHAR(10) NOT Null,
+)

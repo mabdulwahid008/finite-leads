@@ -40,6 +40,7 @@ function ImageUpload({ setImageUploadPopup, setRefresh, profile_image }) {
         },
         body: fd
     })
+    
     const res = await response.json();
     if(response.status === 200){
         toast.success(res.message)

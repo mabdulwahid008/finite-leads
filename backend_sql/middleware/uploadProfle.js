@@ -15,10 +15,10 @@ const filterFile = (req, file, cb) =>{
     else
         cb(null, false)
 }
-const uploadProfle = multer({
+const imageUpload = multer({
     storage: storage,
     fileFilter: filterFile,
     limits : 1024 * 1024 *2 //2MB
 })
 
-module.exports = uploadProfle;
+module.exports = imageUpload;
