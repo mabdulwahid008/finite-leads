@@ -66,6 +66,51 @@
     margin-bottom: 0px !important;
 }
 
+.slider-overlay {
+    background-color: #000000a4 !important;
+}
+.slider-overlay > svg {
+    color:'white';
+    z-index:999; 
+    font-size: 20;
+    position:'absolute',;
+    right: 10%;
+    top:6%;
+    cursor: pointer;
+    transition: .5s ease;
+}
+.slider-overlay > svg:hover{
+    color: var(--primaryColor) !important
+}
+.slider-popup{
+    top: -5% !important;
+    width: 90%;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.slider-popup > svg {
+    padding: 5px;
+    position: absolute;
+    z-index: 999 !important;
+    font-size: 40px;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    transition: .5s ease;
+}
+.slider-popup > svg:hover{
+    color: var(--logoColor);
+}
+.slider-popup > svg:nth-of-type(1) {
+    left: 0px;
+}
+.slider-popup > svg:nth-of-type(2) {
+    right: 0px;
+}
+
+
 @media screen and (max-width: 991px) {
     .popup{
         padding: 0px 10px 40px !important;

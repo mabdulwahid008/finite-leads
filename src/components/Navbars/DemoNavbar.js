@@ -175,14 +175,14 @@ function Header(props) {
             </InputGroup>
           </form> */}
           <Nav navbar>
-            {/* <NavItem>
-              <Link to="#pablo" className="nav-link btn-magnify">
-                <i className="nc-icon nc-layout-11" />
+            <NavItem>
+              <Link to="/dashboard" className="nav-link btn-magnify">
+                <i className="nc-icon nc-layout-11" onClick={()=>props.setAnnouncementPopup(true)}/>
                 <p>
-                  <span className="d-lg-none d-md-block">Stats</span>
+                  <span className="d-lg-none d-md-block">Announcement</span>
                 </p>
               </Link>
-            </NavItem> */}
+            </NavItem>
            {localStorage.getItem('userRole') == 2 && <Dropdown
               nav
               isOpen={dropdownOpen}

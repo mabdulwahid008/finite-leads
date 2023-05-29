@@ -10,6 +10,7 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import routes from "routes.js";
 import io from 'socket.io-client'
 import Page404 from "views/Page404";
+import ViewAnnouncement from "components/viewAnnouncement/ViewAnnouncement";
 
 var ps;
 
@@ -19,6 +20,9 @@ function Dashboard(props) {
   // socket.on('connection',()=>{})
   // socket.emit('setup', localStorage.getItem('user'))
 
+
+  const [announcement, setAnnouncement] = React.useState(null);
+  const [announcementPopup, setAnnouncementPopup] = React.useState(true);
 
   const [backgroundColor, setBackgroundColor] = React.useState("black");
   const [activeColor, setActiveColor] = React.useState("info");
@@ -51,7 +55,7 @@ function Dashboard(props) {
     })
     const res = await response.json()
     if(response.status === 200)
-       console.log(res);
+       setAnnouncement(res);
     else
         console.log(res.message)
   }
@@ -69,7 +73,7 @@ function Dashboard(props) {
         activeColor={activeColor}
       />
       <div className="main-panel" ref={mainPanel}>
-        <DemoNavbar {...props} />
+        <DemoNavbar {...props} setAnnouncementPopup={setAnnouncementPopup}/>
         <Switch>
           {routes.map((prop, key) => {
             if(prop.role.some((role)=> role == localStorage.getItem('userRole')))
@@ -84,6 +88,7 @@ function Dashboard(props) {
           <Route path='/*' component={()=> <Page404 />} />
         </Switch>
         <Footer fluid />
+        {announcement && announcementPopup && <ViewAnnouncement announcement={announcement} setAnnouncementPopup={setAnnouncementPopup}/>}
       </div>
     </div> 
   );
