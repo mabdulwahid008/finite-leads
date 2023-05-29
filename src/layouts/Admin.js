@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
 import { Route, Switch, useLocation } from "react-router-dom";
@@ -40,6 +40,26 @@ function Dashboard(props) {
     mainPanel.current.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [location]);
+
+  const fetchAnnouncements = async() => {
+    const response = await fetch(`/announcement`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'Application/json',
+          token: localStorage.getItem('token')
+      }
+    })
+    const res = await response.json()
+    if(response.status === 200)
+       console.log(res);
+    else
+        console.log(res.message)
+  }
+
+  useEffect(()=>[
+    fetchAnnouncements()
+  ], [])
+
   return (
     <div className="wrapper">
       <Sidebar

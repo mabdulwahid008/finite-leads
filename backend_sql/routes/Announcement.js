@@ -20,10 +20,14 @@ router.post('/', authorization, masterOrAdminAuthorization, imageUpload.single('
     }
 })
 
-// get
-router.get('/', authorization, masterOrAdminAuthorization, async(req, res) => {
+// get 
+router.get('/', authorization, async(req, res) => {
     try {
-        const announcement = await db.query('SELECT * FROM ANNOUNCEMENTS ORDER BY _id DESC')
+        const user = await db.query('SELECT * FROM USERS WHERE _id = $1',[req.user_id])
+
+        const announcement = await db.query('SELECT * FROM ANNOUNCEMENTS WHERE for_user_role = $1 ORDER BY _id DESC',[
+            user.rows[0].role
+        ])
         return res.status(200).json(announcement.rows)
     } catch (error) {
         console.log(error.message);
