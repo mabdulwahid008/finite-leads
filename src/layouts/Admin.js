@@ -60,9 +60,10 @@ function Dashboard(props) {
         console.log(res.message)
   }
 
-  useEffect(()=>[
-    fetchAnnouncements()
-  ], [])
+  useEffect(()=>{
+    if(localStorage.getItem('userRole') != 3 && localStorage.getItem('userRole') != 5)
+      fetchAnnouncements()
+  }, [])
 
   return (
     <div className="wrapper">
@@ -88,7 +89,7 @@ function Dashboard(props) {
           <Route path='/*' component={()=> <Page404 />} />
         </Switch>
         <Footer fluid />
-        {announcement && announcementPopup && <ViewAnnouncement announcement={announcement} setAnnouncementPopup={setAnnouncementPopup}/>}
+        {announcement?.length > 0 && announcementPopup && <ViewAnnouncement announcement={announcement} setAnnouncementPopup={setAnnouncementPopup}/>}
       </div>
     </div> 
   );

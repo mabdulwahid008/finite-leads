@@ -24,10 +24,15 @@ router.post('/', authorization, masterOrAdminAuthorization, imageUpload.single('
 router.get('/', authorization, async(req, res) => {
     try {
         const user = await db.query('SELECT * FROM USERS WHERE _id = $1',[req.user_id])
+        let announcement;
 
-        const announcement = await db.query('SELECT * FROM ANNOUNCEMENTS WHERE for_user_role = $1 ORDER BY _id DESC',[
-            user.rows[0].role
-        ])
+        if(user.rows[0].role != 3 && user.rows[0].role != 5)
+            announcement = await db.query('SELECT * FROM ANNOUNCEMENTS WHERE for_user_role = $1 ORDER BY _id DESC',[
+                user.rows[0].role
+            ])
+        else
+            announcement = await db.query('SELECT * FROM ANNOUNCEMENTS ORDER BY _id DESC')
+            
         return res.status(200).json(announcement.rows)
     } catch (error) {
         console.log(error.message);
@@ -39,10 +44,11 @@ router.get('/', authorization, async(req, res) => {
 router.delete('/:id', authorization, masterOrAdminAuthorization, async(req, res)=>{
     try {
         await db.query('DELETE FROM ANNOUNCEMENTS WHERE _id = $1', [req.params.id])
-        return res.status(500).json({message: 'Server Error'})
+        return res.status(200).json({message: 'Announcement deleted successfully'})
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
     }
 })
+
 module.exports = router

@@ -35,7 +35,7 @@ function AnnouncementPopup({ setPostPopup }) {
     const onSubmit = async(e) => {
         e.preventDefault();
         setLoading(true)
-        if(!for_user_role){
+        if(for_user_role === null){
             toast.error('Select user group')
             return setLoading(false)
         }

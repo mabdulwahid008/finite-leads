@@ -249,6 +249,42 @@ input[type=range] {
     margin: 0px 10px 5px 0px !important;
   }
 
+.announcement {
+    /* padding: 0px !important; */
+    padding: 0px 10px !important;
+    overflow: hidden;
+}
+.announcement > div{
+    overflow: hidden;
+    display:flex;
+    justify-content:space-between; 
+    align-items:flex-start;
+}
+.announcement > div > img {
+    transition: .5s ease;
+    cursor: pointer;
+    width: 100vw;
+    height: 130px;
+    object-fit: cover;
+
+}
+.announcement > div:nth-of-type(1){
+    height: 130px;
+    margin-bottom: 8px;
+}
+.announcement > div > img:hover{
+    transform: scale(1.1);
+}
+.announcement > div > svg {
+    transition: .5s ease;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 25px;
+}
+.announcement > div > svg:hover{
+    color: var(--dangerColor);
+}
+
   
 
 @media screen and (max-width: 991px){

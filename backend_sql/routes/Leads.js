@@ -186,7 +186,7 @@ router.get('/agent/dashboard/:year/:month', authorization, realEstateAutorizatio
 // for RE Agent dahboard leads which are not given any status
 router.get('/agent/dahboard-leads/:page', authorization, realEstateAutorization, async(req, res) => {
     try {
-        const record = 1;
+        const record = 6;
         const page = parseInt(req.params.page) ;
         const offset = (page - 1) * record;
 

@@ -109,7 +109,7 @@ function Header(props) {
   }, 2000)  
 
   }
-
+  const userRole = localStorage.getItem('userRole')
   useEffect(()=>{
     if(localStorage.getItem('userRole') == 2)
           getNotification() 
@@ -175,14 +175,14 @@ function Header(props) {
             </InputGroup>
           </form> */}
           <Nav navbar>
-            <NavItem>
-              <Link to="/dashboard" className="nav-link btn-magnify">
+            {(userRole != 3 && userRole != 5) && <NavItem>
+              <a className="nav-link btn-magnify">
                 <i className="nc-icon nc-layout-11" onClick={()=>props.setAnnouncementPopup(true)}/>
                 <p>
                   <span className="d-lg-none d-md-block">Announcement</span>
                 </p>
-              </Link>
-            </NavItem>
+              </a>
+            </NavItem>}
            {localStorage.getItem('userRole') == 2 && <Dropdown
               nav
               isOpen={dropdownOpen}
@@ -195,15 +195,17 @@ function Header(props) {
                   <span className="d-lg-none d-md-block">Notifications</span>
                 </p>
               </DropdownToggle>
-              {notfication.length > 0 && <DropdownMenu right>
+              {notfication.length > 0 && <DropdownMenu right style={{height:200, overflow:'scroll'}}>
                 {notfication.reverse().map((lead)=>{
-                  return <div className="notification" key={lead._id} style={{backgroundColor: `${lead.viewed === false ? '#f2f3ef': '#fff'}`}}>
+                  return <Link to={`/lead-details/${lead._id}`}>
+                  <div className="notification" key={lead._id} style={{backgroundColor: `${lead.viewed === false ? '#f2f3ef': '#fff'}`}}>
                     <div>
                         <p>{lead.fname}</p><br/>
                         <p style={{fontSize:10}}>{lead.address}</p>
                     </div>
                     <Link to={`/lead-details/${lead._id}`}><BsEye onClick={()=>setDropdownOpen(false)}/></Link>
                   </div>
+                  </Link>
                 })}
               </DropdownMenu>}
             </Dropdown>}
