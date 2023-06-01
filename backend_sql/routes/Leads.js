@@ -5,7 +5,8 @@ const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthoriza
 const realEstateAutorization = require('../middleware/realEstateAutorization');
 const { dateWithoutTime, getTimePeriod, startDate, endDate } = require('../date');
 const router = express.Router();
-const moment = require('moment-timezone')
+const moment = require('moment-timezone');
+const imageUpload = require('../middleware/uploadProfle');
 
 
 
@@ -553,5 +554,14 @@ router.get('/agent-stats/:id', authorization, masterOrAdminAuthorization, async(
     }
 })
 
+router.post('/rfa', authorization, realEstateAutorization, imageUpload.single('rfa'), async(req, res)=>{
+    try {
+        // console.log(req.file.path);
+        return res.status(200).json({message:'Agreement uploaded successfully'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message:'Server Error'})
+    }
+})
 
 module.exports = router
