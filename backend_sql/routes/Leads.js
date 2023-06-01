@@ -323,7 +323,7 @@ router.get('/comments/:_id/:agent_id', authorization, masterOrAdminAuthorization
 // for admin to check whose thus lead assigned to and for filtering comments
 router.get('/assined/:_id', authorization, masterOrAdminAuthorization, async(req, res) => {
     try {
-        const agents = await db.query('SELECT  _id, name FROM lead_assigned_to INNER JOIN USERS ON lead_assigned_to.realEstateAgent_id = USERS._id WHERE lead_id = $1 GROUP BY _id, realEstateAgent_id ORDER BY realEstateAgent_id DESC',[
+        const agents = await db.query('SELECT  _id, name FROM lead_assigned_to INNER JOIN USERS ON lead_assigned_to.realEstateAgent_id = USERS._id WHERE lead_id = $1 GROUP BY _id, realEstateAgent_id, name ORDER BY realEstateAgent_id DESC',[
             req.params._id
         ])
         return res.status(200).json(agents.rows)

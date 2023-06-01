@@ -9,7 +9,7 @@ function AnnouncementPopup({ setPostPopup }) {
     const [image, setImage] = useState(null)
     const [loading, setLoading] = useState(false)
     const [for_user_role, setFor_user_role] = useState(null)
-    const [img, setImg] = useState(require('../../assets/img/header.jpg'))
+    const [img, setImg] = useState(require('../../assets/img/img.jpg'))
     const userGroup = [
         {value: 0, label: "Sale Agents"},
         {value: 1, label: "Marketing Agents"},

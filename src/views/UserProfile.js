@@ -1,10 +1,11 @@
 import Loading from "components/Loading/Loading";
 import ImageUpload from "components/imageUpload/ImageUpload";
 import React, { useEffect, useState } from "react";
-import { BsEyeSlash, BsCamera } from "react-icons/bs";
+import { BsEyeSlash, BsCamera, BsUpload } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { Button, Card, CardHeader, CardBody, CardFooter, CardTitle, FormGroup, Form, Input, Row, Col } from "reactstrap";
 import axios from 'axios'
+import RFA from "components/uploadRFA/RFA";
 
 function UserProfile() {
 
@@ -15,6 +16,8 @@ function UserProfile() {
     { role: 3, value: 'Admin'},
     { role: 5, value: 'Master'},
   ]
+
+  const [rfaPopup, setRfaPopup] = useState(false)
 
   const [mydata, setMyData] = useState(null)
 
@@ -92,7 +95,7 @@ function UserProfile() {
               <div className="image">
                 <img alt="..." src={require("assets/img/damir-bosnjak.jpg")} />
               </div>
-              <CardBody>
+              <CardBody >
                 <div className="author">
                   <a style={{position:'relative'}}>
                     <img style={{backgroundColor:'#f4f3ef'}}
@@ -108,6 +111,9 @@ function UserProfile() {
                 <p className="description text-center">
                   We like the way you work it <br />
                 </p>
+                <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                    {localStorage.getItem('userRole') == 2 && <Button disabled={false} className="rfa" onClick={()=>{setRfaPopup(true)}}>Upload Referral Agreement <BsUpload /></Button>}
+                </div>
               </CardBody>
               <CardFooter>
                 <hr />
@@ -349,6 +355,7 @@ function UserProfile() {
           </Col>
         </Row>}
         {imageUploadPopup && <ImageUpload setImageUploadPopup={setImageUploadPopup} setRefresh={setRefresh} profile_image={mydata.profile_image}/>}
+        {rfaPopup && <RFA  setRfaPopup={setRfaPopup}/>}
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BsEye } from "react-icons/bs";
+import { BsDownload, BsEye } from "react-icons/bs";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -17,7 +17,8 @@ import {
   InputGroup,
   InputGroupText,
   InputGroupAddon,
-  Input
+  Input,
+  Button
 } from "reactstrap";
 
 import routes from "routes.js";
@@ -59,8 +60,8 @@ function Header(props) {
         }
       } else {
         // let check = currentRoute.role.some((role)=> role == localStorage.getItem('userRole'))
-        // if(currentRoute.path == '/dashboard')
-        //   brandName = "Dashboard"
+        if(currentRoute.path == '/dashboard')
+          brandName = "Dashboard"
         // else if(!check)
         //   brandName = "404"
         // else
@@ -175,8 +176,16 @@ function Header(props) {
             </InputGroup>
           </form> */}
           <Nav navbar>
+            {userRole == 2 && <NavItem>
+              <a href="RFA 499.pdf" download="RFA 499.pdf">
+                <Button className="rfa">
+                  Referral Agreement
+                  <BsDownload />
+                </Button>
+              </a>
+            </NavItem>}
             {(userRole != 3 && userRole != 5) && <NavItem>
-              <a className="nav-link btn-magnify">
+              <a href="" className="nav-link btn-magnify">
                 <i className="nc-icon nc-layout-11" onClick={()=>props.setAnnouncementPopup(true)}/>
                 <p>
                   <span className="d-lg-none d-md-block">Announcement</span>
