@@ -71,7 +71,7 @@
 }
 .slider-overlay > svg {
     color:'white';
-    z-index:999; 
+    z-index:999999; 
     font-size: 20;
     position:'absolute',;
     right: 10%;
@@ -83,6 +83,7 @@
     color: var(--primaryColor) !important
 }
 .slider-popup{
+    /* position: absolute !important; */
     top: -5% !important;
     width: 90%;
     display: flex;
@@ -113,9 +114,12 @@
 
 @media screen and (max-width: 991px) {
     .popup{
-        padding: 0px 10px 40px !important;
+        padding: 10px 10px 40px !important;
     }
     .card-popup{
-        width: 100% !important;
+        width: 90% !important;
+    }
+    .slider-popup{
+        width: 100%;
     }
 }

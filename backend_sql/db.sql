@@ -131,3 +131,12 @@ CREATE TABLE ANNOUNCEMENTS(
     for_user_role INT NOT NULL,
     created_at VARCHAR(10) NOT Null,
 )
+
+
+CREATE TABLE RFA(
+    _id SERIAL PRIMARY KEY,
+    rfa VARCHAR(500) NOT NULL,
+    comments VARCHAR(500),
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES USERS(_id) ON DELETE CASCADE 
+)

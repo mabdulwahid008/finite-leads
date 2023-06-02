@@ -15,10 +15,10 @@ function ViewAnnouncement({ announcement, setAnnouncementPopup, image, setLightB
     return (
       <div className='popup'>
         <div className='overlay slider-overlay'>
-        <RxCross1 style={{color:'white', zIndex:999, fontSize: 20,position:'absolute', right: '10%', top:'6%'}} onClick={()=>setLightBox(false)}/>    
+        <RxCross1 style={{color:'white', zIndex:999, fontSize: 20,position:'absolute', right: '5%', top:'6%'}} onClick={()=>setLightBox(false)}/>    
         </div>
         <div className='slider-popup'>
-            <img src={`${process.env.REACT_APP_IMAGE_URL}/${image}`} style={{width:'85%', zIndex:999, borderRadius:5}}/>
+            <img src={`${process.env.REACT_APP_IMAGE_URL}/${image}`} style={{width:'85%', zIndex:99, borderRadius:5}}/>
         </div>
       </div>
     )
@@ -27,15 +27,15 @@ function ViewAnnouncement({ announcement, setAnnouncementPopup, image, setLightB
     return (
       <div className='popup'>
         <div className='overlay slider-overlay'>
-        <RxCross1 style={{color:'white', zIndex:999, fontSize: 20,position:'absolute', right: '10%', top:'6%'}} onClick={()=>setAnnouncementPopup(false)}/>    
+        <RxCross1 style={{color:'white', zIndex:999, fontSize: 20,position:'absolute', right: '5%', top:'6%'}} onClick={()=>setAnnouncementPopup(false)}/>    
         </div>
-        <div className='slider-popup'>
-          {announcement.length > 0 && <FiArrowLeft onClick={prev}/>}
+        <div className='slider-popup' >
+          {announcement.length > 1 && <FiArrowLeft onClick={prev}/>}
               {announcement.map((announce, index)=> {
               if(index === current)
-                return <img src={`${process.env.REACT_APP_IMAGE_URL}/${announce.image}`} style={{width:'85%', zIndex:999, borderRadius:5}}/>
+                return <img src={`${process.env.REACT_APP_IMAGE_URL}/${announce.image}`} style={{width:'85%', zIndex:9, borderRadius:5}}/>
               })}
-          {announcement.length > 0 && <FiArrowRight onClick={next}/>}
+          {announcement.length > 1 && <FiArrowRight onClick={next}/>}
         </div>
       </div>
     )

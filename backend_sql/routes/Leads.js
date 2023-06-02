@@ -556,7 +556,9 @@ router.get('/agent-stats/:id', authorization, masterOrAdminAuthorization, async(
 
 router.post('/rfa', authorization, realEstateAutorization, imageUpload.single('rfa'), async(req, res)=>{
     try {
-        // console.log(req.file.path);
+        await db.query('INSERT INTO RFA(rfa, comments, user_id) VALUES($1, $2, $3)',[
+            req.file.path, req.body.comments, req.user_id
+        ])
         return res.status(200).json({message:'Agreement uploaded successfully'})
     } catch (error) {
         console.log(error.message);

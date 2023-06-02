@@ -185,7 +185,7 @@ function Header(props) {
               </a>
             </NavItem>}
             {(userRole != 3 && userRole != 5) && <NavItem>
-              <a href="" className="nav-link btn-magnify">
+              <a href="#" className="nav-link btn-magnify">
                 <i className="nc-icon nc-layout-11" onClick={()=>props.setAnnouncementPopup(true)}/>
                 <p>
                   <span className="d-lg-none d-md-block">Announcement</span>

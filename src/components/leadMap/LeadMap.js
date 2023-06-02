@@ -47,7 +47,7 @@ function LeadMap({lead_id, street, zipcode, state}) {
     const res = await response.json()
     if(response.status === 200){
       console.log(res.length);
-      if(res.length >= 1){
+      if(res.length >= 6){
         setConfirmAssignPopup(true)
       }
       else{
