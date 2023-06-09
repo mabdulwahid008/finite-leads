@@ -146,14 +146,14 @@ var routes = [
     role: [3,5], 
     child: true
   },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "nc-icon nc-diamond",
-    component: Icons,
-    layout: "/admin",
-    role : [0,2,3,5]
-  },
+  // {
+  //   path: "/icons",
+  //   name: "Icons",
+  //   icon: "nc-icon nc-diamond",
+  //   component: Icons,
+  //   layout: "/admin",
+  //   role : [0,2,3,5]
+  // },
   {
     path: "/announcement",
     name: "Announcements",
