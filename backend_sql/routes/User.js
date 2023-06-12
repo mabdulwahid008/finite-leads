@@ -74,7 +74,7 @@ router.post('/', authorization, masterOrAdminAuthorization, async(req, res) => {
         const encryptedPass = bcrypt.hashSync(password, salt)
 
         // sale agent and Admin
-        if(role == 0 || role == 3){
+        if(role == 0 || role == 3 || role == 5){
             const createUser = await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at) VALUES($1, $2, $3, $4, $5, $6, $7)',[
                 name, phone, email, address, encryptedPass, role, date
             ])

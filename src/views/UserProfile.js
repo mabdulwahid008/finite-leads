@@ -18,6 +18,7 @@ function UserProfile() {
   ]
 
   const [rfaPopup, setRfaPopup] = useState(false)
+  const [rfaBtnDisable, setRfaBtnDisable] = useState(false)
 
   const [mydata, setMyData] = useState(null)
 
@@ -37,7 +38,25 @@ function UserProfile() {
     setPassword({...password, [e.target.name]: e.target.value})
   } 
 
-  
+  // for RE Agents to check if they have uploaded RFA or not
+  const checkREAgentHasUploadedRFA = async(id) => {
+    const response = await fetch(`/lead/rfa/${id}`, {
+      method:'GET',
+      headers:{
+        'Content-Type':'Apllication/json',
+        token: localStorage.getItem('token')
+      }
+    })
+    let res = await response.json()
+    
+    if(response.status === 200){
+      setRfaBtnDisable(true)
+    }
+    else
+      toast.error(res.message)
+  }
+
+
   const submitChangePassword = async( e ) => {
     e.preventDefault()
     setLoading(true)
@@ -74,11 +93,12 @@ function UserProfile() {
     let res = await response.json()
     
     if(response.status === 200){
+      if(res.role == 2)
+          checkREAgentHasUploadedRFA(res._id)
       setMyData(res)
     }
     else
       toast.error(res.message)
-
   }
 
   useEffect(()=>{
@@ -112,7 +132,7 @@ function UserProfile() {
                   We like the way you work it <br />
                 </p>
                 <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
-                    {localStorage.getItem('userRole') == 2 && <Button disabled={false} className="rfa" onClick={()=>{setRfaPopup(true)}}>Upload Referral Agreement <BsUpload /></Button>}
+                    {localStorage.getItem('userRole') == 2 && <Button className="rfa" disabled={rfaBtnDisable? true : false} onClick={()=>{setRfaPopup(true)}}>{rfaBtnDisable? 'Uploaded Referral Agreement' :'Upload Referral Agreement'} <BsUpload /></Button>}
                 </div>
               </CardBody>
               <CardFooter>

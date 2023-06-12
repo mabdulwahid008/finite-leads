@@ -566,4 +566,16 @@ router.post('/rfa', authorization, realEstateAutorization, imageUpload.single('r
     }
 })
 
+router.get('/rfa/:id', authorization, async(req, res) => {
+    try {
+        const rfa = await db.query('SELECT * FROM RFA WHERE user_id = $1', [req.params.id])
+        if(rfa.rows.length === 0) 
+            return res.status(404).json({})
+        return res.status(200).json(rfa.rows[0])
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
 module.exports = router
