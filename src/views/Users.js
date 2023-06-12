@@ -10,6 +10,7 @@ import { reactStyles } from 'assets/additional/reactStyles';
 import { AiOutlinePoweroff } from 'react-icons/ai';
 import DeactivatePopup from 'components/DeactivatePopup/DeactivatePopup';
 import ActivateUserPopup from 'components/ActivateUserPopup/ActivateUserPopup';
+import { RxExternalLink } from 'react-icons/rx';
 
 function Users() {
     const [saleAgents, setSaleAgents] = useState(null)
@@ -20,6 +21,8 @@ function Users() {
     const [agentToBeDeactiveOrActive, setAgentToBeDeactiveOrActive] = useState(null)
 
     const [addNewAgent, setAddNewAgent] = useState(false)
+
+    const [rfaStats, setRfaStats] = useState(null)
 
     const [editAgent, setEditAgent] = useState(false)
     const [agentToBeEdited, setAgentToBeEdited] = useState(null)
@@ -108,8 +111,25 @@ function Users() {
         
     }
 
+    const fetchRFAStats = async() => {
+        const response = await fetch(`/lead/agents/rfa`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            setRfaStats(res)
+        }
+        else{
+            toast.error(res.message)
+        }
+    }
 
-    useEffect(() => {   
+    useEffect(() => { 
+        fetchRFAStats()  
         setRefresh(false)
 
         setSaleAgents(null)
@@ -170,7 +190,7 @@ function Users() {
             <Col>
                 <Card>
                     <CardHeader>
-                        <CardTitle tag="h4">RFA Stata</CardTitle>
+                        <CardTitle tag="h4">RFA Stats</CardTitle>
                     </CardHeader>
                     <CardBody>
                         <Row style={{justifyContent:'space-between'}}>
@@ -185,9 +205,16 @@ function Users() {
                                         <th>RFA</th>
                                     </tr>
                                     </thead>
-                                    <tr>
-
-                                    </tr>
+                                    <tbody>
+                                        {rfaStats?.agentsWhoHasUploaded.map((agent, index)=>{
+                                            return <tr key={agent._id}>
+                                                <td>{index+1}</td>
+                                                <td>{agent.name}</td>
+                                                <td>{agent.comments}</td>
+                                                <a href={`${process.env.REACT_APP_IMAGE_URL}/${agent.rfa}`} target="_blank"><RxExternalLink /></a>
+                                            </tr>
+                                        })}
+                                    </tbody>
                                 </Table>
                             </Col>
                             <Col md="4">
@@ -199,9 +226,14 @@ function Users() {
                                         <th>Name</th>
                                     </tr>
                                     </thead>
-                                    <tr>
-                                        
-                                    </tr>
+                                    <tbody>
+                                        {rfaStats?.agentsWhoHasNotUploaded.map((agent, index)=>{
+                                            return <tr key={agent._id}>
+                                                <td>{index+1}</td>
+                                                <td>{agent.name}</td>
+                                            </tr>
+                                        })}
+                                    </tbody>
                                 </Table>
                             </Col>
                         </Row>
