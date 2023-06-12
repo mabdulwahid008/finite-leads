@@ -165,6 +165,50 @@ function Users() {
         {addNewAgent && <AddUser setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents} setRefresh={setRefresh}/>}
         {deactivePopup && <DeactivatePopup setDeactivePopup={setDeactivePopup} agentToBeDeactiveOrActive={agentToBeDeactiveOrActive} setAgentToBeDeactiveOrActive={setAgentToBeDeactiveOrActive} onSubmitDeactiveAgent={onSubmitDeactiveAgent}/>}
         {activePopup && <ActivateUserPopup setActivePopup={setActivePopup} agentToBeDeactiveOrActive={agentToBeDeactiveOrActive} setAgentToBeDeactiveOrActive={setAgentToBeDeactiveOrActive} onSubmitActiveAgent={onSubmitActiveAgent}/>}
+    
+        <Row>
+            <Col>
+                <Card>
+                    <CardHeader>
+                        <CardTitle tag="h4">RFA Stata</CardTitle>
+                    </CardHeader>
+                    <CardBody>
+                        <Row style={{justifyContent:'space-between'}}>
+                            <Col md="6">
+                                <h6 style={{fontSize: 13}}>Agents Who Has Uploaded</h6>
+                                <Table>
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Comments</th>
+                                        <th>RFA</th>
+                                    </tr>
+                                    </thead>
+                                    <tr>
+
+                                    </tr>
+                                </Table>
+                            </Col>
+                            <Col md="4">
+                                <h6 style={{fontSize: 13}}>Agents Who has Not</h6>
+                                <Table>
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                    </tr>
+                                    </thead>
+                                    <tr>
+                                        
+                                    </tr>
+                                </Table>
+                            </Col>
+                        </Row>
+                    </CardBody>
+                </Card>
+            </Col>
+        </Row>
     </div>
   )
 }

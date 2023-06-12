@@ -556,6 +556,10 @@ router.get('/agent-stats/:id', authorization, masterOrAdminAuthorization, async(
 
 router.post('/rfa', authorization, realEstateAutorization, imageUpload.single('rfa'), async(req, res)=>{
     try {
+        const check = await db.query('SELECT * from RFA WHERE user_id = $1', req.user_id)
+        if(check.rows.length > 0)
+            return res.status(422).json({message:'You have already uploaded'})
+
         await db.query('INSERT INTO RFA(rfa, comments, user_id) VALUES($1, $2, $3)',[
             req.file.path, req.body.comments, req.user_id
         ])
@@ -572,6 +576,21 @@ router.get('/rfa/:id', authorization, async(req, res) => {
         if(rfa.rows.length === 0) 
             return res.status(404).json({})
         return res.status(200).json(rfa.rows[0])
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+
+router.get('/agents/rfa', authorization, async(req, res) => {
+    try {
+        const agentsWhoHasUploaded = await db.query('SELECT users._id, name, rfa, comments FROM USERS INNER JOIN RFA on USERS._id = RFA.user_id WHERE role = 2')
+        const agentsWhoHasNotUploaded = await db.query('SELECT name, rfa FROM USERS LEFT JOIN RFA ON USERS._id = RFA.user_id WHERE RFA.user_id IS NULL AND role = 2;')
+
+      
+
+        return res.status(200).json({agentsWhoHasUploaded: agentsWhoHasUploaded.rows, agentsWhoHasNotUploaded: agentsWhoHasNotUploaded.rows})
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})

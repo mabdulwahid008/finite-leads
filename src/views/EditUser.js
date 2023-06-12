@@ -140,7 +140,6 @@ function EditUser({  }) {
                 </p>
                 {rfaUploaded && <div style={{display:'flex', justifyContent:'center', alignItems:'center', flexDirection:'column', gap:5}}>
                     <a href={`${process.env.REACT_APP_IMAGE_URL}/${rfaUploaded.rfa}`} target='_blank'><Button className="rfa">Signed RFA <RxExternalLink/></Button></a>
-                    <p>{rfaUploaded.comments == 'null'? "" : rfaUploaded.comments}</p>
                 </div>}
                 </>}
               </CardBody>
