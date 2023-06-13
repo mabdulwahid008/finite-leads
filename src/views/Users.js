@@ -11,6 +11,7 @@ import { AiOutlinePoweroff } from 'react-icons/ai';
 import DeactivatePopup from 'components/DeactivatePopup/DeactivatePopup';
 import ActivateUserPopup from 'components/ActivateUserPopup/ActivateUserPopup';
 import { RxExternalLink } from 'react-icons/rx';
+import RfaStats from 'components/rfaStats/RfaStats';
 
 function Users() {
     const [saleAgents, setSaleAgents] = useState(null)
@@ -21,8 +22,6 @@ function Users() {
     const [agentToBeDeactiveOrActive, setAgentToBeDeactiveOrActive] = useState(null)
 
     const [addNewAgent, setAddNewAgent] = useState(false)
-
-    const [rfaStats, setRfaStats] = useState(null)
 
     const [editAgent, setEditAgent] = useState(false)
     const [agentToBeEdited, setAgentToBeEdited] = useState(null)
@@ -111,25 +110,7 @@ function Users() {
         
     }
 
-    const fetchRFAStats = async() => {
-        const response = await fetch(`/lead/agents/rfa`,{
-            method: 'GET',
-            headers: {
-                'Content-Type': 'Application/json',
-                token: localStorage.getItem('token')
-            }
-        })
-        const res = await response.json()
-        if(response.status === 200){
-            setRfaStats(res)
-        }
-        else{
-            toast.error(res.message)
-        }
-    }
-
-    useEffect(() => { 
-        fetchRFAStats()  
+    useEffect(() => {  
         setRefresh(false)
 
         setSaleAgents(null)
@@ -185,62 +166,9 @@ function Users() {
         {addNewAgent && <AddUser setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents} setRefresh={setRefresh}/>}
         {deactivePopup && <DeactivatePopup setDeactivePopup={setDeactivePopup} agentToBeDeactiveOrActive={agentToBeDeactiveOrActive} setAgentToBeDeactiveOrActive={setAgentToBeDeactiveOrActive} onSubmitDeactiveAgent={onSubmitDeactiveAgent}/>}
         {activePopup && <ActivateUserPopup setActivePopup={setActivePopup} agentToBeDeactiveOrActive={agentToBeDeactiveOrActive} setAgentToBeDeactiveOrActive={setAgentToBeDeactiveOrActive} onSubmitActiveAgent={onSubmitActiveAgent}/>}
-    
-        <Row>
-            <Col>
-                <Card>
-                    <CardHeader>
-                        <CardTitle tag="h4">RFA Stats</CardTitle>
-                    </CardHeader>
-                    <CardBody>
-                        <Row style={{justifyContent:'space-between'}}>
-                            <Col md="6">
-                                <h6 style={{fontSize: 13}}>Agents Who Has Uploaded</h6>
-                                <Table>
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Comments</th>
-                                        <th>RFA</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        {rfaStats?.agentsWhoHasUploaded.map((agent, index)=>{
-                                            return <tr key={agent._id}>
-                                                <td>{index+1}</td>
-                                                <td>{agent.name}</td>
-                                                <td>{agent.comments}</td>
-                                                <a href={`${process.env.REACT_APP_IMAGE_URL}/${agent.rfa}`} target="_blank"><RxExternalLink /></a>
-                                            </tr>
-                                        })}
-                                    </tbody>
-                                </Table>
-                            </Col>
-                            <Col md="4">
-                                <h6 style={{fontSize: 13}}>Agents Who has Not</h6>
-                                <Table>
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        {rfaStats?.agentsWhoHasNotUploaded.map((agent, index)=>{
-                                            return <tr key={agent._id}>
-                                                <td>{index+1}</td>
-                                                <td>{agent.name}</td>
-                                            </tr>
-                                        })}
-                                    </tbody>
-                                </Table>
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card>
-            </Col>
-        </Row>
+        
+        
+        <RfaStats />
     </div>
   )
 }

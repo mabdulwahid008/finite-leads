@@ -65,7 +65,7 @@ function LeadListing() {
                         {!leads && <Loading />}
                         {leads && leads.length === 0 && <p>No Leads yet</p>}
                         {leads && leads.length !== 0 && <>
-                        <Table>
+                        <Table style={{minHeight:400}}>
                             <thead>
                                 <tr>
                                     <th style={{width:'2%'}}>#</th>

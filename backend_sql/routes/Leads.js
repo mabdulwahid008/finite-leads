@@ -583,14 +583,38 @@ router.get('/rfa/:id', authorization, async(req, res) => {
 })
 
 
-router.get('/agents/rfa', authorization, async(req, res) => {
+router.get('/agents/uploadded-rfa/:page', authorization, async(req, res) => {
     try {
-        const agentsWhoHasUploaded = await db.query('SELECT users._id, name, rfa, comments FROM USERS INNER JOIN RFA on USERS._id = RFA.user_id WHERE role = 2')
-        const agentsWhoHasNotUploaded = await db.query('SELECT name, rfa FROM USERS LEFT JOIN RFA ON USERS._id = RFA.user_id WHERE RFA.user_id IS NULL AND role = 2;')
+        const record = 10;
+        const page = parseInt(req.params.page) ;
+        const offset = (page - 1) * record;
 
+        const totalData = await db.query('SELECT count(*) FROM USERS INNER JOIN RFA on USERS._id = RFA.user_id WHERE role = 2')
+
+        const agentsWhoHasUploaded = await db.query('SELECT users._id, name, rfa, comments FROM USERS INNER JOIN RFA on USERS._id = RFA.user_id WHERE role = 2 LIMIT $1 OFFSET $2',[
+            record, offset
+        ])
+        
+        return res.status(200).json({agentsWhoHasUploaded: agentsWhoHasUploaded.rows, totalData: totalData.rows[0].count})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+router.get('/agents/not-uploadded-rfa/:page', authorization, async(req, res) => {
+    try {
+        const record = 10;
+        const page = parseInt(req.params.page) ;
+        const offset = (page - 1) * record;
+
+        const totalData = await db.query('SELECT count(*) FROM USERS LEFT JOIN RFA ON USERS._id = RFA.user_id WHERE RFA.user_id IS NULL AND role = 2')
+
+        const agentsWhoNotHasUploaded = await db.query('SELECT users._id, name FROM USERS LEFT JOIN RFA ON USERS._id = RFA.user_id WHERE RFA.user_id IS NULL AND role = 2 LIMIT $1 OFFSET $2',[
+            record, offset
+        ])
       
-
-        return res.status(200).json({agentsWhoHasUploaded: agentsWhoHasUploaded.rows, agentsWhoHasNotUploaded: agentsWhoHasNotUploaded.rows})
+        return res.status(200).json({agentsWhoNotHasUploaded: agentsWhoNotHasUploaded.rows, totalData: totalData.rows[0].count})
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: 'Server Error'})
