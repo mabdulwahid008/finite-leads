@@ -155,7 +155,7 @@ var routes = [
   //   role : [0,2,3,5]
   // },
   {
-    path: "/announcement",
+    path: "/announcements",
     name: "Announcements",
     icon: "nc-icon nc-bell-55",
     component: Announcement,

@@ -53,8 +53,10 @@ function AnnouncementPopup({ setPostPopup }) {
             body: fd
         })
         const res = await response.json()
-        if(response.status === 200)
+        if(response.status === 200){
+            setPostPopup(false)
             toast.success(res.message)
+        }
         else
             toast.error(res.message)
         setLoading(false)
