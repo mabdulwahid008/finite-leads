@@ -381,7 +381,7 @@ router.get('/listing/agent-stats', authorization, masterOrAdminAuthorization, as
     // agent_id = null
     // leads_count = null
     try {
-        const record = 1;
+        const record = 10;
         const pagee = parseInt(page) ;
         const offset = (pagee - 1) * record;
         
