@@ -10,6 +10,8 @@ import DeleteSalePopup from 'components/deleteSalePopup/DeleteSalePopup';
 
 function Sales() {
     const [sales, setSales] = useState(null)
+    const [page, setPage] = useState(1)
+    const [totalData, setTotalData] = useState(0)
 
     const [filterSale, setFilterSale] = useState({fromDate: 0, toDate: 0, agentId: 0})
     const [defaultfilterSale, setDefaultFilterSale] = useState({fromDate: 0, toDate: 0, agentId: {value: 0, label: 'Select'}})
@@ -35,7 +37,7 @@ function Sales() {
             toast.error('Please select correct date filter')
             return;
         }
-
+        setPage(1)
         setSales(null)
         fetchSales()
    }
@@ -89,7 +91,7 @@ function Sales() {
     } 
 
     const fetchSales = async() => {
-        const response = await fetch(`/sale/${filterSale.fromDate}/${filterSale.toDate}/${filterSale.agentId}`,{
+        const response = await fetch(`/sale/${filterSale.fromDate}/${filterSale.toDate}/${filterSale.agentId}/${page}`,{
             method: 'GET',
             headers: {
                 'Content-Type' : 'Application/json',
@@ -98,8 +100,8 @@ function Sales() {
         })
         const res = await response.json()
         if(response.status === 200){
-            setSales(res)
-            console.log(res);
+            setSales(res.sales)
+            setTotalData(res.totaldata)
         }
         else
             toast.error(res.message)
@@ -110,10 +112,10 @@ function Sales() {
     },[sales])
     useEffect(()=>{
         setRefresh(false)
-
+        setSales(null)
         fetchSales();
         fetchSalesAgnets()
-    }, [refresh])
+    }, [refresh, page])
   return (
     <div className='content'>    
         <Row>
@@ -125,7 +127,7 @@ function Sales() {
                             <Link to='add-sale'><Button>Add Sale</Button></Link>
                         </div>
 
-                        {sales && <div style={{display:"flex", alignItems:"flex-end", gap:10, width:`${onMobile? '100%' : '50%'}`}}>
+                        {<div style={{display:"flex", alignItems:"flex-end", gap:10, width:`${onMobile? '100%' : '50%'}`}}>
                             <Form>
                                 <Row style={{display:'flex', justifyContent: 'space-between', alignItems:'flex-end', width:`${onMobile? '108%' : '150%'}`}}>
                                     <Col md="4" style={{marginBottom: 10}}>
@@ -153,8 +155,9 @@ function Sales() {
                     </CardHeader>
                     <CardBody>
                         {!sales && <Loading />}
-                        {sales && sales.length === 0 && <p>No sales yet</p>}
-                       {sales && sales.length !== 0 && <Table responsive={onMobile ? true : false }>
+                        {sales && sales.length === 0 && <p>No sales</p>}
+                       {sales && sales.length !== 0 && <>
+                       <Table responsive={onMobile ? true : false }>
                             <thead>
                                 <tr>
                                     <th style={{width: '2%'}}>#</th>
@@ -187,7 +190,17 @@ function Sales() {
                                     </tr>
                                 })}
                             </tbody>
-                        </Table>}
+                        </Table>
+                         <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+                            <div className='dahboard-table'>
+                                <Button className='next-prev' disabled={page === 1 ? true : false} onClick={()=>{if(page !== 1) setPage(page-1)}}>Prev</Button>
+                                <Button className='next-prev' disabled={page >= Math.ceil(totalData / 30)} onClick={()=>{setPage(page+1)}}>Next</Button>
+                            </div>
+                            <div>
+                                <p  className='text-muted' style={{fontSize:12}}>Page: {page} / Total Data: {totalData}</p>
+                            </div>
+                        </div>
+                        </>}
                     </CardBody>
                 </Card>
             </Col>

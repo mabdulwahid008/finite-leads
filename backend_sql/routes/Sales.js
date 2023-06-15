@@ -23,9 +23,71 @@ router.get('/mysales', authorization, async(req, res)=> {
     }
 })
 
-// admin or master get all sales
+// admin or master get all sales listing
+router.get('/:fromDate/:toDate/:agentId/:page', authorization, masterOrAdminAuthorization, async(req, res)=> {
+    try {
+        if(req.params.toDate != 0){
+            let date = req.params.toDate.split('-')
+            req.params.toDate = `${date[0]}-${date[1]}-${parseInt(date[2])+1}`
+        }
+        
+        const record = 30;
+        const page = parseInt(req.params.page) ;
+        const offset = (page - 1) * record;
+
+        let sales = [];
+        let totaldata;
+        // default call
+        if(req.params.agentId == 0 && req.params.fromDate == 0 && req.params.toDate == 0){
+            totaldata = await db.query('SELECT COUNT(*) FROM sales')
+            sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id ORDER BY create_at DESC LIMIT $1 OFFSET $2',[
+                record, offset
+            ])
+        }
+        // all sales of specific agent
+        else if(req.params.agentId != 0 && req.params.fromDate == 0 && req.params.toDate == 0){
+             totaldata = await db.query('SELECT COUNT(*) FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1',[
+                req.params.agentId
+             ])
+             sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1 ORDER BY create_at DESC LIMIT $2 OFFSET $3',[
+                 req.params.agentId, record, offset
+             ])
+        }    
+        // within time period sales of specific agent
+        else if(req.params.agentId != 0 && req.params.fromDate != 0 && req.params.toDate != 0){
+            totaldata = await db.query('SELECT COUNT(*) FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1 AND create_at >= $2 AND create_at <= $3',[
+                req.params.agentId, req.params.fromDate, req.params.toDate
+            ])
+            sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE user_id = $1 AND create_at >= $2 AND create_at <= $3 ORDER BY create_at DESC LIMIT $4 OFFSET $5',[
+                req.params.agentId, req.params.fromDate, req.params.toDate, record, offset
+            ])
+        }
+        // all sales within time perios
+        else if(req.params.agentId == 0 && req.params.fromDate != 0 && req.params.toDate != 0){
+            totaldata = await db.query('SELECT COUNT(*) FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE create_at >= $1 AND create_at <= $2',[
+                req.params.fromDate, req.params.toDate
+            ])
+            sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE create_at >= $1 AND create_at <= $2 ORDER BY create_at DESC LIMIT $3 OFFSET $4',[
+                req.params.fromDate, req.params.toDate, record, offset
+            ])
+        }
+        else{}    
+        
+        return res.status(200).json({sales:sales.rows, totaldata: totaldata.rows[0].count})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: 'Server Error'})
+    }
+})
+
+// for admin dashboard
 router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorization, async(req, res)=> {
     try {
+        if(req.params.toDate != 0){
+            let date = req.params.toDate.split('-')
+            req.params.toDate = `${date[0]}-${date[1]}-${parseInt(date[2])+1}`
+        }
+
         let sales = [];
         // default call
         if(req.params.agentId == 0 && req.params.fromDate == 0 && req.params.toDate == 0)
@@ -41,10 +103,11 @@ router.get('/:fromDate/:toDate/:agentId', authorization, masterOrAdminAuthorizat
                 req.params.agentId, req.params.fromDate, req.params.toDate
             ])
         // all sales within time perios
-        else if(req.params.agentId == 0 && req.params.fromDate != 0 && req.params.toDate != 0)
+        else if(req.params.agentId == 0 && req.params.fromDate != 0 && req.params.toDate != 0){
             sales = await db.query('SELECT SALES._id, extraBonus, client_name, client_phone, client_address, client_phone, multiplier, updated_multiplier, create_at, user_id, name  FROM SALES INNER JOIN USERS ON SALES.user_id = USERS._id WHERE create_at >= $1 AND create_at <= $2 ORDER BY create_at DESC',[
                 req.params.fromDate, req.params.toDate
             ])
+        }
         else{}    
         
         return res.status(200).json(sales.rows)
