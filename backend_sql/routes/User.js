@@ -149,20 +149,34 @@ router.get('/:role', authorization, masterOrAdminAuthorization, async(req, res) 
 })
 
 // get users for admin listing section
-router.get('/listing/:role', authorization, masterOrAdminAuthorization, async(req, res) => {
-    try {
-        let users = []
-        if(req.params.role != 99)
-            users = await db.query('SELECT _id, name, email, phone, address, state, zip_code, service_radius, active, created_at, role FROM users WHERE role != 5 AND role = $1 ORDER BY _id DESC',[
-                req.params.role
-            ])
-        else
-            users = await db.query('SELECT _id, name, email, phone, address, active, created_at, role FROM users WHERE role != 5 ORDER BY _id DESC')
+router.get('/listing/:role/:page', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try { 
+        const record = 10;
+        const page = parseInt(req.params.page) ;
+        const offset = (page - 1) * record;
 
+        let totalData;
+        let users = []
+        if(req.params.role != 99){
+            totalData = await db.query('SELECT COUNT(*) FROM USERS WHERE role != 5 AND role = $1 AND _id != $2', [
+                req.params.role, req.user_id
+            ])
+            users = await db.query('SELECT _id, name, email, phone, address, state, zip_code, service_radius, active, created_at, role FROM users WHERE role != 5 AND role = $1 ORDER BY _id DESC LIMIT $2 OFFSET $3',[
+                req.params.role, record, offset
+            ])
+        }
+        else{
+            totalData = await db.query('SELECT COUNT(*) FROM USERS WHERE role != 5 AND _id != $1', [
+                req.user_id
+            ])
+            users = await db.query('SELECT _id, name, email, phone, address, active, created_at, role FROM users WHERE role != 5 ORDER BY _id DESC LIMIT $1 OFFSET $2',[
+                record, offset
+            ])
+        }
         users = users.rows.filter((user) => user._id != req.user_id)
-        return res.status(200).json(users)    
+        return res.status(200).json({users, totalData: totalData.rows[0].count})    
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
         res.status(500).json({message: "Server Error"})
     }
 })

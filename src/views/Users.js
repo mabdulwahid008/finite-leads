@@ -15,6 +15,8 @@ import RfaStats from 'components/rfaStats/RfaStats';
 
 function Users() {
     const [saleAgents, setSaleAgents] = useState(null)
+    const [page, setPage] = useState(1)
+    const [totalData, setTotalData] = useState(0)
     let userRole = 99
 
     const [deactivePopup, setDeactivePopup] = useState(false)
@@ -40,6 +42,8 @@ function Users() {
         {value: 2, label: 'Real Estate Agent'},
         {value: 3, label: 'Admin'},
     ]
+
+
 
     const filterUsers = (role) => {
         if(role.value === 99){
@@ -93,7 +97,7 @@ function Users() {
     }
 
     const fetchUsers = async() => {
-        const response = await fetch(`/user/listing/${userRole}`,{
+        const response = await fetch(`/user/listing/${userRole}/${page}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'Application/json',
@@ -102,7 +106,8 @@ function Users() {
         })
         const res = await response.json()
         if(response.status === 200){
-            setSaleAgents(res)
+            setSaleAgents(res.users)
+            setTotalData(res.totalData)
         }
         else{
             toast.error(res.message)
@@ -112,10 +117,9 @@ function Users() {
 
     useEffect(() => {  
         setRefresh(false)
-
         setSaleAgents(null)
         fetchUsers()
-    }, [refresh])
+    }, [refresh, page])
     
   return (
     <div className='content'>
@@ -128,13 +132,14 @@ function Users() {
                             <Button onClick={()=> setAddNewAgent(true)}>Add New</Button>
                         </div>
                         <div style={{width:`${onMobile? '100%' : '20%'}` }}>
-                            <ReactSelect styles={reactStyles} options={userRoles} defaultValue={defaultUserRole} placeholder="Filter by role" onChange={(role)=>{filterUsers(role); setDefaultUserRole(role)}}/>
+                            <ReactSelect styles={reactStyles} options={userRoles} defaultValue={defaultUserRole} placeholder="Filter by role" onChange={(role)=>{setPage(1); filterUsers(role); setDefaultUserRole(role)}}/>
                         </div>
                     </CardHeader>
                     <CardBody>
                         {!saleAgents && <Loading />}
                         {saleAgents && saleAgents.length === 0 && <p>No users are found with this role</p>}
-                        {saleAgents && saleAgents.length !== 0  && <Table responsive={onMobile? true : false}>
+                        {saleAgents && saleAgents.length !== 0 && <>
+                        <Table responsive={onMobile? true : false}>
                             <thead>
                                 <th style={{width: '5%'}}>#</th>
                                 <th style={{width: '20%'}}>Name</th>
@@ -158,7 +163,17 @@ function Users() {
                                     </tr>
                                 })}
                             </tbody>
-                        </Table>}
+                        </Table>
+                        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+                            <div className='dahboard-table'>
+                                <Button className='next-prev' disabled={page === 1 ? true : false} onClick={()=>{if(page !== 1) setPage(page-1)}}>Prev</Button>
+                                <Button className='next-prev' disabled={page >= Math.ceil(totalData / 10)} onClick={()=>{setPage(page+1)}}>Next</Button>
+                            </div>
+                            <div>
+                                <p  className='text-muted' style={{fontSize:12}}>Page: {page} / Total Data: {totalData}</p>
+                            </div>
+                        </div>
+                        </>}
                     </CardBody>
                 </Card>
             </Col>
