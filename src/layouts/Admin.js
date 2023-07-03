@@ -11,6 +11,7 @@ import routes from "routes.js";
 import io from 'socket.io-client'
 import Page404 from "views/Page404";
 import ViewAnnouncement from "components/viewAnnouncement/ViewAnnouncement";
+import ReChatBox from "components/reChat/ReChatBox";
 
 var ps;
 
@@ -88,6 +89,7 @@ function Dashboard(props) {
           })}
           <Route path='/*' component={()=> <Page404 />} />
         </Switch>
+          <ReChatBox />
         <Footer fluid />
         {announcement?.length > 0 && announcementPopup && <ViewAnnouncement announcement={announcement} setAnnouncementPopup={setAnnouncementPopup}/>}
       </div>

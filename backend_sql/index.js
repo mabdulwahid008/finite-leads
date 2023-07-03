@@ -21,6 +21,7 @@ app.use('/sale', require('./routes/Sales'))
 app.use('/chat', require('./routes/Chat'))
 app.use('/lead', require('./routes/Leads'))
 app.use('/announcement', require('./routes/Announcement'))
+app.use('/query', require('./routes/Queries'))
 app.use('/file', require('./routes/file'))
 
 
