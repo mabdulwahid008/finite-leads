@@ -554,9 +554,10 @@ router.get('/agent-stats/:id', authorization, masterOrAdminAuthorization, async(
     }
 })
 
+// RE to upload agent rfa
 router.post('/rfa', authorization, realEstateAutorization, imageUpload.single('rfa'), async(req, res)=>{
     try {
-        const check = await db.query('SELECT * from RFA WHERE user_id = $1', req.user_id)
+        const check = await db.query('SELECT * from RFA WHERE user_id = $1', [req.user_id])
         if(check.rows.length > 0)
             return res.status(422).json({message:'You have already uploaded'})
 
@@ -570,6 +571,7 @@ router.post('/rfa', authorization, realEstateAutorization, imageUpload.single('r
     }
 })
 
+// to chech RE agent has uploaded rfa
 router.get('/rfa/:id', authorization, async(req, res) => {
     try {
         const rfa = await db.query('SELECT * FROM RFA WHERE user_id = $1', [req.params.id])
@@ -582,7 +584,7 @@ router.get('/rfa/:id', authorization, async(req, res) => {
     }
 })
 
-
+// for admin on user component
 router.get('/agents/uploadded-rfa/:page', authorization, async(req, res) => {
     try {
         const record = 10;
@@ -602,6 +604,7 @@ router.get('/agents/uploadded-rfa/:page', authorization, async(req, res) => {
     }
 })
 
+// for admin on user component
 router.get('/agents/not-uploadded-rfa/:page', authorization, async(req, res) => {
     try {
         const record = 10;
