@@ -34,6 +34,7 @@ import SalesAgentDashboard from "views/SalesAgentDashboard";
 import AdminDashboard from "views/AdminDashboard";
 import REAgentStatsListing from "views/REAgentStatsListing";
 import Announcement from "views/Announcement";
+import Queries from "views/Queries";
 
 var routes = [
   {
@@ -157,8 +158,16 @@ var routes = [
   {
     path: "/announcements",
     name: "Announcements",
-    icon: "nc-icon nc-bell-55",
+    icon: "nc-icon nc-send",
     component: Announcement,
+    layout: "/admin",
+    role : [3,5]
+  },
+  {
+    path: "/queries",
+    name: "Queries",
+    icon: "nc-icon nc-bell-55",
+    component: Queries,
     layout: "/admin",
     role : [3,5]
   },

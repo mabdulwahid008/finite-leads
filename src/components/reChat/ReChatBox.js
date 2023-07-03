@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './ReChatBox.css'
 import { BsEnvelope } from 'react-icons/bs'
 import { RxCross2 } from 'react-icons/rx'
@@ -12,6 +12,7 @@ function ReChatBox() {
     const [content, setContent] = useState(null)
     const [loading, setLoading] = useState(false)
     const [messages, setMessages] = useState(null)
+    const [countUnread, setCountUnread] = useState(0)
 
     const sendMessage = async(e) => {
         e.preventDefault()
@@ -41,9 +42,52 @@ function ReChatBox() {
             toast.error(res.message)
         setLoading(false)
     }
+
+    const fetchMessagges = async () => {
+        const response = await fetch('/query', {
+            method:'GET',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            setMessages(res)
+            const unread = res.filter((msg)=>msg.reciever_id == localStorage.getItem('user'))
+            setCountUnread(unread.length)
+        }
+        else
+            toast.error(res.message)
+    }
+
+    const updateSeen  = async() => {
+        const response = await fetch('/query', {
+            method:'PATCH',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            setCountUnread(0)
+        }
+        else
+            toast.error(res.message)
+    }
+
+    useEffect(()=>{
+        // if(messageBox)
+            // updateSeen()
+    }, [messageBox])
+    useEffect(()=>{
+        fetchMessagges()
+    }, [])
   return (
     <div>
       {!messageBox && <div className='re-chat-box-circle' onClick={()=>setMessageBox(true)}>
+        {countUnread > 0 && <div><p>{countUnread}</p></div>}
         <BsEnvelope />
       </div>}
       {messageBox && <div className='re-chat-box'>
@@ -53,32 +97,7 @@ function ReChatBox() {
         </div>
         <ScrollableFeed>
             {messages?.map((msg)=>(
-                <div key={msg._id} className='query'>
-                    <p>{msg.content}</p>
-                </div>
-            ))}
-            {messages?.map((msg)=>(
-                <div key={msg._id} className='query'>
-                    <p>{msg.content}</p>
-                </div>
-            ))}
-            {messages?.map((msg)=>(
-                <div key={msg._id} className='query'>
-                    <p>{msg.content}</p>
-                </div>
-            ))}
-            {messages?.map((msg)=>(
-                <div key={msg._id} className='query'>
-                    <p>{msg.content}</p>
-                </div>
-            ))}
-            {messages?.map((msg)=>(
-                <div key={msg._id} className='query'>
-                    <p>{msg.content}</p>
-                </div>
-            ))}
-            {messages?.map((msg)=>(
-                <div key={msg._id} className='query'>
+                <div key={msg._id} className={`query ${localStorage.getItem('user') == msg.sender_id ? 'query-right' : 'query-left'}`} >
                     <p>{msg.content}</p>
                 </div>
             ))}
