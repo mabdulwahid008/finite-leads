@@ -44,7 +44,7 @@ function ReChatBox() {
     }
 
     const fetchMessagges = async () => {
-        const response = await fetch('/query', {
+        const response = await fetch(`/query/${localStorage.getItem('user')}`, {
             method:'GET',
             headers: {
                 'Content-Type': 'Application/json',
