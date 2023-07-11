@@ -46,27 +46,27 @@ router.post('/agents', upload.single('csvFile'), async(req, res) => {
                     results[i].Phone_Number = Phone_Number
                     results[i].Office_Phone = Office_Phone
                     results[i].Service_Radius = Service_Radius
-                    results[i].name = `${results[i].F} ${results[i].Last_Name}`
+                    results[i].name = `${results[i]['\ufeffFirst_Name']} ${results[i].Last_Name}`
                 }
 
                 const salt = bcrypt.genSaltSync(10)
                 const encryptedPass = bcrypt.hashSync("sales@finitelead", salt)
 
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < results.length; i++) {
+                    if(results[i].Office_Phone.length > 11)
+                        continue;
                     await db.query('INSERT INTO users(name, phone, email, address, password, role, created_at, brokerage_name, broker_name, office_phone, city, country, zip_code, state, service_radius, re_license_no) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)',[
                         results[i].name, results[i].Phone_Number, results[i].Email, results[i].Address, encryptedPass, 2, dateWithoutTime, results[i].Brokerage_Name, results[i].Broker_Name, results[i].Office_Phone, results[i].City, results[i].Country, results[i].Postal_Code, results[i].State, results[i].Service_Radius, results[i].Real_Estate_License_No
                     ])
                 }
                 // res.send(results)
-                res.status(200).json({message: 'Inserted'})
+                res.status(200).json({message: 'inserted'})
             })
             .on('error', (error) => {
                 console.error(error.message);
                 res.status(500).send('Internal Server Error');
             });
 })
-
-
 
 // for leads
 router.post('/leads', upload.single('csvFile'), async(req, res) => {
@@ -108,7 +108,7 @@ router.post('/leads', upload.single('csvFile'), async(req, res) => {
                     results[i]['I_want_to:'], results[i]['Currently_working_with_an_agent:'], results[i].First_Name, results[i].Last_Name, results[i].Address, results[i].State, results[i].zip_code, results[i].Phone_Number, results[i].Beds, results[i].Baths, results[i].price ? results[i].price : 0, results[i].Additional, dateWithoutTime, results[i].Agent_Name
                 ])
             }
-            return res.status(200).json(results)
+            return res.status(200).json({message:'inserted'})
           })
           .on('error', (error) => {
             console.error(error.message);
