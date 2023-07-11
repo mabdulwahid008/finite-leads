@@ -55,8 +55,8 @@ function LeadForm() {
     
   return (
     <div className='content'>
-        <Row style={{display:'flex', margin:0, justifyContent: 'center', alignItems:'center', overflow: 'hiden', padding:'50px 0px', width: '100%', background: '#f4f3ef'}}>
-            <Col md='8'>
+        <Row>
+            <Col md='12'>
                 <Card>
                     <CardHeader>
                         <CardTitle tag="h3">Add Finite Lead</CardTitle>
@@ -178,7 +178,7 @@ function LeadForm() {
                                     </FormGroup>
                                 </Col>
                             </Row>
-                            <Button disabled={loading? true : false} style={{width:'100%'}}>Submit</Button>
+                            <Button disabled={loading? true : false} >Submit</Button>
                         </Form>
                     </CardBody>
                 </Card>

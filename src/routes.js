@@ -35,6 +35,7 @@ import AdminDashboard from "views/AdminDashboard";
 import REAgentStatsListing from "views/REAgentStatsListing";
 import Announcement from "views/Announcement";
 import Queries from "views/Queries";
+import LeadForm from "views/LeadForm";
 
 var routes = [
   {
@@ -124,6 +125,14 @@ var routes = [
     icon: "nc-iconnc-diamond",
     component: LeadDetail,
     role: [2,3,5],
+    child: true,
+  },
+  {
+    path: "/add-lead",
+    name: "Add Lead ",
+    icon: "nc-iconnc-diamond",
+    component: LeadForm,
+    role: [3,5],
     child: true,
   },
   {

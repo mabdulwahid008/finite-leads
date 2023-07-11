@@ -56,6 +56,7 @@ function LeadListing() {
                 <Card>
                     <CardHeader>
                         <CardTitle tag='h4'>Leads</CardTitle>
+                        <Link to="/add-lead"><Button>Add Lead</Button></Link>
                     </CardHeader>
                     <CardBody>
                         <FormGroup style={{width: 200}}>

@@ -124,8 +124,9 @@ function LeadMap({lead_id, street, zipcode, state}) {
   }
   
   const pinREAgnets = async() => {
+    console.log(reAgents[0]);
     for(let i = 0; i < reAgents.length; i++){
-      const [lat, long] = await getLatLongFromAddress(reAgents[i].address, reAgents[i].state, reAgents[i].zip_code);
+      const [lat, long] = await getLatLongFromAddress(`${reAgents[i].address}, ${reAgents[i].city},`, `${reAgents[i].state}, ${reAgents[i].country},`, reAgents[i].zip_code);
       const marker = L.marker([lat, long]).addTo(map.current);
       marker.on('click', () => handleMarkerClick(reAgents[i]._id, lat, long));
       marker.bindPopup(reAgents[i].name.split(' ')[0]);

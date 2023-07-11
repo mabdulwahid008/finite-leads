@@ -34,9 +34,7 @@ function App() {
     }, 1000)
 
     useEffect(()=>{
-        if(path == '/add-lead'){
-        }
-        else if(token){
+        if(token){
             if(path.length > 1){
                 history.push(path)
             }
@@ -50,13 +48,9 @@ function App() {
     }, [])
 
     
-    if(path == '/add-lead')
-        return <>
-                <LeadForm />
-                <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} transition={Slide} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss theme="light" />
-            </>
+  
             
-    else if(!token)
+    if(!token)
         return (
             <>
                 <Switch>
