@@ -624,4 +624,24 @@ router.get('/agents/not-uploadded-rfa/:page', authorization, async(req, res) => 
     }
 })
 
+// delete lead
+router.delete('/delete/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        // delete lead from other tables first
+        await db.query('DELETE FROM LEAD_COMMENTS WHERE lead_id = $1', [req.params.id])
+        await db.query('DELETE FROM LEAD_ASSIGNED_TO WHERE lead_id = $1', [req.params.id])
+
+
+        // finaly delate lead
+        await db.query('DELETE FROM LEADS WHERE _id = $1', [req.params.id])
+
+        return res.status(200).json({message: 'Lead deleted successfully.'})
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: error.message})
+    }
+})
+
+
 module.exports = router

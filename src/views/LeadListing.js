@@ -5,6 +5,8 @@ import Loading from 'components/Loading/Loading'
 import { Link } from 'react-router-dom'
 import REAgentLeadStats from 'components/reAgentLeadStats/REAgentLeadStats'
 import { RxExternalLink } from 'react-icons/rx'
+import { FaTrash } from 'react-icons/fa'
+import DeleteLead from 'components/deleteLead/DeleteLead'
 
 function LeadListing() {
     const [leads, setLeads] = useState(null)
@@ -13,6 +15,29 @@ function LeadListing() {
     // pagination
     const [totalRecord, setTotalRecord] = useState(null)
     const [page, setPage] = useState(1)
+    
+    const [deleteLeadPopup, setDeleteLeadPopup] = useState(false)
+    const [leadToBeDelete, setLeadToBeDelete] = useState(null)
+    const [refresh, setRefresh] = useState(null)
+
+    const deleteLead = async() => {
+        const response = await fetch(`/lead/delete/${leadToBeDelete._id}`,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            toast.success(res.message)
+            setDeleteLeadPopup(false)
+            setRefresh(!refresh)
+        }
+        else
+            toast.error(res.message)
+    }
+
 
     const monthChange = (e) => {
         if(e.target.value == ''){
@@ -47,7 +72,7 @@ function LeadListing() {
     useEffect(() => {
         setLeads(null)
         fetchLeads()
-    }, [page, yearMonth])
+    }, [page, yearMonth, refresh])
     
   return (
     <div className='content'>
@@ -76,8 +101,8 @@ function LeadListing() {
                                     <th style={{width:'18%'}}>Address</th>
                                     <th style={{width:'10%'}}>State</th>
                                     <th style={{width:'15%'}}>Created_on</th>
-                                    <th style={{width:'15%'}}>Agent</th>
-                                    <th className='actions'>View</th>
+                                    <th style={{width:'12%'}}>Agent</th>
+                                    <th className='actions'>Actions</th>
                                 </tr>
                             </thead>
                             <tbody> 
@@ -91,7 +116,8 @@ function LeadListing() {
                                         <td>{lead.state}</td>
                                         <td>{lead.created_on}</td>
                                         <td>{lead.agentname}</td>
-                                        <div className='actions'>
+                                        <div className='actions' style={{gap:5}}>
+                                            <FaTrash onClick={() => {setLeadToBeDelete({_id:lead._id, name: lead.fname}); setDeleteLeadPopup(true)}} className='delete-lead'/>
                                             <Link to={`lead-details/${lead._id}`}><RxExternalLink/></Link>
                                         </div>
                                     </tr>
@@ -114,6 +140,7 @@ function LeadListing() {
         </Row>
 
         <REAgentLeadStats />
+        {deleteLeadPopup && <DeleteLead leadToBeDelete={leadToBeDelete} setDeleteLeadPopup={setDeleteLeadPopup} deleteLead={deleteLead}/>}
     </div>
   )
 }

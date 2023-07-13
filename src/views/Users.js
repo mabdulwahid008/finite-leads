@@ -58,6 +58,25 @@ function Users() {
         }
     }
 
+    const onSubmitDeleteAgent = async() => {
+        const response = await fetch(`/user/delete/${agentToBeDeactiveOrActive._id}`,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            toast.success(res.message)
+            setDeactivePopup(false)
+            setRefresh(true)
+        }
+        else{
+            toast.error(res.message)
+        }
+    }
+
     const onSubmitDeactiveAgent = async() => {
         const response = await fetch(`/user/deactivate/${agentToBeDeactiveOrActive._id}`,{
             method: 'PATCH',
@@ -179,7 +198,7 @@ function Users() {
             </Col>
         </Row>
         {addNewAgent && <AddUser setAddNewAgent={setAddNewAgent} saleAgents={saleAgents} setSaleAgents={setSaleAgents} setRefresh={setRefresh}/>}
-        {deactivePopup && <DeactivatePopup setDeactivePopup={setDeactivePopup} agentToBeDeactiveOrActive={agentToBeDeactiveOrActive} setAgentToBeDeactiveOrActive={setAgentToBeDeactiveOrActive} onSubmitDeactiveAgent={onSubmitDeactiveAgent}/>}
+        {deactivePopup && <DeactivatePopup setDeactivePopup={setDeactivePopup} agentToBeDeactiveOrActive={agentToBeDeactiveOrActive} setAgentToBeDeactiveOrActive={setAgentToBeDeactiveOrActive} onSubmitDeactiveAgent={onSubmitDeactiveAgent} onSubmitDeleteAgent={onSubmitDeleteAgent}/>}
         {activePopup && <ActivateUserPopup setActivePopup={setActivePopup} agentToBeDeactiveOrActive={agentToBeDeactiveOrActive} setAgentToBeDeactiveOrActive={setAgentToBeDeactiveOrActive} onSubmitActiveAgent={onSubmitActiveAgent}/>}
         
         

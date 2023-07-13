@@ -361,4 +361,27 @@ router.post('/service-areas', authorization, masterOrAdminAuthorization, async(r
 })
 
 
+// admin to delete user permanently
+router.delete('/delete/:id', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        // delete his activites
+        await db.query('DELETE FROM SERVICE_AREAS WHERE realEstateAgent_id = $1', [req.params.id])
+        await db.query('DELETE FROM Sales WHERE user_id = $1', [req.params.id])
+        await db.query('DELETE FROM Groups WHERE _userId = $1', [req.params.id])
+        await db.query('DELETE FROM Messages WHERE _userId = $1', [req.params.id])
+        await db.query('DELETE FROM LEAD_ASSIGNED_TO WHERE realEstateAgent_id = $1', [req.params.id])
+        await db.query('DELETE FROM LEAD_COMMENTS WHERE realEstateAgent_id = $1', [req.params.id])
+        await db.query('DELETE FROM RFA WHERE user_id = $1', [req.params.id])
+        // await db.query('DELETE FROM QUERIES WHERE sender_id = $1', [req.params.id])
+        
+        // finaly delete user
+        await db.query('DELETE FROM Users WHERE _id = $1', [req.params.id])
+
+        return res.status(200).json({message: 'User deleted successfully.'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: error.message})
+    }
+})
+
 module.exports = router

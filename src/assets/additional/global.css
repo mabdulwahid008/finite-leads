@@ -26,7 +26,27 @@
 .btn-success{
     background-color: var(--successColor) !important;
 }
+.btn-danger2{
+    border-width: 2px;
+    font-weight: 600;
+    font-size: 0.8571em;
+    line-height: 1.35em;
+    text-transform: uppercase;
+    border: none;
+    margin: 10px 1px;
+    border-radius: 3px;
+    padding: 11px 22px;
+    color: white;
+    background-color: rgb(253, 83, 83) !important;
+}
 
+.btn-danger2:hover{
+    background-color: red !important;
+}
+
+.delete-lead:hover{
+    color: var(--dangerColor) !important;
+}
 
 .active,
 .active > a > i{
