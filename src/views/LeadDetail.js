@@ -132,7 +132,7 @@ function LeadDetail() {
         {/* Map */}
         {localStorage.getItem('userRole') != 2 && <Row>
           <Col md="12 mt-1">
-                {lead && !notFound && <LeadMap lead_id={lead._id} street={lead.address} zipcode={lead.zip_code} state={lead.state}/>}
+                {lead && !notFound && <LeadMap lead_id={lead._id} street={lead.address} zipcode={lead.zip_code} state={lead.state} city={lead.city} country={lead.country}/>}
           </Col>
         </Row>}
 

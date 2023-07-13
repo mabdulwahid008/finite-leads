@@ -12,10 +12,10 @@ const imageUpload = require('../middleware/uploadProfle');
 
 // for form - lead posting
 router.post('/', async(req, res) => {
-    const { lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName } = req.body;
+    const { lead_type, working_status, fname, lname, address, state, zip_code, city, country, phone, beds, baths, price, additional_info, recording_link, agentName } = req.body;
     try {
-        await db.query('INSERT INTO leads(lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName, created_on) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)',[
-            lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName, dateWithoutTime
+        await db.query('INSERT INTO leads(lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName, created_on, city, country) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)',[
+            lead_type, working_status, fname, lname, address, state, zip_code, phone, beds, baths, price, additional_info, recording_link, agentName, dateWithoutTime, city, country
         ])
         return res.status(200).json({message: 'Lead added successfully.'})
     } catch (error) {

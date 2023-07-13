@@ -172,14 +172,14 @@ var routes = [
     layout: "/admin",
     role : [3,5]
   },
-  {
-    path: "/queries",
-    name: "Queries",
-    icon: "nc-icon nc-bell-55",
-    component: Queries,
-    layout: "/admin",
-    role : [3,5]
-  },
+  // {
+  //   path: "/queries",
+  //   name: "Queries",
+  //   icon: "nc-icon nc-bell-55",
+  //   component: Queries,
+  //   layout: "/admin",
+  //   role : [3,5]
+  // },
 //   {
 //     path: "/maps",
 //     name: "Maps",

@@ -3,6 +3,8 @@ import L from 'mapbox.js';
 import { Button, Card, CardBody, CardHeader, CardTitle } from 'reactstrap';
 import { toast } from 'react-toastify';
 import LeadAssignConfirmation from 'components/leadAssignConfirmation/LeadAssignConfirmation';
+import Geocode from 'react-geocode';
+Geocode.setApiKey('AIzaSyCuprhlOtAFpOfhaYMs5fYdjdnnla57BLg');
 
 const leadMArker = L.icon({
   iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -18,7 +20,7 @@ const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibWFiZHVsd2FoaWQwMDgiLCJhIjoiY2xnbnlpYnVp
 L.mapbox.accessToken =  MAPBOX_ACCESS_TOKEN;
 
 
-function LeadMap({lead_id, street, zipcode, state}) {
+function LeadMap({lead_id, street, zipcode, state, city, country}) {
   const map = useRef()
   const agentCircleRef = useRef()
   const agentAreasCircleRef = useRef()
@@ -89,9 +91,9 @@ function LeadMap({lead_id, street, zipcode, state}) {
     }
   }
 
-  const getLatLongFromAddress = async(street, state, zipcode) => {
+  const getLatLongFromAddress = async(street, city, state, country, zipcode) => {
     
-    const address = `${street} ${state} ${zipcode}`
+    const address = `${street}, ${city}, ${state}, ${country}, ${zipcode}`
 
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
       address
@@ -124,12 +126,11 @@ function LeadMap({lead_id, street, zipcode, state}) {
   }
   
   const pinREAgnets = async() => {
-    console.log(reAgents[0]);
     for(let i = 0; i < reAgents.length; i++){
-      const [lat, long] = await getLatLongFromAddress(`${reAgents[i].address}, ${reAgents[i].city},`, `${reAgents[i].state}, ${reAgents[i].country},`, reAgents[i].zip_code);
+      const [lat, long] = await getLatLongFromAddress(reAgents[i].address, reAgents[i].city, reAgents[i].state, reAgents[i].country, reAgents[i].zip_code);
       const marker = L.marker([lat, long]).addTo(map.current);
       marker.on('click', () => handleMarkerClick(reAgents[i]._id, lat, long));
-      marker.bindPopup(reAgents[i].name.split(' ')[0]);
+      marker.bindPopup(reAgents[i].name);
     }
   }
 
@@ -204,7 +205,7 @@ function LeadMap({lead_id, street, zipcode, state}) {
   useEffect(() => {
     let cleanupFunction;
     const loadMapAndReturnCleanupFunction = async () => {
-      const [lat, long] = await getLatLongFromAddress(street, state, zipcode);
+      const [lat, long] = await getLatLongFromAddress(street, city, state, country, zipcode);
       cleanupFunction = loadMap(lat, long); // save the cleanup function
       fetchRealEstateAgents();
     };

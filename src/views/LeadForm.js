@@ -6,7 +6,7 @@ import '../assets/additional/LeadForm.css'
 function LeadForm() {
     const [priceText, setPriceText] = useState("Demand")
     const [loading, setLoading] = useState(false)
-    const [lead, setLead] = useState({lead_type: '', working_status: '', fname: '', lname: '', address: '', state: '', zip_code: '', phone: '', recording_link: null, beds: '', baths: '', price:'', additional_info: null, agentName: ''})
+    const [lead, setLead] = useState({lead_type: '', working_status: '', fname: '', lname: '', address: '', state: '', zip_code: '', city:'', country: '', phone: '', recording_link: null, beds: '', baths: '', price:'', additional_info: null, agentName: ''})
 
     const onChange = (e) => {
         setLead({...lead, [e.target.name]: e.target.value})
@@ -31,7 +31,7 @@ function LeadForm() {
             toast.success(res.message)
             document.querySelector('input[name="lead_type"]').checked = false
             document.querySelector('input[name="working_status"]').checked = false
-            setLead({lead_type: '', working_status: '', fname: '', lname: '', address: '', state: '', zip_code: '', phone: '', recording_link: '', beds: '', baths: '', price:'', additional_info: '', agentName: ''})
+            setLead({lead_type: '', working_status: '', fname: '', lname: '', address: '', state: '', zip_code: '', city:'', country: '', phone: '', recording_link: '', beds: '', baths: '', price:'', additional_info: '', agentName: ''})
         }
         else
             toast.error(res.message)
@@ -116,18 +116,39 @@ function LeadForm() {
                                     </FormGroup>
                                 </Col>
                                 <Col md="6">
-                                    <FormGroup>
-                                        <label className='label'>State *</label>
-                                        <Input type="text" name='state' value={lead.state} required onChange={onChange} />
-                                    </FormGroup>
+                                    <Row>
+                                        <Col md="6">
+                                            <FormGroup>
+                                                <label className='label'>City *</label>
+                                                <Input type="text" name='city' value={lead.city} required onChange={onChange} />
+                                            </FormGroup>
+                                        </Col>
+                                        <Col md="6">       
+                                            <FormGroup>
+                                                <label className='label'>Zip Code *</label>
+                                                <Input type="number" name='zip_code' required value={lead.zip_code} onChange={onChange} />
+                                            </FormGroup>
+                                        </Col>
+                                    </Row>
+                                    
                                 </Col>
                             </Row>
                             <Row>
                                 <Col md="6">
-                                    <FormGroup>
-                                        <label className='label'>Zip Code *</label>
-                                        <Input type="number" name='zip_code' required value={lead.zip_code} onChange={onChange} />
-                                    </FormGroup>
+                                    <Row>
+                                        <Col md="6">
+                                            <FormGroup>
+                                                <label className='label'>State *</label>
+                                                <Input type="text" name='state' value={lead.state} required onChange={onChange} />
+                                            </FormGroup>
+                                        </Col>
+                                        <Col md="6">
+                                            <FormGroup>
+                                                <label className='label'>Country *</label>
+                                                <Input type="text" name='country' value={lead.country} required onChange={onChange} />
+                                            </FormGroup>
+                                        </Col>
+                                    </Row>
                                 </Col>
                                 <Col md="6">
                                     <Row>

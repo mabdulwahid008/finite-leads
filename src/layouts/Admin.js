@@ -89,7 +89,7 @@ function Dashboard(props) {
           })}
           <Route path='/*' component={()=> <Page404 />} />
         </Switch>
-        {localStorage.getItem('userRole') == 2 && <ReChatBox />}
+        {/* {localStorage.getItem('userRole') == 2 && <ReChatBox />} */}
         <Footer fluid />
         {announcement?.length > 0 && announcementPopup && <ViewAnnouncement announcement={announcement} setAnnouncementPopup={setAnnouncementPopup}/>}
       </div>
