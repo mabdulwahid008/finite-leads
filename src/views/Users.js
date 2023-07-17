@@ -1,5 +1,5 @@
 import React, { useState, useEffect }  from 'react'
-import { Button, Card, CardBody, CardHeader, CardTitle, Col, Row, Table, FormGroup } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, CardTitle, Col, Row, Table, FormGroup, Input } from 'reactstrap'
 import { FaRegEdit, FaTrash } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import AddUser from 'components/addUser/AddUser';
@@ -24,6 +24,9 @@ function Users() {
     const [agentToBeDeactiveOrActive, setAgentToBeDeactiveOrActive] = useState(null)
 
     const [addNewAgent, setAddNewAgent] = useState(false)
+    const [searching, setsearching] = useState('')
+    const [searchingPage, setsearchingPage] = useState(1)
+
 
     const [editAgent, setEditAgent] = useState(false)
     const [agentToBeEdited, setAgentToBeEdited] = useState(null)
@@ -43,7 +46,29 @@ function Users() {
         {value: 3, label: 'Admin'},
     ]
 
+    const searchUser = async() => {
+        if(searching === ''){
+            setPage(1)
+            fetchUsers()
+            return;
+        }
+        
 
+        const response = await fetch(`/user/search/${searchingPage}/${searching}`, {
+            method:'GET',
+            headers: {
+                'Content-Type':'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            setSaleAgents(res.users)
+            setTotalData(res.totalData)
+        }
+        else
+            toast.error(res.message)
+    }
 
     const filterUsers = (role) => {
         if(role.value === 99){
@@ -134,6 +159,15 @@ function Users() {
         
     }
 
+    useEffect(()=>{
+        setSaleAgents(null)
+        searchUser()
+    }, [searching, searchingPage])
+
+    useEffect(()=>{
+
+    }, [totalData])
+
     useEffect(() => {  
         setRefresh(false)
         setSaleAgents(null)
@@ -150,9 +184,14 @@ function Users() {
                             <CardTitle tag="h4">Users</CardTitle>
                             <Button onClick={()=> setAddNewAgent(true)}>Add New</Button>
                         </div>
-                        <div style={{width:`${onMobile? '100%' : '20%'}` }}>
-                            <ReactSelect styles={reactStyles} options={userRoles} defaultValue={defaultUserRole} placeholder="Filter by role" onChange={(role)=>{setPage(1); filterUsers(role); setDefaultUserRole(role)}}/>
-                        </div>
+                        <Row style={{width:'50%'}}>
+                            <Col md='4' className='pr-1' style={{width:`${onMobile? '100%' : '10%'}` }}>
+                                <ReactSelect styles={reactStyles} options={userRoles} defaultValue={defaultUserRole} placeholder="Filter by role" onChange={(role)=>{setPage(1); filterUsers(role); setDefaultUserRole(role)}}/>
+                            </Col>
+                            <Col md='8' className='px-1' style={{width:`${onMobile? '100%' : '20%'}`}}>
+                                <Input type='text' placeholder='Search user' style={{ padding: 10 }} onChange={(e)=>{setsearchingPage(1); setsearching(e.target.value)}}/>
+                            </Col>
+                        </Row>
                     </CardHeader>
                     <CardBody>
                         {!saleAgents && <Loading />}
@@ -183,7 +222,7 @@ function Users() {
                                 })}
                             </tbody>
                         </Table>
-                        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+                       {searching === '' && <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
                             <div className='dahboard-table'>
                                 <Button className='next-prev' disabled={page === 1 ? true : false} onClick={()=>{if(page !== 1) setPage(page-1)}}>Prev</Button>
                                 <Button className='next-prev' disabled={page >= Math.ceil(totalData / 10)} onClick={()=>{setPage(page+1)}}>Next</Button>
@@ -191,7 +230,17 @@ function Users() {
                             <div>
                                 <p  className='text-muted' style={{fontSize:12}}>Page: {page} / Total Data: {totalData}</p>
                             </div>
-                        </div>
+                        </div>}
+                        {/* these btns for searching api */}
+                       {searching !== '' && <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+                            <div className='dahboard-table'>
+                                <Button className='next-prev' disabled={searchingPage === 1 ? true : false} onClick={()=>{if(searchingPage !== 1) setsearchingPage(searchingPage-1)}}>Prev</Button>
+                                <Button className='next-prev' disabled={searchingPage >= Math.ceil(totalData / 10)} onClick={()=>{setsearchingPage(searchingPage+1)}}>Next</Button>
+                            </div>
+                            <div>
+                                <p  className='text-muted' style={{fontSize:12}}>Page: {searchingPage} / Total Data: {totalData}</p>
+                            </div>
+                        </div>}
                         </>}
                     </CardBody>
                 </Card>

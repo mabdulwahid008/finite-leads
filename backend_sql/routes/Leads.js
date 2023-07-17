@@ -643,5 +643,27 @@ router.delete('/delete/:id', authorization, masterOrAdminAuthorization, async(re
     }
 })
 
+// search lead by name 
+router.get('/search/:page/:text', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        const record = 10;
+        const page = parseInt(req.params.page) ;
+        const offset = (page - 1) * record;
+
+        let totalRows;
+        let leads = []
+
+        totalRows = await db.query(`SELECT COUNT(*) FROM LEADS WHERE fname ILIKE '${req.params.text}%' OR lname ILIKE '${req.params.text}%'`)
+        leads = await db.query(`SELECT _id, fname, lead_type, working_status, address, state, created_on FROM LEADS WHERE fname ILIKE '${req.params.text}%' OR lname ILIKE '${req.params.text}%' ORDER BY _id DESC LIMIT $1 OFFSET $2`,[
+            record, offset
+        ])
+        
+        return res.status(200).json({leads: leads.rows, totalRows: totalRows.rows[0].count})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: error.message})
+    }
+})
+
 
 module.exports = router

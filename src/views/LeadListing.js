@@ -15,10 +15,37 @@ function LeadListing() {
     // pagination
     const [totalRecord, setTotalRecord] = useState(null)
     const [page, setPage] = useState(1)
+
+    const [searching, setsearching] = useState('')
+    const [searchingPage, setsearchingPage] = useState(1)
     
     const [deleteLeadPopup, setDeleteLeadPopup] = useState(false)
     const [leadToBeDelete, setLeadToBeDelete] = useState(null)
     const [refresh, setRefresh] = useState(null)
+
+    const searchLead = async() => {
+        if(searching === ''){
+            setPage(1)
+            fetchLeads()
+            return;
+        }
+        
+
+        const response = await fetch(`/lead/search/${searchingPage}/${searching}`, {
+            method:'GET',
+            headers: {
+                'Content-Type':'Application/json',
+                token: localStorage.getItem('token')
+            }
+        })
+        const res = await response.json()
+        if(response.status === 200){
+            setLeads(res.leads)
+            setTotalRecord(res.totalRows)
+        }
+        else
+            toast.error(res.message)
+    }
 
     const deleteLead = async() => {
         const response = await fetch(`/lead/delete/${leadToBeDelete._id}`,{
@@ -69,6 +96,15 @@ function LeadListing() {
             toast.error(res.message)
     }
 
+    useEffect(()=>{
+        setLeads(null)
+        searchLead()
+    }, [searching, searchingPage])
+
+    useEffect(()=>{
+
+    }, [totalRecord])
+
     useEffect(() => {
         setLeads(null)
         fetchLeads()
@@ -84,10 +120,20 @@ function LeadListing() {
                         <Link to="/add-lead"><Button>Add Lead</Button></Link>
                     </CardHeader>
                     <CardBody>
-                        <FormGroup style={{width: 200}}>
-                            <label>Select Month</label>
-                            <Input type="month" onChange={monthChange}/>
-                        </FormGroup>
+                        <Row style={{width:'50%'}}>
+                            <Col md='5' className='pr-1'>
+                                <FormGroup>
+                                    <label>Select Month</label>
+                                    <Input type="month" onChange={monthChange}/>
+                                </FormGroup>
+                            </Col>
+                            <Col md='7' className='px-1'>
+                                <FormGroup>
+                                    <label>Search Lead</label>
+                                    <Input type="text" placeholder='Search lead' onChange={(e)=>{setsearchingPage(1); setsearching(e.target.value)}}/>
+                                </FormGroup>
+                            </Col>
+                        </Row>
                         {!leads && <Loading />}
                         {leads && leads.length === 0 && <p>No Leads yet</p>}
                         {leads && leads.length !== 0 && <>
@@ -124,7 +170,7 @@ function LeadListing() {
                                 })}
                             </tbody>
                         </Table>
-                        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+                        {searching === '' && <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
                             <div className='dahboard-table'>
                                 <Button className='next-prev' disabled={page === 1 ? true : false} onClick={()=>{if(page !== 1) setPage(page-1)}}>Prev</Button>
                                 <Button className='next-prev' disabled={totalRecord > 0 && page < Math.ceil(totalRecord / 10) ? false : true} onClick={()=>{if(totalRecord > 0 && page < Math.ceil(totalRecord / 1)) setPage(page+1)}}>Next</Button>
@@ -132,7 +178,17 @@ function LeadListing() {
                             <div>
                                 <p  className='text-muted' style={{fontSize:12}}>Page: {page} / Total Leads: {totalRecord}</p>
                             </div>
-                        </div>
+                        </div>}
+                         {/* these btns for searching api */}
+                         {searching !== '' && <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end'}}>
+                            <div className='dahboard-table'>
+                                <Button className='next-prev' disabled={searchingPage === 1 ? true : false} onClick={()=>{if(searchingPage !== 1) setsearchingPage(searchingPage-1)}}>Prev</Button>
+                                <Button className='next-prev' disabled={totalRecord > 0 && searchingPage < Math.ceil(totalRecord / 10) ? false : true} onClick={()=>{if(totalRecord > 0 && searchingPage < Math.ceil(totalRecord / 1)) setsearchingPage(searchingPage+1)}}>Next</Button>
+                            </div>
+                            <div>
+                                <p  className='text-muted' style={{fontSize:12}}>Page: {searchingPage} / Total Leads: {totalRecord}</p>
+                            </div>
+                        </div>}
                         </>}
                     </CardBody>
                 </Card>

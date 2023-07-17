@@ -9,6 +9,7 @@ const masterOrAdminAuthorization = require('../middleware/masterOrAdminAuthoriza
 const authorizationn = require('../middleware/authorizationn');
 const onlyMaster = require('../middleware/onlyMaster');
 const imageUpload = require('../middleware/uploadProfle');
+const { off } = require('gulp');
 
 
 // checking if user is gets deactivated if yes then removing token from localstorage 
@@ -378,6 +379,29 @@ router.delete('/delete/:id', authorization, masterOrAdminAuthorization, async(re
         await db.query('DELETE FROM Users WHERE _id = $1', [req.params.id])
 
         return res.status(200).json({message: 'User deleted successfully.'})
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message: error.message})
+    }
+})
+
+
+// search user by name or email
+router.get('/search/:page/:text', authorization, masterOrAdminAuthorization, async(req, res) => {
+    try {
+        const record = 10;
+        const page = parseInt(req.params.page) ;
+        const offset = (page - 1) * record;
+
+        let totalData;
+        let users = []
+
+        totalData = await db.query(`SELECT COUNT(*) FROM Users WHERE name ILIKE '${req.params.text}%' OR email ILIKE '${req.params.text}%' AND role != 5`)
+        users = await db.query(`SELECT _id, name, email, phone, address FROM Users WHERE name ILIKE '${req.params.text}%' OR email ILIKE '${req.params.text}%' AND role != 5 ORDER BY _id DESC LIMIT $1 OFFSET $2`,[
+            record, offset
+        ])
+        
+        return res.status(200).json({totalData: totalData.rows[0].count, users: users.rows})
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({message: error.message})
