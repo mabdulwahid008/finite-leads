@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom'
 import SaleAgentEditForm from 'components/EditUserForms/SaleAgentEditForm'
 import REAgentEditForm from 'components/EditUserForms/REAgentEditForm'
 import { RxExternalLink } from 'react-icons/rx'
+import UserMap from 'components/userMap/UserMap'
 
 function EditUser({  }) {
 
@@ -14,9 +15,6 @@ function EditUser({  }) {
     const [refreash, setRefreash] = useState(false)
     const [agentData, setAgentData] = useState(null)
     const [loading, setLoading] = useState(false)
-
-
-    const [rfaUploaded, setRfaUploaded] = useState(null)
 
     const userRoles = [
         { role: 0, value: 'Sales Agent'},
@@ -80,33 +78,12 @@ function EditUser({  }) {
             res.lname = res.name.split(' ')[1]
             setAgentData(res)
             setRefreash(true)
-            if(res.role == 2)
-                checkREAgentHasUploadedRFA(res._id)
         }
         else{
             toast.error(res.message)
         }
     }
 
-    // for RE Agents to check if they have uploaded RFA or not
-    const checkREAgentHasUploadedRFA = async(id) => {
-        const response = await fetch(`/lead/rfa/${id}`, {
-        method:'GET',
-        headers:{
-            'Content-Type':'Apllication/json',
-            token: localStorage.getItem('token')
-        }
-        })
-        let res = await response.json()
-        
-        if(response.status === 200){
-            setRfaUploaded(res)
-        }
-        else if(response.status === 404)
-            setRfaUploaded(null)
-        else
-            toast.error(res.message)
-    }
 
     useEffect(()=>{
         if(!refreash)
@@ -116,12 +93,12 @@ function EditUser({  }) {
   return (
    <div className='content'>
     <Row>
-        <Col md="4">
-        <Card className="card-user">
-              <div className="image">
+        <Col md="4" className='pr-1'>
+        <Card className="card-user" >
+              <div className="image" style={{height: 90}}>
                 <img alt="..." src={require("assets/img/damir-bosnjak.jpg")} />
               </div>
-              <CardBody>
+              <CardBody style={{minHeight: 160}}>
                 {!agentData && <Loading />}
                {agentData && <>
                <div className="author">
@@ -133,17 +110,12 @@ function EditUser({  }) {
                     />
                   </a>
                     <h5 className="username">{agentData.name}</h5>
-                  <p className="description">{userRoles.filter((role) => role.role == agentData.role)[0].value}</p>
+                  <p className="description" style={{padding: 5}}>{userRoles.filter((role) => role.role == agentData.role)[0].value}</p>
                 </div>
-                <p className="description text-center">
-                  We like the way you work it <br />
-                </p>
-                {rfaUploaded && <div style={{display:'flex', justifyContent:'center', alignItems:'center', flexDirection:'column', gap:5}}>
-                    <a href={`${process.env.REACT_APP_IMAGE_URL}/${rfaUploaded.rfa}`} target='_blank'><Button className="rfa">Signed RFA <RxExternalLink/></Button></a>
-                </div>}
                 </>}
               </CardBody>
             </Card>
+            {agentData?.role == 2 && <UserMap street={agentData.address} city={agentData.city} state={agentData.state} country={agentData.country} zipcode={agentData.zip_code}/>}
         </Col>
         <Col md='8'>
         <Card>
